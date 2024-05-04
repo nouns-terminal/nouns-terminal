@@ -1,0 +1,191 @@
+[
+  {
+    "inputs": [
+      { "internalType": "contract INounsToken", "name": "_nouns", "type": "address" },
+      { "internalType": "contract NounsAuctionHouse", "name": "_auction", "type": "address" },
+      { "internalType": "address", "name": "_owner", "type": "address" },
+      { "internalType": "address", "name": "_relay", "type": "address" },
+      {
+        "components": [
+          { "internalType": "uint96", "name": "maxBid", "type": "uint96" },
+          { "internalType": "uint96", "name": "maxGasPrice", "type": "uint96" },
+          { "internalType": "uint48", "name": "maxSecondsBeforeEndTime", "type": "uint48" },
+          { "internalType": "uint16", "name": "feePointsPer10k", "type": "uint16" },
+          { "internalType": "address", "name": "receiver", "type": "address" }
+        ],
+        "internalType": "struct Autobidder.Config",
+        "name": "_config",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "bid", "type": "uint256" },
+      { "internalType": "uint256", "name": "maxBid", "type": "uint256" }
+    ],
+    "name": "BidTooLarge",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "gasPrice", "type": "uint256" },
+      { "internalType": "uint256", "name": "maxGasPrice", "type": "uint256" }
+    ],
+    "name": "GasTooHigh",
+    "type": "error"
+  },
+  { "inputs": [], "name": "InvalidReceiver", "type": "error" },
+  { "inputs": [], "name": "NoBiddingAgainstOurselves", "type": "error" },
+  { "inputs": [], "name": "PermissionDenied", "type": "error" },
+  { "inputs": [], "name": "TooEarly", "type": "error" },
+  { "inputs": [], "name": "WithdrawingNounsRequiresFee", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint96", "name": "maxBid", "type": "uint96" },
+          { "internalType": "uint96", "name": "maxGasPrice", "type": "uint96" },
+          { "internalType": "uint48", "name": "maxSecondsBeforeEndTime", "type": "uint48" },
+          { "internalType": "uint16", "name": "feePointsPer10k", "type": "uint16" },
+          { "internalType": "address", "name": "receiver", "type": "address" }
+        ],
+        "indexed": false,
+        "internalType": "struct Autobidder.Config",
+        "name": "config",
+        "type": "tuple"
+      }
+    ],
+    "name": "ConfigChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "OwnershipTransferStarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "config",
+    "outputs": [
+      { "internalType": "uint96", "name": "maxBid", "type": "uint96" },
+      { "internalType": "uint96", "name": "maxGasPrice", "type": "uint96" },
+      { "internalType": "uint48", "name": "maxSecondsBeforeEndTime", "type": "uint48" },
+      { "internalType": "uint16", "name": "feePointsPer10k", "type": "uint16" },
+      { "internalType": "address", "name": "receiver", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "uint96", "name": "maxBid", "type": "uint96" },
+          { "internalType": "uint96", "name": "maxGasPrice", "type": "uint96" },
+          { "internalType": "uint48", "name": "maxSecondsBeforeEndTime", "type": "uint48" },
+          { "internalType": "uint16", "name": "feePointsPer10k", "type": "uint16" },
+          { "internalType": "address", "name": "receiver", "type": "address" }
+        ],
+        "internalType": "struct Autobidder.Config",
+        "name": "_config",
+        "type": "tuple"
+      }
+    ],
+    "name": "configure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "_nounId", "type": "uint256" }],
+    "name": "createBid",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "target", "type": "address" },
+      { "internalType": "bytes", "name": "data", "type": "bytes" },
+      { "internalType": "uint256", "name": "value", "type": "uint256" }
+    ],
+    "name": "execTransaction",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "fees",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pendingOwner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "relay",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "_nounId", "type": "uint256" }],
+    "name": "withdrawNoun",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  { "stateMutability": "payable", "type": "receive" }
+]

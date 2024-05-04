@@ -1,0 +1,82 @@
+@font-face {
+  font-family: "Proto Mono";
+  src: url("/fonts/ProtoMono-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Proto Mono";
+  src: url("/fonts/ProtoMono-SemiBold.otf") format("opentype");
+  font-weight: 600;
+}
+
+html,
+body, input, button {
+  padding: 0;
+  margin: 0;
+  font-family: "Proto Mono", sans-serif;
+}
+
+:root {
+  --dark-bg: #000000;
+  --surface-bg: #0F1011;
+  --lines: #333333;
+  --bright-text: #E0E0E0;
+  --mid-text: #999999;
+  --low-text: #616161;
+  --hint-text: #525252;
+
+  --yellow: #FFB700;
+  --green: #00C986;
+  --red: #FF4A03;
+  --blue: #0092FF;
+  --pink: #E036B1;
+
+  --light-yellow: #FFCE52;
+  --light-green: #14FF9C;
+  --light-red: #F03400;
+  --light-blue: #47BFFF;
+  --light-pink: #E972C9;
+
+  --ratio: 1.5;
+  --s-5: calc(var(--s-4) / var(--ratio));
+  --s-4: calc(var(--s-3) / var(--ratio));
+  --s-3: calc(var(--s-2) / var(--ratio));
+  --s-2: calc(var(--s-1) / var(--ratio));
+  --s-1: calc(var(--s0) / var(--ratio));
+  --s0: 1rem;
+  --s1: calc(var(--s0) * var(--ratio));
+  --s2: calc(var(--s1) * var(--ratio));
+  --s3: calc(var(--s2) * var(--ratio));
+  --s4: calc(var(--s3) * var(--ratio));
+  --s5: calc(var(--s4) * var(--ratio));
+
+  font-size: 13px;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --yellow: color(display-p3 0.95 0.679 0.109);
+    --green: color(display-p3 0.136 0.715 0.396);
+    --red: color(display-p3 0.94 0.282 0.071);
+    --blue: color(display-p3 0.076 0.458 0.95);
+    --pink: color(display-p3 0.83 0.083 0.649);
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+body {
+  color: var(--bright-text);
+  background: var(--dark-bg);
+}
