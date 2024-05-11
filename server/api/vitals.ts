@@ -6,7 +6,8 @@ import deepEqual from 'deep-equal';
 import { Pool } from 'pg';
 import { totalNounsSupply } from '../indexers/queries';
 import RetryProvider from '../RetryProvider';
-import { NOUNS_TREASURY_ADDRESS } from '../../utils/constants';
+import { NOUNS_DAO_ADDRESS, NOUNS_TREASURY_ADDRESS } from '../../utils/constants';
+import { NounsDAO__factory } from '../../typechain';
 
 const log = logger.child({ source: 'live-query' });
 const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
@@ -23,15 +24,9 @@ async function fetchGasPrice() {
   return gasPrice.toString();
 }
 
-async function fetchNounsSold() {
-  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-  const connection = await pgPool.connect();
-  try {
-    const result = await totalNounsSupply.run(undefined, connection);
-    return result[0].count || 0;
-  } finally {
-    connection.release();
-  }
+async function fetchAdjustedTotalSupply() {
+  const dao = NounsDAO__factory.connect(NOUNS_DAO_ADDRESS, provider);
+  return (await dao.adjustedTotalSupply()).toNumber();
 }
 
 async function fetchTreasuryBalance() {
@@ -50,14 +45,14 @@ async function fetchTreasuryBalance() {
 }
 
 async function fetchData(): Promise<Vitals> {
-  const [usdPrice, gasPriceInWei, nounsSold, treasuryBalanceInWei] = await Promise.all([
+  const [usdPrice, gasPriceInWei, adjustedTotalSupply, treasuryBalanceInWei] = await Promise.all([
     fetchEtherPrice(),
     fetchGasPrice(),
-    fetchNounsSold(),
+    fetchAdjustedTotalSupply(),
     fetchTreasuryBalance(),
   ]);
 
-  return { usdPrice, gasPriceInWei, nounsSold, treasuryBalanceInWei };
+  return { usdPrice, gasPriceInWei, adjustedTotalSupply, treasuryBalanceInWei };
 }
 
 export type LiveQuery<T> = {

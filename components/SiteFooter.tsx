@@ -131,7 +131,7 @@ function TreasuryStatus({ vitals }: { vitals: Vitals | null }) {
         {vitals
           ? 'Ξ' +
             Number(
-              formatEther(BigNumber.from(vitals.treasuryBalanceInWei).div(vitals.nounsSold))
+              formatEther(BigNumber.from(vitals.treasuryBalanceInWei).div(vitals.adjustedTotalSupply))
             ).toFixed(2)
           : '-'}
       </Text>
