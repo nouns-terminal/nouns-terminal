@@ -1,16 +1,13 @@
 import '../styles/globals.css';
 // import '@rainbow-me/rainbowkit/styles.css';
 // import { darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { ConnectKitProvider, ConnectKitButton, getDefaultClient } from 'connectkit';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
+import { ConnectKitProvider, getDefaultClient } from 'connectkit';
+import { chain, createClient, WagmiConfig } from 'wagmi';
 import type { AppProps } from 'next/app';
 import { withTRPC } from '@trpc/next';
 import { type AppRouter } from '../server/api/router';
 import { createWSClient, wsLink } from '@trpc/client/links/wsLink';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
-import { createTRPCClient } from '@trpc/client';
 import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
 import Head from 'next/head';

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Auction from '../components/Auction';
 import SiteFooter from '../components/SiteFooter';
 import SiteHeader from '../components/SiteHeader';
-import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
   const [limit, setLimit] = useState(4);

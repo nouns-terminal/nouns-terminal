@@ -3,8 +3,6 @@ import EventEmitter from 'events';
 import { logger, sleep } from '../utils';
 import { Vitals } from './types';
 import deepEqual from 'deep-equal';
-import { Pool } from 'pg';
-import { totalNounsSupply } from '../indexers/queries';
 import RetryProvider from '../RetryProvider';
 import { NOUNS_DAO_ADDRESS, NOUNS_TREASURY_ADDRESS } from '../../utils/constants';
 import { NounsDAO__factory } from '../../typechain';

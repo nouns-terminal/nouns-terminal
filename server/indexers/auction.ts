@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { ethers, Event } from 'ethers';
+import { ethers } from 'ethers';
 import { NounsAuctionHouse__factory } from '../../typechain';
 import { TypedEventFilter } from '../../typechain/common';
 import {

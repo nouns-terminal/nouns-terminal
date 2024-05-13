@@ -1,5 +1,4 @@
 import { createPool, sql } from 'slonik';
-import { number } from 'zod';
 import { LiveQuery, liveQuery } from './api/vitals';
 
 export type Bid = {

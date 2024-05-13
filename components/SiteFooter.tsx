@@ -4,7 +4,6 @@ import Logo from './Logo';
 import Text from './Text';
 import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import ClientOnly from './ClientOnly';
 import { trpc } from '../utils/trpc';
 import { Vitals } from '../server/api/types';
 import { BigNumber } from 'ethers';

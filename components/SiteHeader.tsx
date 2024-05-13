@@ -1,11 +1,8 @@
 import Link from 'next/link';
-import Logo from './Logo';
-import Stack from './Stack';
 import Text, { textStyle } from './Text';
 // import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ConnectKitButton } from 'connectkit';
 import { Icon } from './BidsTable';
-import Image from 'next/image';
 
 export default function SiteHeader() {
   return (

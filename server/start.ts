@@ -15,7 +15,6 @@ import http from 'http';
 import expressWinston from 'express-winston';
 import RetryProvider from './RetryProvider';
 import { Pool, PoolClient } from 'pg';
-
 import nouns from './indexers/nouns';
 
 async function main() {

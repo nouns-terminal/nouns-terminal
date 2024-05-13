@@ -1,8 +1,5 @@
-import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
-import AuctionHeader from '../components/AuctionHeader';
 import Bidding from '../components/Bidding';
-import BidsTable from '../components/BidsTable';
 import Logo from '../components/Logo';
 import SiteHeader from '../components/SiteHeader';
 import Stack from '../components/Stack';
