@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { createLogger, Logger, format, transports } from 'winston';
 import { hostname } from 'os';
 import qs from 'qs';
@@ -21,7 +22,7 @@ export async function sleep(ms: number) {
 }
 
 export const logger = createLogger({
-  level: 'debug',
+  level: process.env.DEBUG_LEVEL || 'debug',
   transports: [
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),

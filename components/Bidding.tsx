@@ -18,7 +18,9 @@ export default function Bidding({ currentBid, onSubmitBid }: Props) {
       const newBid = parseEther(text);
       await onSubmitBid(newBid);
       setText('');
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleBump = (percentagePoints: number) => {
