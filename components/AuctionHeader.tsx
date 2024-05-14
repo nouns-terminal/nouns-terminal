@@ -1,10 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-// import { useAddRecentTransaction } from '@rainbow-me/rainbowkit';
 import { BigNumber } from 'ethers';
 import { formatEther } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
-import { useAccount, useNetwork, useSigner } from 'wagmi';
+import { useAccount, useSigner, useSwitchNetwork } from 'wagmi';
 import { NounsAuctionHouse__factory } from '../typechain';
 import { NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
@@ -26,22 +25,40 @@ type Props = {
 };
 
 export default function AuctionHeader(props: Props) {
-  const { data: signer } = useSigner();
-  // const addRecentTransaction = useAddRecentTransaction();
+  const { data: signer, refetch } = useSigner();
   const { isConnected } = useAccount();
-  const network = useNetwork();
+  const { switchNetworkAsync } = useSwitchNetwork();
 
   const submitBidMutation = useMutation(async (bid: BigNumber) => {
-    if (!signer) {
+    let effectiveSigner = signer;
+    if (!effectiveSigner) {
       return;
     }
-
-    if (network?.chain?.id !== 1) {
-      alert('Please switch to Ethereum Mainnet');
+    const chainId = await effectiveSigner.getChainId();
+    if (chainId !== 1) {
+      if (!switchNetworkAsync) {
+        alert('Please switch to Ethereum Mainnet');
+        return;
+      }
+      try {
+        await switchNetworkAsync(1);
+        effectiveSigner = (await refetch()).data;
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    }
+    if (!effectiveSigner) {
+      console.error(
+        'Effective signer is undefined. Please ensure the signer is properly initialized.'
+      );
+      alert('Something went wrong!');
       return;
     }
-
-    const contract = NounsAuctionHouse__factory.connect(NOUNS_AUCTION_HOUSE_ADDRESS, signer);
+    const contract = NounsAuctionHouse__factory.connect(
+      NOUNS_AUCTION_HOUSE_ADDRESS,
+      effectiveSigner
+    );
 
     // Gas limit estimation might fail if the wallet doesn't have enough balance
     // We don't want to show user a confusing error, instead we let the wallet
@@ -51,11 +68,7 @@ export default function AuctionHeader(props: Props) {
     //   .createBid(props.id, { value: bid })
     //   .catch(() => BigNumber.from(2_000_000));
 
-    const tx = await contract.createBid(props.id, { value: bid, gasLimit: 2_000_000 });
-    // addRecentTransaction({
-    //   hash: tx.hash,
-    //   description: `Bid Ξ${formatEther(bid)} on Noun #${props.id}`,
-    // });
+    await contract.createBid(props.id, { value: bid, gasLimit: 2_000_000 });
   });
 
   const svgBase64 = useMemo(() => {
