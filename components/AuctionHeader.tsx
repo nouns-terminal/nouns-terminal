@@ -133,6 +133,7 @@ export default function AuctionHeader(props: Props) {
           <Bidding
             currentBid={props.maxBid ? BigNumber.from(props.maxBid) : BigNumber.from(0)}
             onSubmitBid={(bid) => submitBidMutation.mutateAsync(bid)}
+            isLoading={submitBidMutation.isLoading}
           />
         </>
       )}
