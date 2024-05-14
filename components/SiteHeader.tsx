@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Text, { textStyle } from './Text';
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { ConnectKitButton } from 'connectkit';
 import { Icon } from './BidsTable';
 
@@ -34,16 +33,6 @@ export default function SiteHeader() {
 
                   return (
                     <div className="account">
-                      {/* {account.displayBalance && (
-                        <>
-                          <Text variant="title-3" bold>
-                            {account.displayBalance}
-                          </Text>
-                          <Text variant="title-3" bold>
-                            -
-                          </Text>
-                        </>
-                      )} */}
                       <button onClick={show} type="button">
                         {address && <Icon address={address} />}
                         <Text variant="title-3" bold>
@@ -66,6 +55,7 @@ export default function SiteHeader() {
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
+          height: 55px;
           padding: var(--s-2) var(--s1);
           border-bottom: solid 1px var(--lines);
         }
