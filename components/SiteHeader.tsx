@@ -24,14 +24,6 @@ export default function SiteHeader() {
                     );
                   }
 
-                  if (unsupported) {
-                    return (
-                      <button className="connect-wallet" onClick={show} type="button">
-                        Connect Wallet
-                      </button>
-                    );
-                  }
-
                   return (
                     <div className="account">
                       {/* {account.displayBalance && (
