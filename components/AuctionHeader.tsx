@@ -68,7 +68,7 @@ export default function AuctionHeader(props: Props) {
     //   .createBid(props.id, { value: bid })
     //   .catch(() => BigNumber.from(2_000_000));
 
-    await contract.createBid(props.id, { value: bid, gasLimit: 2_000_000 });
+    const tx = await contract['createBid(uint256,uint32)'](props.id, 7, { value: bid, gasLimit: 2_000_000 });
   });
 
   const svgBase64 = useMemo(() => {
