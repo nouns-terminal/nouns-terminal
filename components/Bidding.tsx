@@ -5,9 +5,10 @@ import { FormEvent, useRef, useState } from 'react';
 type Props = {
   currentBid: BigNumber;
   onSubmitBid: (newBid: BigNumber) => Promise<void>;
+  isLoading: boolean;
 };
 
-export default function Bidding({ currentBid, onSubmitBid }: Props) {
+export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState('');
 
@@ -52,7 +53,13 @@ export default function Bidding({ currentBid, onSubmitBid }: Props) {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <button>Place Bid</button>
+        {isLoading ? (
+          <button className="isLoading" disabled>
+            Waiting...
+          </button>
+        ) : (
+          <button>Place Bid</button>
+        )}
       </form>
       <style jsx>{`
         .container {
@@ -79,14 +86,17 @@ export default function Bidding({ currentBid, onSubmitBid }: Props) {
         }
         form button {
           padding: var(--s-2) var(--s1);
-          background-color: ${isValidBid ? 'var(--yellow)' : 'var(--hint-text)'};
-          color: ${isValidBid ? 'var(--surface-bg)' : 'var(--yellow)'};
-          border: solid 1px ${isValidBid ? 'var(--yellow)' : 'var(--hint-text)'};
-          cursor: ${isValidBid ? 'pointer' : 'arrow'};
+          background-color: ${!isLoading && isValidBid ? 'var(--yellow)' : 'var(--hint-text)'};
+          color: ${!isLoading && isValidBid ? 'var(--surface-bg)' : 'var(--yellow)'};
+          border: solid 1px ${!isLoading && isValidBid ? 'var(--yellow)' : 'var(--hint-text)'};
+          cursor: ${!isLoading && isValidBid ? 'pointer' : 'arrow'};
           outline: none;
+          width: 107px;
         }
         form button:hover {
-          background-color: ${isValidBid ? 'var(--light-yellow)' : 'var(--hint-text)'};
+          background-color: ${!isLoading && isValidBid
+            ? 'var(--light-yellow)'
+            : 'var(--hint-text)'};
         }
         .option {
           border: 1px solid var(--lines);
@@ -99,6 +109,14 @@ export default function Bidding({ currentBid, onSubmitBid }: Props) {
           border-color: var(--yellow);
           color: var(--yellow);
           cursor: pointer;
+        }
+        @keyframes pulse {
+          50% {
+            opacity: 0.5;
+          }
+        }
+        .isLoading {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
       `}</style>
     </div>
