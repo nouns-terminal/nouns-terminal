@@ -55,10 +55,10 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
         />
         {isLoading ? (
           <button className="isLoading" disabled>
-            Waiting...
+            Waiting…&nbsp;
           </button>
         ) : (
-          <button>Place Bid</button>
+          <button>Place&nbsp;Bid</button>
         )}
       </form>
       <style jsx>{`
@@ -91,7 +91,6 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
           border: solid 1px ${!isLoading && isValidBid ? 'var(--yellow)' : 'var(--hint-text)'};
           cursor: ${!isLoading && isValidBid ? 'pointer' : 'arrow'};
           outline: none;
-          width: 107px;
         }
         form button:hover {
           background-color: ${!isLoading && isValidBid

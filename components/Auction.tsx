@@ -57,7 +57,7 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
           display: flex;
           justify-content: center;
           align-items: center;
-          margin-top: 15px;
+          margin-top: var(--s1);
           color: var(--mid-text);
         }
       `}</style>
