@@ -40,7 +40,7 @@ export default function BidsTable(props: Props) {
             <th>Gwei</th>
             <th>ETH&nbsp;Balance</th>
             <th>#All&nbsp;Bids</th>
-            <th>#Nouns</th>
+            <th>#Wins</th>
             <th>When</th>
           </tr>
           {props.bids.map((bid, index) => (
@@ -70,7 +70,7 @@ export default function BidsTable(props: Props) {
               <td>{formatUnits(bid.maxFeePerGas, 'gwei').split('.')[0]}</td>
               <td>{formatBalance(lookup[bid.walletAddress]?.balance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
-              <td>{lookup[bid.walletAddress]?.nouns || ''}</td>
+              <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
               <td>
                 <a target="_blank" rel="noreferrer" href={`https://etherscan.io/tx/${bid.tx}`}>
                   {new Date(bid.timestamp * 1000).toLocaleString().replaceAll(' ', '\u00A0')}

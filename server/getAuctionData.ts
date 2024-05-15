@@ -16,6 +16,7 @@ export type Wallet = {
   bids: number;
   nouns: number | null;
   balance: string | null;
+  wins: number | null;
 };
 
 export type Auction = {
@@ -102,19 +103,19 @@ export default async function getAuctionData(id?: number | null) {
     `);
 
     const wallets = await connection.query<Wallet>(sql`
+      WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
       SELECT DISTINCT
-        bid."walletAddress" as "address",
+        bid."walletAddress" AS "address",
         wallet.ens,
-        "wallet_bids_count"."bidsCount" as "bids",
-        "wallet"."nouns" as "nouns",
-        (wallet."balanceEth" + wallet."balanceWeth")::TEXT as "balance"
+        (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
+        wallet."nouns" AS "nouns", 
+        (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
+        (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
       FROM
-        wallet_bids_count,
         bid,
         wallet
       WHERE
-        bid."walletAddress" = "wallet_bids_count"."walletAddress"
-        AND wallet.address = bid."walletAddress"
+        bid."walletAddress" = wallet.address
         AND bid."auctionId" = ${auction.id};
     `);
 
