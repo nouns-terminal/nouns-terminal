@@ -34,11 +34,12 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
         ended={ended}
       />
       {data.bids.length < 1 ? (
-        <div className="info"> No bids yet </div>
+        <div className="info">No bids yet</div>
       ) : (
-        <div className="hr" /> && (
+        <>
+          <div className="hr" />
           <BidsTable bids={data.bids} wallets={data.wallets} ended={ended} />
-        )
+        </>
       )}
       {!ended && <LiveMarquee />}
       <style jsx>{`
@@ -57,7 +58,8 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
           display: flex;
           justify-content: center;
           align-items: center;
-          margin-top: var(--s1);
+          height: var(--s3);
+          margin: var(--s1) 0;
           color: var(--mid-text);
         }
       `}</style>
