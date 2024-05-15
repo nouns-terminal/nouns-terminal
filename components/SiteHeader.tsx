@@ -55,7 +55,7 @@ export default function SiteHeader() {
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
-          height: 55px;
+          height: var(--s4);
           padding: var(--s-2) var(--s1);
           border-bottom: solid 1px var(--lines);
         }
