@@ -47,10 +47,3 @@ CREATE TABLE "public"."wallet" (
     "nouns" int4,
     PRIMARY KEY ("address")
 );
-
-
-CREATE VIEW "public"."wallet_bids_count" AS 
-    SELECT bid."walletAddress",
-        count(bid.tx) AS "bidsCount"
-    FROM bid
-    GROUP BY bid."walletAddress";
