@@ -118,10 +118,20 @@ export default function BidsTable(props: Props) {
           background-color: var(--lines);
         }
         .address {
-          max-width: 20ch;
+          max-width: 42ch;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+        @media only screen and (max-width: 950px) {
+          .address {
+            max-width: 20ch;
+          }
+        }
+        @media only screen and (min-width: 950px) and (max-width: 1200px) {
+          .address {
+            max-width: 35ch;
+          }
         }
       `}</style>
     </div>
