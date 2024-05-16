@@ -67,28 +67,34 @@ export default async function auction(
 
   log.debug('Loaded state', { lastQueriedBlock });
   const currentBlockNumber = await provider.getBlockNumber();
+  const limit = 1_000_000;
+  const pages = Math.ceil((currentBlockNumber - lastQueriedBlock) / limit);
 
-  for (const filter of filters) {
-    const limit = 2_000;
-    const pages = Math.ceil((currentBlockNumber - lastQueriedBlock) / limit);
-    for (let page = 0; page <= pages; page += 1) {
-      const blockFrom = lastQueriedBlock + page * limit + 1;
-      const blockTo = Math.min(currentBlockNumber, lastQueriedBlock + (page + 1) * limit);
+  for (let page = 0; page <= pages; page += 1) {
+    const blockFrom = lastQueriedBlock + page * limit + 1;
+    const blockTo = Math.min(currentBlockNumber, lastQueriedBlock + (page + 1) * limit);
 
-      if (blockFrom > currentBlockNumber) {
-        break;
-      }
-
-      log.debug('Querying events', { blockFrom, blockTo });
-      const events = await auctionHouse.queryFilter(filter, blockFrom, blockTo);
-
-      for (const event of events) {
-        await maybeProcessEvent(event);
-        lastBlockNumber = Math.max(lastBlockNumber, event.blockNumber);
-      }
+    if (blockFrom > currentBlockNumber) {
+      break;
     }
+
+    log.debug('Querying events', { blockFrom, blockTo });
+
+    const events = await Promise.all(
+      filters.map((filter) => auctionHouse.queryFilter(filter, blockFrom, blockTo))
+    );
+
+    const allEvents = events
+      .flat()
+      .sort((a, b) => a.blockNumber - b.blockNumber || a.logIndex - b.logIndex);
+
+    for (const event of allEvents) {
+      await maybeProcessEvent(event);
+      lastBlockNumber = Math.max(lastBlockNumber, event.blockNumber);
+    }
+
+    await setAuctionLastQueriedBlock.run({ lastBlockNumber }, connection);
   }
-  await setAuctionLastQueriedBlock.run({ lastBlockNumber }, connection);
 
   // Wait forever, otherwise the connection is released and the event handlers
   // won't be able to run SQL

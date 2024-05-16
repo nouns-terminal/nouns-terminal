@@ -8,7 +8,7 @@ ON CONFLICT ("key") DO UPDATE SET
 "value" = GREATEST("state"."value", :lastBlockNumber!::INTEGER);
 
 /* @name findBidsWithMissingTransactions */
-SELECT "tx", "block" FROM "bid" WHERE "bid"."timestamp" IS NULL LIMIT :limit!::INTEGER;
+SELECT "tx", "block", "auctionId" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER;
 
 /* @name updateBidTransactionMetadata */
 UPDATE bid
@@ -18,10 +18,10 @@ SET
 WHERE "tx" = :txHash;
 
 /* @name findUnindexedWallets */
-SELECT "bid"."walletAddress" as "address"
+SELECT "bid"."auctionId", "bid"."walletAddress" as "address"
 FROM "bid"
 LEFT JOIN "wallet" ON "bid"."walletAddress" = "wallet"."address"
-WHERE "ens" IS NULL LIMIT :limit!::INTEGER;
+WHERE "ens" IS NULL ORDER BY "bid"."auctionId" DESC LIMIT :limit!::INTEGER;
 
 /* @name updateWalletData */
 INSERT INTO "wallet" ("address", "ens", "balanceEth", "balanceWeth", "nouns")

@@ -20,7 +20,7 @@ export default async function wallets(
   const nouns = new ethers.Contract(nounsAddress, abi, provider);
 
   async function process() {
-    const wallets = await findUnindexedWallets.run({ limit: 1 }, connection);
+    const wallets = await findUnindexedWallets.run({ limit: 5 }, connection);
     log.debug(`Rows: ${wallets.length}`, { rows: wallets });
 
     if (wallets.length === 0) {
