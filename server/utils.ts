@@ -22,7 +22,7 @@ export async function sleep(ms: number) {
 }
 
 export const logger = createLogger({
-  level: process.env.LEVEL || 'info',
+  level: process.env.LOG_LEVEL || 'info',
   transports: [
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),

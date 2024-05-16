@@ -76,8 +76,8 @@ export default function BidsTable(props: Props) {
                   {bid.timestamp
                     ? new Date(bid.timestamp * 1000)
                         .toLocaleString()
-                        .replace(/, (\d):/, ',  $1:')
-                        .replaceAll(' ', '\u00A0')
+                        .replace(/, (\d):/, ',  $1:') // Add space to maintain the same characters count -> (6:35:23 PM) to ( 6:35:23 PM)
+                        .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
                 </a>
               </td>
