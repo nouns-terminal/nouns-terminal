@@ -61,6 +61,7 @@ export interface IFindBidsWithMissingTransactionsParams {
 
 /** 'FindBidsWithMissingTransactions' return type */
 export interface IFindBidsWithMissingTransactionsResult {
+  auctionId: number;
   block: number;
   tx: string;
 }
@@ -71,12 +72,12 @@ export interface IFindBidsWithMissingTransactionsQuery {
   result: IFindBidsWithMissingTransactionsResult;
 }
 
-const findBidsWithMissingTransactionsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":70,"b":76}]}],"statement":"SELECT \"tx\", \"block\" FROM \"bid\" WHERE \"bid\".\"timestamp\" IS NULL LIMIT :limit!::INTEGER"};
+const findBidsWithMissingTransactionsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":109,"b":115}]}],"statement":"SELECT \"tx\", \"block\", \"auctionId\" FROM \"bid\" WHERE \"bid\".\"timestamp\" IS NULL ORDER BY \"auctionId\" DESC LIMIT :limit!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT "tx", "block" FROM "bid" WHERE "bid"."timestamp" IS NULL LIMIT :limit!::INTEGER
+ * SELECT "tx", "block", "auctionId" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER
  * ```
  */
 export const findBidsWithMissingTransactions = new PreparedQuery<IFindBidsWithMissingTransactionsParams,IFindBidsWithMissingTransactionsResult>(findBidsWithMissingTransactionsIR);
@@ -121,6 +122,7 @@ export interface IFindUnindexedWalletsParams {
 /** 'FindUnindexedWallets' return type */
 export interface IFindUnindexedWalletsResult {
   address: string;
+  auctionId: number;
 }
 
 /** 'FindUnindexedWallets' query type */
@@ -129,15 +131,15 @@ export interface IFindUnindexedWalletsQuery {
   result: IFindUnindexedWalletsResult;
 }
 
-const findUnindexedWalletsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":144,"b":150}]}],"statement":"SELECT \"bid\".\"walletAddress\" as \"address\"\nFROM \"bid\"\nLEFT JOIN \"wallet\" ON \"bid\".\"walletAddress\" = \"wallet\".\"address\"\nWHERE \"ens\" IS NULL LIMIT :limit!::INTEGER"};
+const findUnindexedWalletsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":195,"b":201}]}],"statement":"SELECT \"bid\".\"auctionId\", \"bid\".\"walletAddress\" as \"address\"\nFROM \"bid\"\nLEFT JOIN \"wallet\" ON \"bid\".\"walletAddress\" = \"wallet\".\"address\"\nWHERE \"ens\" IS NULL ORDER BY \"bid\".\"auctionId\" DESC LIMIT :limit!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT "bid"."walletAddress" as "address"
+ * SELECT "bid"."auctionId", "bid"."walletAddress" as "address"
  * FROM "bid"
  * LEFT JOIN "wallet" ON "bid"."walletAddress" = "wallet"."address"
- * WHERE "ens" IS NULL LIMIT :limit!::INTEGER
+ * WHERE "ens" IS NULL ORDER BY "bid"."auctionId" DESC LIMIT :limit!::INTEGER
  * ```
  */
 export const findUnindexedWallets = new PreparedQuery<IFindUnindexedWalletsParams,IFindUnindexedWalletsResult>(findUnindexedWalletsIR);
