@@ -1,5 +1,7 @@
 /** Types generated for queries found in "server/indexers/queries.sql" */
-import { PreparedQuery } from '@pgtyped/query';
+import { PreparedQuery } from '@pgtyped/runtime';
+
+export type NumberOrString = number | string;
 
 /** 'GetAuctionLastQueriedBlock' parameters type */
 export type IGetAuctionLastQueriedBlockParams = void;
@@ -85,9 +87,9 @@ export const findBidsWithMissingTransactions = new PreparedQuery<IFindBidsWithMi
 
 /** 'UpdateBidTransactionMetadata' parameters type */
 export interface IUpdateBidTransactionMetadataParams {
-  maxFeePerGas: string | null | void;
-  timestamp: number | null | void;
-  txHash: string | null | void;
+  maxFeePerGas?: NumberOrString | null | void;
+  timestamp?: number | null | void;
+  txHash?: string | null | void;
 }
 
 /** 'UpdateBidTransactionMetadata' return type */
@@ -148,8 +150,8 @@ export const findUnindexedWallets = new PreparedQuery<IFindUnindexedWalletsParam
 /** 'UpdateWalletData' parameters type */
 export interface IUpdateWalletDataParams {
   address: string;
-  balanceEth: string;
-  balanceWeth: string;
+  balanceEth: NumberOrString;
+  balanceWeth: NumberOrString;
   ens: string;
   nouns: number;
 }
@@ -211,7 +213,7 @@ export const insertAuction = new PreparedQuery<IInsertAuctionParams,IInsertAucti
 
 /** 'UpdateAuctionExtended' parameters type */
 export interface IUpdateAuctionExtendedParams {
-  endTime: number | null | void;
+  endTime?: number | null | void;
   id: number;
 }
 
@@ -240,7 +242,7 @@ export const updateAuctionExtended = new PreparedQuery<IUpdateAuctionExtendedPar
 /** 'UpdateAuctionSettled' parameters type */
 export interface IUpdateAuctionSettledParams {
   id: number;
-  price: string;
+  price: NumberOrString;
   winner: string;
 }
 
@@ -272,7 +274,7 @@ export interface IInsertAuctionBidParams {
   block: number;
   extended: boolean;
   tx: string;
-  value: string;
+  value: NumberOrString;
   walletAddress: string;
 }
 
