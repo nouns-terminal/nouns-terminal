@@ -1,8 +1,8 @@
 import '../styles/globals.css';
-// import '@rainbow-me/rainbowkit/styles.css';
-// import { darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { ConnectKitProvider, getDefaultClient } from 'connectkit';
-import { chain, createClient, WagmiConfig } from 'wagmi';
+import { WagmiProvider, createConfig, http } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
 import type { AppProps } from 'next/app';
 import { withTRPC } from '@trpc/next';
 import { type AppRouter } from '../server/api/router';
@@ -15,71 +15,64 @@ import Head from 'next/head';
 const { publicRuntimeConfig } = getConfig();
 const { APP_URL, WS_URL } = publicRuntimeConfig;
 
-// const { chains, provider } = configureChains(
-//   [chain.mainnet],
-//   [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
-// );
+declare module 'wagmi' {
+  interface Register {
+    config: typeof config;
+  }
+}
 
-// const { connectors } = getDefaultWallets({
-//   appName: 'Nouns Auction',
-//   chains,
-// });
+const config = createConfig(
+  getDefaultConfig({
+    // Your dApps chains
+    chains: [mainnet],
+    transports: {
+      [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ID}`),
+    },
 
-// const wagmiClient = createClient({
-//   autoConnect: true,
-//   connectors,
-//   provider,
-// });
+    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
 
-const client = createClient(
-  getDefaultClient({
-    appName: 'Nouns Auction',
-    alchemyId: process.env.ALCHEMY_ID!,
-    chains: [chain.mainnet],
+    // Required App Info
+    appName: 'Nouns Terminal',
+
+    // Optional App Info
+    appDescription: 'Advanced interface for Nouns Auction',
+    appUrl: 'https://nouns.sh/', // your app's url
+    appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
   })
 );
 
-function MyApp({ Component, pageProps }: AppProps) {
-  //   <RainbowKitProvider
-  //     chains={chains}
-  //     showRecentTransactions={true}
-  //     theme={darkTheme({
-  //       accentColor: 'var(--yellow)',
-  //       accentColorForeground: 'black',
-  //       borderRadius: 'none',
-  //       fontStack: 'system',
-  //       overlayBlur: 'small',
-  //     })}
-  //   >
-  //   </RainbowKitProvider>
+const queryClient = new QueryClient();
 
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={client}>
-      <ConnectKitProvider
-        theme="midnight"
-        customTheme={{
-          '--ck-border-radius': 0,
-          '--ck-font-family': '"Proto Mono", sans-serif',
-        }}
-      >
-        <Component {...pageProps} />
-        <LiveStatus />
-        <Head>
-          <title>Nouns Terminal</title>
-          <meta name="description" content="Advanced interface for Nouns Auction" />
-          <meta property="og:title" content="Nouns Terminal" />
-          <meta property="og:description" content="Advanced interface for Nouns Auction" />
-          <meta property="og:url" content="https://nouns.sh/" />
-          <meta property="og:image" content="https://nouns.sh/og_image.png" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:creator" content="@w1nt3r_eth" />
-          <meta name="twitter:title" content="Nouns Terminal" />
-          <meta name="twitter:description" content="Advanced interface for Nouns Auction" />
-          <meta name="twitter:image" content="https://nouns.sh/og_image.png" />
-          <link rel="icon" href="/favicon.png" />
-        </Head>
-      </ConnectKitProvider>
-    </WagmiConfig>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <ConnectKitProvider
+          theme="midnight"
+          customTheme={{
+            '--ck-border-radius': 0,
+            '--ck-font-family': '"Proto Mono", sans-serif',
+          }}
+        >
+          <Component {...pageProps} />
+          <LiveStatus />
+          <Head>
+            <title>Nouns Terminal</title>
+            <meta name="description" content="Advanced interface for Nouns Auction" />
+            <meta property="og:title" content="Nouns Terminal" />
+            <meta property="og:description" content="Advanced interface for Nouns Auction" />
+            <meta property="og:url" content="https://nouns.sh/" />
+            <meta property="og:image" content="https://nouns.sh/og_image.png" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:creator" content="@w1nt3r_eth" />
+            <meta name="twitter:title" content="Nouns Terminal" />
+            <meta name="twitter:description" content="Advanced interface for Nouns Auction" />
+            <meta name="twitter:image" content="https://nouns.sh/og_image.png" />
+            <link rel="icon" href="/favicon.png" />
+          </Head>
+        </ConnectKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 

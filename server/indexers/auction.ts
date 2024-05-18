@@ -55,6 +55,8 @@ export default async function auction(
       // Ethers: the first N arguments are event args verbatim
       // The event object we care about is the last argument
       const eventLog = args[args.length - 1] as AuctionHouseEventLog;
+
+      // TODO: transactionHash is null for live events?!
       maybeProcessEvent(eventLog);
     })
   );

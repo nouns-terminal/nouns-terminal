@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { trpc } from '../utils/trpc';
 import { Vitals } from '../server/api/types';
-import { formatEther, formatUnits } from 'ethers';
+import { formatEther, formatGwei, formatUnits } from 'viem';
 import { useIsLive } from './LiveStatus';
 
 type GasPreset = 'average' | 'instant';
@@ -99,7 +99,7 @@ function VitalsStatus({ isLive, vitals }: { isLive: boolean; vitals: Vitals | nu
           GWEI
         </Text>
         &nbsp;
-        {formatGwei(vitals?.gasPriceInWei)}
+        {formatGasPrice(vitals?.gasPriceInWei)}
       </Text>
     </>
   );
@@ -160,12 +160,12 @@ function formatUsdPrice(price?: number) {
   );
 }
 
-function formatGwei(price?: string) {
+function formatGasPrice(price?: string) {
   if (!price) {
     return '-';
   }
 
-  return Math.round(Number(formatUnits(BigInt(price), 'gwei')));
+  return Math.round(Number(formatGwei(BigInt(price))));
 }
 
 function VR() {

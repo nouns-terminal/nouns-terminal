@@ -17,7 +17,6 @@ export default class RetryProvider extends ethers.JsonRpcProvider {
         return await super._perform(req);
       } catch (error: any) {
         if (attempts < this.attempts) {
-          console.log('Retrying...', attempts);
           attempts++;
           await new Promise((resolve) => setTimeout(resolve, 1_000));
         } else {

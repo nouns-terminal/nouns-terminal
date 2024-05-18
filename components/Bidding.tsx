@@ -1,9 +1,9 @@
-import { formatEther, parseEther } from 'ethers';
+import { formatEther, parseEther } from 'viem';
 import { FormEvent, useRef, useState } from 'react';
 
 type Props = {
   currentBid: bigint;
-  onSubmitBid: (newBid: bigint) => Promise<void>;
+  onSubmitBid: (newBid: bigint) => Promise<unknown>;
   isLoading?: boolean;
 };
 
@@ -28,7 +28,7 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
       return;
     }
     // TODO: make the bid "pretty", remove trailing ".0", round up to 3 digits
-    const newBid = (currentBid + currentBid * BigInt(percentagePoints)) / 100n;
+    const newBid = currentBid + (currentBid * BigInt(percentagePoints)) / 100n;
     setText(formatEther(newBid));
     inputRef.current?.focus();
   };

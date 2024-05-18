@@ -1,9 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { formatEther } from 'ethers';
+import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
-import { useMutation } from 'react-query';
-import { useAccount, useSigner, useSwitchNetwork } from 'wagmi';
-import { NounsAuctionHouse__factory } from '../typechain';
+import { useAccount, useWriteContract } from 'wagmi';
 import { NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
@@ -24,54 +22,8 @@ type Props = {
 };
 
 export default function AuctionHeader(props: Props) {
-  const { data: signer, refetch } = useSigner();
   const { isConnected } = useAccount();
-  const { switchNetworkAsync } = useSwitchNetwork();
-
-  const submitBidMutation = useMutation(async (bid: bigint) => {
-    let effectiveSigner = signer;
-    if (!effectiveSigner) {
-      return;
-    }
-    const chainId = (await effectiveSigner.provider?.getNetwork())?.chainId;
-    if (chainId !== 1n) {
-      if (!switchNetworkAsync) {
-        alert('Please switch to Ethereum Mainnet');
-        return;
-      }
-      try {
-        await switchNetworkAsync(1);
-        effectiveSigner = (await refetch()).data;
-      } catch (error) {
-        console.error(error);
-        return;
-      }
-    }
-    if (!effectiveSigner) {
-      console.error(
-        'Effective signer is undefined. Please ensure the signer is properly initialized.'
-      );
-      alert('Something went wrong!');
-      return;
-    }
-    const contract = NounsAuctionHouse__factory.connect(
-      NOUNS_AUCTION_HOUSE_ADDRESS,
-      effectiveSigner
-    );
-
-    // Gas limit estimation might fail if the wallet doesn't have enough balance
-    // We don't want to show user a confusing error, instead we let the wallet
-    // handle it
-    // TODO: This doesn't work well on mobile
-    // const gasLimit = await contract.estimateGas
-    //   .createBid(props.id, { value: bid })
-    //   .catch(() => BigInt.from(2_000_000));
-
-    const tx = await contract['createBid(uint256,uint32)'](props.id, 7, {
-      value: bid,
-      gasLimit: 2_000_000,
-    });
-  });
+  const write = useWriteContract({});
 
   const svgBase64 = useMemo(() => {
     if (!props.noun) {
@@ -120,7 +72,7 @@ export default function AuctionHeader(props: Props) {
           {props.ended ? 'Winning Bid' : 'Current bid'}
         </Text>
         <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
-          {props.maxBid ? `Ξ${formatEther(BigInt(props.maxBid))}` : '—'}
+          {props.maxBid ? `Ξ${formatBidValue(BigInt(props.maxBid))}` : '—'}
         </Text>
       </Stack>
       {props.ended ? (
@@ -147,8 +99,37 @@ export default function AuctionHeader(props: Props) {
           <div style={{ flex: 1 }} />
           <Bidding
             currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
-            onSubmitBid={(bid) => submitBidMutation.mutateAsync(bid)}
-            isLoading={submitBidMutation.isLoading}
+            onSubmitBid={(bid) =>
+              write.writeContractAsync({
+                __mode: 'prepared',
+                abi: [
+                  {
+                    inputs: [
+                      {
+                        internalType: 'uint256',
+                        name: 'nounId',
+                        type: 'uint256',
+                      },
+                      {
+                        internalType: 'uint32',
+                        name: 'clientId',
+                        type: 'uint32',
+                      },
+                    ],
+                    name: 'createBid',
+                    outputs: [],
+                    stateMutability: 'payable',
+                    type: 'function',
+                  },
+                ],
+                address: NOUNS_AUCTION_HOUSE_ADDRESS,
+                functionName: 'createBid',
+                args: [props.id, 7],
+                value: bid,
+                chainId: 1,
+              })
+            }
+            isLoading={write.isPending}
           />
         </>
       )}
@@ -182,6 +163,14 @@ function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
   return <>{delta <= 0 ? 'Now' : formatTimeLeft(delta)}</>;
+}
+
+function formatBidValue(value: bigint) {
+  const s = formatEther(value);
+  if (s.includes('.')) {
+    return s;
+  }
+  return s + '.0';
 }
 
 function formatTimeLeft(delta: number) {

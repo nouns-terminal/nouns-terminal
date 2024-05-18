@@ -46,7 +46,7 @@ async function main() {
 
   router.all('*', (req, res) => nextHandle(req, res));
 
-  app.use(expressWinston.logger({ winstonInstance: httpLogger }));
+  app.use(expressWinston.logger({ winstonInstance: httpLogger, level: 'debug' }));
   app.use(router);
   app.use(expressWinston.errorLogger({ winstonInstance: httpLogger }));
 

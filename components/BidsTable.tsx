@@ -1,7 +1,7 @@
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
-import { formatEther, formatUnits } from 'ethers';
+import { formatEther, formatGwei, formatUnits } from 'viem';
 import { useEffect, useRef } from 'react';
 import { Bid, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
@@ -66,7 +66,7 @@ export default function BidsTable(props: Props) {
               </td>
               <td>{formatBalance(bid.value)}</td>
               <td>{formatPercentChanged(bid.value, props.bids[index + 1]?.value)}</td>
-              <td>{formatUnits(bid.maxFeePerGas, 'gwei').split('.')[0]}</td>
+              <td>{formatGwei(BigInt(bid.maxFeePerGas)).split('.')[0]}</td>
               <td>{formatBalance(lookup[bid.walletAddress]?.balance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
@@ -143,6 +143,9 @@ function formatBalance(balance?: string | null) {
   }
 
   let [a, b] = formatEther(BigInt(balance)).split('.');
+  if (!b) {
+    b = '0';
+  }
   if (b.length > 2) {
     b = b.substring(0, 2);
   }
