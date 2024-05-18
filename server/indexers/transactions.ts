@@ -6,10 +6,7 @@ import { findBidsWithMissingTransactions, updateBidTransactionMetadata } from '.
 
 const log = logger.child({ indexer: 'transactions' });
 
-export default async function transactions(
-  connection: PoolClient,
-  provider: ethers.providers.BaseProvider
-) {
+export default async function transactions(connection: PoolClient, provider: ethers.Provider) {
   log.info('Starting');
 
   async function process() {
@@ -27,9 +24,9 @@ export default async function transactions(
       await updateBidTransactionMetadata.run(
         {
           txHash: row.tx,
-          timestamp: blocks[index].timestamp || null,
+          timestamp: blocks[index]?.timestamp || null,
           maxFeePerGas:
-            txs[index].maxFeePerGas?.toString() || txs[index].gasLimit.toString() || null,
+            txs[index]?.maxFeePerGas?.toString() || txs[index]?.gasLimit.toString() || null,
         },
         connection
       );

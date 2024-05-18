@@ -1,4 +1,4 @@
-import { parseEther } from 'ethers/lib/utils';
+import { parseEther } from 'ethers';
 import Bidding from '../components/Bidding';
 import Logo from '../components/Logo';
 import SiteHeader from '../components/SiteHeader';

@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { BigNumber } from 'ethers';
-import { formatEther } from 'ethers/lib/utils';
+import { formatEther } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useAccount, useSigner, useSwitchNetwork } from 'wagmi';
@@ -29,13 +28,13 @@ export default function AuctionHeader(props: Props) {
   const { isConnected } = useAccount();
   const { switchNetworkAsync } = useSwitchNetwork();
 
-  const submitBidMutation = useMutation(async (bid: BigNumber) => {
+  const submitBidMutation = useMutation(async (bid: bigint) => {
     let effectiveSigner = signer;
     if (!effectiveSigner) {
       return;
     }
-    const chainId = await effectiveSigner.getChainId();
-    if (chainId !== 1) {
+    const chainId = (await effectiveSigner.provider?.getNetwork())?.chainId;
+    if (chainId !== 1n) {
       if (!switchNetworkAsync) {
         alert('Please switch to Ethereum Mainnet');
         return;
@@ -66,7 +65,7 @@ export default function AuctionHeader(props: Props) {
     // TODO: This doesn't work well on mobile
     // const gasLimit = await contract.estimateGas
     //   .createBid(props.id, { value: bid })
-    //   .catch(() => BigNumber.from(2_000_000));
+    //   .catch(() => BigInt.from(2_000_000));
 
     const tx = await contract['createBid(uint256,uint32)'](props.id, 7, {
       value: bid,
@@ -121,7 +120,7 @@ export default function AuctionHeader(props: Props) {
           {props.ended ? 'Winning Bid' : 'Current bid'}
         </Text>
         <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
-          {props.maxBid ? `Ξ${formatEther(BigNumber.from(props.maxBid))}` : '—'}
+          {props.maxBid ? `Ξ${formatEther(BigInt(props.maxBid))}` : '—'}
         </Text>
       </Stack>
       {props.ended ? (
@@ -147,7 +146,7 @@ export default function AuctionHeader(props: Props) {
         <>
           <div style={{ flex: 1 }} />
           <Bidding
-            currentBid={props.maxBid ? BigNumber.from(props.maxBid) : BigNumber.from(0)}
+            currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
             onSubmitBid={(bid) => submitBidMutation.mutateAsync(bid)}
             isLoading={submitBidMutation.isLoading}
           />

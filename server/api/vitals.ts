@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import EventEmitter from 'events';
 import { logger, sleep } from '../utils';
 import { Vitals } from './types';
@@ -18,13 +18,13 @@ async function fetchEtherPrice() {
 
 async function fetchGasPrice() {
   const feeData = await provider.getFeeData();
-  const gasPrice = feeData.gasPrice || BigNumber.from(0);
+  const gasPrice = feeData.gasPrice || 0n;
   return gasPrice.toString();
 }
 
 async function fetchAdjustedTotalSupply() {
   const dao = NounsDAO__factory.connect(NOUNS_DAO_ADDRESS, provider);
-  return (await dao.adjustedTotalSupply()).toNumber();
+  return Number(await dao.adjustedTotalSupply());
 }
 
 async function fetchTreasuryBalance() {
@@ -39,7 +39,7 @@ async function fetchTreasuryBalance() {
     stETH.balanceOf(NOUNS_TREASURY_ADDRESS),
     rETH.balanceOf(NOUNS_TREASURY_ADDRESS),
   ]);
-  return ethBalance.add(stEthBalance).add(rEthBalance).toString();
+  return (ethBalance + stEthBalance + rEthBalance).toString();
 }
 
 async function fetchData(): Promise<Vitals> {

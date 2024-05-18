@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import { NounsAuctionHouse__factory } from '../../typechain';
-import { TypedEventFilter } from '../../typechain/common';
 import {
   AuctionBidEvent,
   AuctionCreatedEvent,
@@ -19,32 +18,32 @@ import {
   updateAuctionSettled,
 } from './queries';
 
-type AuctionHouseEvent =
-  | AuctionCreatedEvent
-  | AuctionExtendedEvent
-  | AuctionSettledEvent
-  | AuctionBidEvent;
+type AuctionHouseEventLog =
+  | AuctionCreatedEvent.Log
+  | AuctionExtendedEvent.Log
+  | AuctionSettledEvent.Log
+  | AuctionBidEvent.Log;
 
 const log = logger.child({ indexer: 'auction' });
 
 export default async function auction(
   auctionAddress: string,
   connection: PoolClient,
-  provider: ethers.providers.BaseProvider
+  provider: ethers.Provider
 ) {
   log.info('Starting');
   const auctionHouse = NounsAuctionHouse__factory.connect(auctionAddress, provider);
 
-  const filters: TypedEventFilter<AuctionHouseEvent>[] = [
+  const filters = [
     auctionHouse.filters.AuctionCreated(),
     auctionHouse.filters.AuctionExtended(),
     auctionHouse.filters.AuctionSettled(),
     auctionHouse.filters.AuctionBid(),
   ];
 
-  async function maybeProcessEvent(event: AuctionHouseEvent) {
+  async function maybeProcessEvent(event: AuctionHouseEventLog) {
     try {
-      log.debug('Processing event %s', event.event, { event });
+      log.debug('Processing event %s', event.eventName, { event });
       processEvent(connection, event);
     } catch (error) {
       log.error(error);
@@ -55,8 +54,8 @@ export default async function auction(
     auctionHouse.on(filter, (...args) => {
       // Ethers: the first N arguments are event args verbatim
       // The event object we care about is the last argument
-      const event = args[args.length - 1] as AuctionHouseEvent;
-      maybeProcessEvent(event);
+      const eventLog = args[args.length - 1] as AuctionHouseEventLog;
+      maybeProcessEvent(eventLog);
     })
   );
 
@@ -86,7 +85,7 @@ export default async function auction(
 
     const allEvents = events
       .flat()
-      .sort((a, b) => a.blockNumber - b.blockNumber || a.logIndex - b.logIndex);
+      .sort((a, b) => a.blockNumber - b.blockNumber || a.index - b.index);
 
     for (const event of allEvents) {
       await maybeProcessEvent(event);
@@ -101,30 +100,27 @@ export default async function auction(
   await new Promise((resolve) => {});
 }
 
-async function processEvent(connection: PoolClient, event: AuctionHouseEvent) {
-  if (event.event === 'AuctionCreated') {
-    const { nounId, startTime, endTime } = (event as AuctionCreatedEvent).args!;
+async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventLog) {
+  if (eventLog.eventName === 'AuctionCreated') {
+    const { nounId, startTime, endTime } = (eventLog as AuctionCreatedEvent.Log).args;
     await insertAuction.run(
-      { id: nounId.toNumber(), startTime: startTime.toNumber(), endTime: endTime.toNumber() },
+      { id: Number(nounId), startTime: Number(startTime), endTime: Number(endTime) },
       connection
     );
     return;
   }
 
-  if (event.event === 'AuctionExtended') {
-    const { nounId, endTime } = (event as AuctionExtendedEvent).args!;
-    await updateAuctionExtended.run(
-      { id: nounId.toNumber(), endTime: endTime.toNumber() },
-      connection
-    );
+  if (eventLog.eventName === 'AuctionExtended') {
+    const { nounId, endTime } = (eventLog as AuctionExtendedEvent.Log).args;
+    await updateAuctionExtended.run({ id: Number(nounId), endTime: Number(endTime) }, connection);
     return;
   }
 
-  if (event.event === 'AuctionSettled') {
-    const { nounId, winner, amount } = (event as AuctionSettledEvent).args!;
+  if (eventLog.eventName === 'AuctionSettled') {
+    const { nounId, winner, amount } = (eventLog as AuctionSettledEvent.Log).args;
     await updateAuctionSettled.run(
       {
-        id: nounId.toNumber(),
+        id: Number(nounId),
         winner: winner.toLowerCase(),
         price: amount.toString(),
       },
@@ -133,15 +129,15 @@ async function processEvent(connection: PoolClient, event: AuctionHouseEvent) {
     return;
   }
 
-  if (event.event === 'AuctionBid') {
-    const { nounId, sender, value, extended } = (event as AuctionBidEvent).args!;
+  if (eventLog.eventName === 'AuctionBid') {
+    const { nounId, sender, value, extended } = (eventLog as AuctionBidEvent.Log).args;
     await insertAuctionBid.run(
       {
-        tx: event.transactionHash,
-        auctionId: nounId.toNumber(),
+        tx: eventLog.transactionHash,
+        auctionId: Number(nounId),
         walletAddress: sender.toLowerCase(),
         value: value.toString(),
-        block: event.blockNumber,
+        block: eventLog.blockNumber,
         extended: extended,
       },
       connection
@@ -149,5 +145,5 @@ async function processEvent(connection: PoolClient, event: AuctionHouseEvent) {
     return;
   }
 
-  log.warn('Nothing to do for this event', { event });
+  log.warn('Nothing to do for this event', { event: eventLog });
 }

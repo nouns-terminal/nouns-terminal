@@ -1,10 +1,9 @@
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
+import { formatEther, formatUnits } from 'ethers';
 import { useEffect, useRef } from 'react';
 import { Bid, Wallet } from '../server/api/types';
-import { BigNumber } from 'ethers';
 import { atom, useAtom } from 'jotai';
 
 const hoveredAddress = atom('');
@@ -143,7 +142,7 @@ function formatBalance(balance?: string | null) {
     return null;
   }
 
-  let [a, b] = formatEther(BigNumber.from(balance)).split('.');
+  let [a, b] = formatEther(BigInt(balance)).split('.');
   if (b.length > 2) {
     b = b.substring(0, 2);
   }
@@ -161,12 +160,9 @@ function formatPercentChanged(value: string, prevValue?: string) {
     return '';
   }
 
-  const diff = BigNumber.from(value)
-    .sub(BigNumber.from(prevValue))
-    .mul(100)
-    .div(BigNumber.from(prevValue));
+  const diff = ((BigInt(value) - BigInt(prevValue)) * 100n) / BigInt(prevValue);
 
-  if (diff.gt(1000)) {
+  if (diff > 1000n) {
     return '∞';
   }
 

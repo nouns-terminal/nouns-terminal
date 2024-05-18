@@ -13,7 +13,7 @@ const log = logger.child({ indexer: 'wallets' });
 export default async function wallets(
   nounsAddress: string,
   connection: PoolClient,
-  provider: ethers.providers.BaseProvider
+  provider: ethers.Provider
 ) {
   log.info('Starting');
   const weth = new ethers.Contract(WETH, abi, provider);
@@ -27,7 +27,10 @@ export default async function wallets(
       return false;
     }
 
-    const ens = await Promise.all(wallets.map((row) => provider.lookupAddress(row.address)));
+    //TODO: Make resolver for ens
+    const ens = await Promise.all(
+      wallets.map((row) => provider.lookupAddress(row.address).catch(() => null))
+    );
     const balancesEth = await Promise.all(wallets.map((row) => provider.getBalance(row.address)));
     const balancesWeth = await Promise.all(wallets.map((row) => weth.balanceOf(row.address)));
     const balancesNouns = await Promise.all(wallets.map((row) => nouns.balanceOf(row.address)));

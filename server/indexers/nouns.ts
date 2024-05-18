@@ -10,7 +10,7 @@ const log = logger.child({ indexer: 'nouns' });
 export default async function nouns(
   nounsAddress: string,
   connection: PoolClient,
-  provider: ethers.providers.BaseProvider
+  provider: ethers.Provider
 ) {
   log.info('Starting');
   const nouns = NounsToken__factory.connect(nounsAddress, provider);
@@ -31,11 +31,11 @@ export default async function nouns(
       await updateNounSeeds.run(
         {
           id: rows[index].id,
-          background: row.background,
-          body: row.body,
-          accessory: row.accessory,
-          head: row.head,
-          glasses: row.glasses,
+          background: Number(row.background),
+          body: Number(row.body),
+          accessory: Number(row.accessory),
+          head: Number(row.head),
+          glasses: Number(row.glasses),
         },
         connection
       );

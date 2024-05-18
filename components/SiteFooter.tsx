@@ -6,8 +6,7 @@ import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { trpc } from '../utils/trpc';
 import { Vitals } from '../server/api/types';
-import { BigNumber } from 'ethers';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
+import { formatEther, formatUnits } from 'ethers';
 import { useIsLive } from './LiveStatus';
 
 type GasPreset = 'average' | 'instant';
@@ -116,9 +115,9 @@ function TreasuryStatus({ vitals }: { vitals: Vitals | null }) {
         &nbsp;
         {vitals
           ? 'Ξ' +
-            Math.round(
-              Number(formatEther(BigNumber.from(vitals.treasuryBalanceInWei)))
-            ).toLocaleString('en-US')
+            Math.round(Number(formatEther(BigInt(vitals.treasuryBalanceInWei)))).toLocaleString(
+              'en-US'
+            )
           : '-'}
       </Text>
       <VR />
@@ -130,7 +129,7 @@ function TreasuryStatus({ vitals }: { vitals: Vitals | null }) {
         {vitals
           ? 'Ξ' +
             Number(
-              formatEther(BigNumber.from(vitals.treasuryBalanceInWei).div(vitals.adjustedTotalSupply))
+              formatEther(BigInt(vitals.treasuryBalanceInWei) / BigInt(vitals.adjustedTotalSupply))
             ).toFixed(2)
           : '-'}
       </Text>
@@ -166,7 +165,7 @@ function formatGwei(price?: string) {
     return '-';
   }
 
-  return Math.round(Number(formatUnits(BigNumber.from(price), 'gwei')));
+  return Math.round(Number(formatUnits(BigInt(price), 'gwei')));
 }
 
 function VR() {

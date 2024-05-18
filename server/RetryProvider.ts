@@ -1,32 +1,30 @@
-import { Networkish, StaticJsonRpcProvider } from '@ethersproject/providers';
-import { ConnectionInfo, poll } from 'ethers/lib/utils';
+import { Networkish } from '@ethersproject/providers';
+import { Network, PerformActionRequest, ethers } from 'ethers';
 import { logger } from './utils';
 
-export default class RetryProvider extends StaticJsonRpcProvider {
+export default class RetryProvider extends ethers.JsonRpcProvider {
   public attempts: number;
 
-  constructor(attempts: number, url?: ConnectionInfo | string, network?: Networkish) {
-    super(url, network);
+  constructor(attempts: number, url?: string, network?: Networkish) {
+    super(url, network, { staticNetwork: Network.from(network) });
     this.attempts = attempts;
   }
 
-  public perform(method: string, params: any) {
+  public async _perform(req: PerformActionRequest) {
     let attempts = 0;
-    return poll(() => {
-      attempts++;
-      return super.perform(method, params).then(
-        (result) => {
-          return result;
-        },
-        (error: any) => {
-          if (error.statusCode !== 429 || attempts >= this.attempts) {
-            return Promise.reject(error);
-          } else {
-            logger.warn(error);
-            return Promise.resolve(undefined);
-          }
+    while (true) {
+      try {
+        return await super._perform(req);
+      } catch (error: any) {
+        if (attempts < this.attempts) {
+          console.log('Retrying...', attempts);
+          attempts++;
+          await new Promise((resolve) => setTimeout(resolve, 1_000));
+        } else {
+          logger.warn(error);
+          throw error;
         }
-      );
-    });
+      }
+    }
   }
 }

@@ -1,11 +1,10 @@
-import { BigNumber } from 'ethers';
-import { formatEther, parseEther } from 'ethers/lib/utils';
+import { formatEther, parseEther } from 'ethers';
 import { FormEvent, useRef, useState } from 'react';
 
 type Props = {
-  currentBid: BigNumber;
-  onSubmitBid: (newBid: BigNumber) => Promise<void>;
-  isLoading: boolean;
+  currentBid: bigint;
+  onSubmitBid: (newBid: bigint) => Promise<void>;
+  isLoading?: boolean;
 };
 
 export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
@@ -25,11 +24,11 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
   };
 
   const handleBump = (percentagePoints: number) => {
-    if (currentBid.eq(0)) {
+    if (currentBid == 0n) {
       return;
     }
     // TODO: make the bid "pretty", remove trailing ".0", round up to 3 digits
-    const newBid = currentBid.add(currentBid.mul(percentagePoints).div(100));
+    const newBid = (currentBid + currentBid * BigInt(percentagePoints)) / 100n;
     setText(formatEther(newBid));
     inputRef.current?.focus();
   };
