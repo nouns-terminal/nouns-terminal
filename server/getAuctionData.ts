@@ -1,5 +1,12 @@
-import { createPool, sql } from 'slonik';
 import { LiveQuery, liveQuery } from './api/vitals';
+import { Pool } from 'pg';
+import {
+  getAuctionById,
+  getBidsByAuctionId,
+  getLatestAuctionId,
+  getNounById,
+  getWalletsByAuctionId,
+} from './indexers/queries';
 
 export type Bid = {
   tx: string;
@@ -65,65 +72,25 @@ export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
 }
 
 export default async function getAuctionData(id?: number | null) {
-  const pool = await createPool(process.env.DATABASE_URL!);
+  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-  return await pool.connect(async (connection) => {
-    if (typeof id !== 'number') {
-      const res = await connection.one<{ id: number }>(
-        sql`SELECT "id" FROM auction ORDER BY id DESC LIMIT 1`
-      );
-      id = res.id;
-    } else if (id < 0) {
-      const res = await connection.one<{ id: number }>(
-        sql`SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET ${-id}`
-      );
-      id = res.id;
-    }
+  if (id == null) {
+    const [res] = await getLatestAuctionId.run({ offset: 0 }, pgPool);
+    id = res.id;
+  } else if (id < 0) {
+    const [res] = await getLatestAuctionId.run({ offset: -id }, pgPool);
+    id = res.id;
+  }
 
-    const auction = await connection.one<Auction>(
-      sql`SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = ${id}`
-    );
+  const [auction] = await getAuctionById.run({ id }, pgPool);
+  const [noun] = await getNounById.run({ id }, pgPool);
+  const bids = await getBidsByAuctionId.run({ id }, pgPool);
+  const wallets = await getWalletsByAuctionId.run({ id }, pgPool);
 
-    const noun = await connection.maybeOne<Noun>(sql`SELECT * FROM noun WHERE id = ${id}`);
-
-    const bids = await connection.query<Bid>(sql`
-      SELECT
-        bid."tx", 
-        bid."walletAddress", 
-        bid."value"::TEXT,
-        bid."extended",
-        bid."timestamp",
-        bid."maxFeePerGas"::TEXT
-      FROM
-        bid
-      WHERE
-        bid."auctionId" = ${auction.id}
-      ORDER BY
-        bid.value DESC
-    `);
-
-    const wallets = await connection.query<Wallet>(sql`
-      WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
-      SELECT DISTINCT
-        bid."walletAddress" AS "address",
-        wallet.ens,
-        (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
-        wallet."nouns" AS "nouns", 
-        (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
-        (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
-      FROM
-        bid,
-        wallet
-      WHERE
-        bid."walletAddress" = wallet.address
-        AND bid."auctionId" = ${auction.id};
-    `);
-
-    return {
-      auction,
-      noun,
-      bids: bids.rows,
-      wallets: wallets.rows,
-    };
-  });
+  return {
+    auction,
+    noun,
+    bids,
+    wallets,
+  };
 }

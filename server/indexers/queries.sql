@@ -72,3 +72,46 @@ ON CONFLICT ("id") DO UPDATE SET
 
 /* @name totalNounsSupply */
 SELECT (MAX("id") - 1)::INTEGER AS count FROM "auction";
+
+/* @name getLatestAuction */
+SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1;
+
+/* @name getLatestAuctionId */
+SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER;
+
+/* @name getAuctionById */
+SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = :id!::INTEGER;
+
+/* @name getNounById */
+SELECT * FROM noun WHERE id = :id!::INTEGER;
+
+/* @name getBidsByAuctionId */
+SELECT
+  bid."tx", 
+  bid."walletAddress", 
+  bid."value"::TEXT,
+  bid."extended",
+  bid."timestamp",
+  bid."maxFeePerGas"::TEXT
+FROM
+  bid
+WHERE
+  bid."auctionId" = :id!::INTEGER
+ORDER BY
+  bid.value DESC;
+
+/* @name getWalletsByAuctionId */
+WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
+SELECT DISTINCT
+  bid."walletAddress" AS "address",
+  wallet.ens,
+  (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
+  wallet."nouns" AS "nouns", 
+  (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
+  (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
+FROM
+  bid,
+  wallet
+WHERE
+  bid."walletAddress" = wallet.address
+  AND bid."auctionId" = :id!::INTEGER;

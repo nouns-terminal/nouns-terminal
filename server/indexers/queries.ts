@@ -392,3 +392,211 @@ const totalNounsSupplyIR: any = {"usedParamSet":{},"params":[],"statement":"SELE
 export const totalNounsSupply = new PreparedQuery<ITotalNounsSupplyParams,ITotalNounsSupplyResult>(totalNounsSupplyIR);
 
 
+/** 'GetLatestAuction' parameters type */
+export type IGetLatestAuctionParams = void;
+
+/** 'GetLatestAuction' return type */
+export interface IGetLatestAuctionResult {
+  endTime: number;
+  id: number;
+  price: string | null;
+  startTime: number;
+  winner: string | null;
+}
+
+/** 'GetLatestAuction' query type */
+export interface IGetLatestAuctionQuery {
+  params: IGetLatestAuctionParams;
+  result: IGetLatestAuctionResult;
+}
+
+const getLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM \"auction\" ORDER BY \"id\" DESC LIMIT 1"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1
+ * ```
+ */
+export const getLatestAuction = new PreparedQuery<IGetLatestAuctionParams,IGetLatestAuctionResult>(getLatestAuctionIR);
+
+
+/** 'GetLatestAuctionId' parameters type */
+export interface IGetLatestAuctionIdParams {
+  offset: number;
+}
+
+/** 'GetLatestAuctionId' return type */
+export interface IGetLatestAuctionIdResult {
+  id: number;
+}
+
+/** 'GetLatestAuctionId' query type */
+export interface IGetLatestAuctionIdQuery {
+  params: IGetLatestAuctionIdParams;
+  result: IGetLatestAuctionIdResult;
+}
+
+const getLatestAuctionIdIR: any = {"usedParamSet":{"offset":true},"params":[{"name":"offset","required":true,"transform":{"type":"scalar"},"locs":[{"a":57,"b":64}]}],"statement":"SELECT \"id\" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER
+ * ```
+ */
+export const getLatestAuctionId = new PreparedQuery<IGetLatestAuctionIdParams,IGetLatestAuctionIdResult>(getLatestAuctionIdIR);
+
+
+/** 'GetAuctionById' parameters type */
+export interface IGetAuctionByIdParams {
+  id: number;
+}
+
+/** 'GetAuctionById' return type */
+export interface IGetAuctionByIdResult {
+  endTime: number;
+  id: number;
+  price: string | null;
+  startTime: number;
+  winner: string | null;
+}
+
+/** 'GetAuctionById' query type */
+export interface IGetAuctionByIdQuery {
+  params: IGetAuctionByIdParams;
+  result: IGetAuctionByIdResult;
+}
+
+const getAuctionByIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":85,"b":88}]}],"statement":"SELECT \"id\", \"startTime\", \"endTime\", \"winner\", \"price\"::TEXT FROM auction WHERE id = :id!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = :id!::INTEGER
+ * ```
+ */
+export const getAuctionById = new PreparedQuery<IGetAuctionByIdParams,IGetAuctionByIdResult>(getAuctionByIdIR);
+
+
+/** 'GetNounById' parameters type */
+export interface IGetNounByIdParams {
+  id: number;
+}
+
+/** 'GetNounById' return type */
+export interface IGetNounByIdResult {
+  accessory: number;
+  background: number;
+  body: number;
+  glasses: number;
+  head: number;
+  id: number;
+}
+
+/** 'GetNounById' query type */
+export interface IGetNounByIdQuery {
+  params: IGetNounByIdParams;
+  result: IGetNounByIdResult;
+}
+
+const getNounByIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":30,"b":33}]}],"statement":"SELECT * FROM noun WHERE id = :id!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM noun WHERE id = :id!::INTEGER
+ * ```
+ */
+export const getNounById = new PreparedQuery<IGetNounByIdParams,IGetNounByIdResult>(getNounByIdIR);
+
+
+/** 'GetBidsByAuctionId' parameters type */
+export interface IGetBidsByAuctionIdParams {
+  id: number;
+}
+
+/** 'GetBidsByAuctionId' return type */
+export interface IGetBidsByAuctionIdResult {
+  extended: boolean;
+  maxFeePerGas: string | null;
+  timestamp: number | null;
+  tx: string;
+  value: string | null;
+  walletAddress: string;
+}
+
+/** 'GetBidsByAuctionId' query type */
+export interface IGetBidsByAuctionIdQuery {
+  params: IGetBidsByAuctionIdParams;
+  result: IGetBidsByAuctionIdResult;
+}
+
+const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":166,"b":169}]}],"statement":"SELECT\n  bid.\"tx\", \n  bid.\"walletAddress\", \n  bid.\"value\"::TEXT,\n  bid.\"extended\",\n  bid.\"timestamp\",\n  bid.\"maxFeePerGas\"::TEXT\nFROM\n  bid\nWHERE\n  bid.\"auctionId\" = :id!::INTEGER\nORDER BY\n  bid.value DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT
+ *   bid."tx", 
+ *   bid."walletAddress", 
+ *   bid."value"::TEXT,
+ *   bid."extended",
+ *   bid."timestamp",
+ *   bid."maxFeePerGas"::TEXT
+ * FROM
+ *   bid
+ * WHERE
+ *   bid."auctionId" = :id!::INTEGER
+ * ORDER BY
+ *   bid.value DESC
+ * ```
+ */
+export const getBidsByAuctionId = new PreparedQuery<IGetBidsByAuctionIdParams,IGetBidsByAuctionIdResult>(getBidsByAuctionIdIR);
+
+
+/** 'GetWalletsByAuctionId' parameters type */
+export interface IGetWalletsByAuctionIdParams {
+  id: number;
+}
+
+/** 'GetWalletsByAuctionId' return type */
+export interface IGetWalletsByAuctionIdResult {
+  address: string;
+  balance: string | null;
+  bids: string | null;
+  ens: string | null;
+  nouns: number | null;
+  wins: string | null;
+}
+
+/** 'GetWalletsByAuctionId' query type */
+export interface IGetWalletsByAuctionIdQuery {
+  params: IGetWalletsByAuctionIdParams;
+  result: IGetWalletsByAuctionIdResult;
+}
+
+const getWalletsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":518,"b":521}]}],"statement":"WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) \nSELECT DISTINCT\n  bid.\"walletAddress\" AS \"address\",\n  wallet.ens,\n  (SELECT COUNT(*) FROM bid WHERE bid.\"walletAddress\" = wallet.address) AS \"bids\", \n  wallet.\"nouns\" AS \"nouns\", \n  (wallet.\"balanceEth\" + wallet.\"balanceWeth\")::TEXT AS \"balance\", \n  (SELECT count FROM wins_count WHERE wins_count.winner = bid.\"walletAddress\") AS \"wins\"\nFROM\n  bid,\n  wallet\nWHERE\n  bid.\"walletAddress\" = wallet.address\n  AND bid.\"auctionId\" = :id!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
+ * SELECT DISTINCT
+ *   bid."walletAddress" AS "address",
+ *   wallet.ens,
+ *   (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
+ *   wallet."nouns" AS "nouns", 
+ *   (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
+ *   (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
+ * FROM
+ *   bid,
+ *   wallet
+ * WHERE
+ *   bid."walletAddress" = wallet.address
+ *   AND bid."auctionId" = :id!::INTEGER
+ * ```
+ */
+export const getWalletsByAuctionId = new PreparedQuery<IGetWalletsByAuctionIdParams,IGetWalletsByAuctionIdResult>(getWalletsByAuctionIdIR);
+
+
