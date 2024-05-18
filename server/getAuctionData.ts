@@ -1,7 +1,7 @@
 import { createPool, sql } from 'slonik';
 import { LiveQuery, liveQuery } from './api/vitals';
 import { Pool } from 'pg';
-import { getLatestAuctionId } from './indexers/queries';
+import { getAuctionById, getLatestAuctionId } from './indexers/queries';
 
 export type Bid = {
   tx: string;
@@ -79,9 +79,7 @@ export default async function getAuctionData(id?: number | null) {
       id = res.id;
     }
 
-    const auction = await connection.one<Auction>(
-      sql`SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = ${id}`
-    );
+    const [auction] = await getAuctionById.run({ id }, pgPool);
 
     const noun = await connection.maybeOne<Noun>(sql`SELECT * FROM noun WHERE id = ${id}`);
 

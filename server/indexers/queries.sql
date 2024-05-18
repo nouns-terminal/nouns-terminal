@@ -78,3 +78,6 @@ SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1;
 
 /* @name getLatestAuctionId */
 SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER;
+
+/* @name getAuctionById */
+SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = :id!::INTEGER;

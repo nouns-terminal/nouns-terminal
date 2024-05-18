@@ -448,3 +448,34 @@ const getLatestAuctionIdIR: any = {"usedParamSet":{"offset":true},"params":[{"na
 export const getLatestAuctionId = new PreparedQuery<IGetLatestAuctionIdParams,IGetLatestAuctionIdResult>(getLatestAuctionIdIR);
 
 
+/** 'GetAuctionById' parameters type */
+export interface IGetAuctionByIdParams {
+  id: number;
+}
+
+/** 'GetAuctionById' return type */
+export interface IGetAuctionByIdResult {
+  endTime: number;
+  id: number;
+  price: string | null;
+  startTime: number;
+  winner: string | null;
+}
+
+/** 'GetAuctionById' query type */
+export interface IGetAuctionByIdQuery {
+  params: IGetAuctionByIdParams;
+  result: IGetAuctionByIdResult;
+}
+
+const getAuctionByIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":85,"b":88}]}],"statement":"SELECT \"id\", \"startTime\", \"endTime\", \"winner\", \"price\"::TEXT FROM auction WHERE id = :id!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT "id", "startTime", "endTime", "winner", "price"::TEXT FROM auction WHERE id = :id!::INTEGER
+ * ```
+ */
+export const getAuctionById = new PreparedQuery<IGetAuctionByIdParams,IGetAuctionByIdResult>(getAuctionByIdIR);
+
+
