@@ -3,7 +3,7 @@ import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
 import { formatEther, formatUnits } from 'ethers/lib/utils';
 import { useEffect, useRef } from 'react';
-import { Bid, Wallet } from '../server/getAuctionData';
+import { Bid, Wallet } from '../server/api/types';
 import { BigNumber } from 'ethers';
 import { atom, useAtom } from 'jotai';
 

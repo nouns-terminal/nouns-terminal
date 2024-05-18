@@ -11,7 +11,7 @@ import Stack from './Stack';
 import Text from './Text';
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { type Noun } from '../server/getAuctionData';
+import { type Noun } from '../server/api/types';
 import Head from 'next/head';
 
 type Props = {
@@ -68,7 +68,10 @@ export default function AuctionHeader(props: Props) {
     //   .createBid(props.id, { value: bid })
     //   .catch(() => BigNumber.from(2_000_000));
 
-    const tx = await contract['createBid(uint256,uint32)'](props.id, 7, { value: bid, gasLimit: 2_000_000 });
+    const tx = await contract['createBid(uint256,uint32)'](props.id, 7, {
+      value: bid,
+      gasLimit: 2_000_000,
+    });
   });
 
   const svgBase64 = useMemo(() => {

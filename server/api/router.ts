@@ -1,7 +1,8 @@
 import * as trpc from '@trpc/server';
 import { z } from 'zod';
 import { Vitals } from './types';
-import getAuctionData, { AuctionData, getLiveAuctionData } from '../getAuctionData';
+import getAuctionData, { getLiveAuctionData } from '../getAuctionData';
+import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 
 export const appRouter = trpc

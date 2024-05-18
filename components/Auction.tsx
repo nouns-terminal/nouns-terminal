@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type AuctionData } from '../server/getAuctionData';
+import { type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
 import BidsTable from './BidsTable';
