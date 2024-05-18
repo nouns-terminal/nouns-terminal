@@ -421,3 +421,30 @@ const getLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELE
 export const getLatestAuction = new PreparedQuery<IGetLatestAuctionParams,IGetLatestAuctionResult>(getLatestAuctionIR);
 
 
+/** 'GetLatestAuctionId' parameters type */
+export interface IGetLatestAuctionIdParams {
+  offset: number;
+}
+
+/** 'GetLatestAuctionId' return type */
+export interface IGetLatestAuctionIdResult {
+  id: number;
+}
+
+/** 'GetLatestAuctionId' query type */
+export interface IGetLatestAuctionIdQuery {
+  params: IGetLatestAuctionIdParams;
+  result: IGetLatestAuctionIdResult;
+}
+
+const getLatestAuctionIdIR: any = {"usedParamSet":{"offset":true},"params":[{"name":"offset","required":true,"transform":{"type":"scalar"},"locs":[{"a":57,"b":64}]}],"statement":"SELECT \"id\" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER
+ * ```
+ */
+export const getLatestAuctionId = new PreparedQuery<IGetLatestAuctionIdParams,IGetLatestAuctionIdResult>(getLatestAuctionIdIR);
+
+

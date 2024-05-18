@@ -1,5 +1,7 @@
 import { createPool, sql } from 'slonik';
 import { LiveQuery, liveQuery } from './api/vitals';
+import { Pool } from 'pg';
+import { getLatestAuctionId } from './indexers/queries';
 
 export type Bid = {
   tx: string;
@@ -66,17 +68,14 @@ export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
 
 export default async function getAuctionData(id?: number | null) {
   const pool = await createPool(process.env.DATABASE_URL!);
+  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 
   return await pool.connect(async (connection) => {
-    if (typeof id !== 'number') {
-      const res = await connection.one<{ id: number }>(
-        sql`SELECT "id" FROM auction ORDER BY id DESC LIMIT 1`
-      );
+    if (id == null) {
+      const [res] = await getLatestAuctionId.run({ offset: 0 }, pgPool);
       id = res.id;
     } else if (id < 0) {
-      const res = await connection.one<{ id: number }>(
-        sql`SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET ${-id}`
-      );
+      const [res] = await getLatestAuctionId.run({ offset: -id }, pgPool);
       id = res.id;
     }
 

@@ -75,3 +75,6 @@ SELECT (MAX("id") - 1)::INTEGER AS count FROM "auction";
 
 /* @name getLatestAuction */
 SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1;
+
+/* @name getLatestAuctionId */
+SELECT "id" FROM auction ORDER BY id DESC LIMIT 1 OFFSET :offset!::INTEGER;
