@@ -392,3 +392,32 @@ const totalNounsSupplyIR: any = {"usedParamSet":{},"params":[],"statement":"SELE
 export const totalNounsSupply = new PreparedQuery<ITotalNounsSupplyParams,ITotalNounsSupplyResult>(totalNounsSupplyIR);
 
 
+/** 'GetLatestAuction' parameters type */
+export type IGetLatestAuctionParams = void;
+
+/** 'GetLatestAuction' return type */
+export interface IGetLatestAuctionResult {
+  endTime: number;
+  id: number;
+  price: string | null;
+  startTime: number;
+  winner: string | null;
+}
+
+/** 'GetLatestAuction' query type */
+export interface IGetLatestAuctionQuery {
+  params: IGetLatestAuctionParams;
+  result: IGetLatestAuctionResult;
+}
+
+const getLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT * FROM \"auction\" ORDER BY \"id\" DESC LIMIT 1"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1
+ * ```
+ */
+export const getLatestAuction = new PreparedQuery<IGetLatestAuctionParams,IGetLatestAuctionResult>(getLatestAuctionIR);
+
+

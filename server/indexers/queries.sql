@@ -72,3 +72,6 @@ ON CONFLICT ("id") DO UPDATE SET
 
 /* @name totalNounsSupply */
 SELECT (MAX("id") - 1)::INTEGER AS count FROM "auction";
+
+/* @name getLatestAuction */
+SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1;

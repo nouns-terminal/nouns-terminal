@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { createPool, sql } from 'slonik';
 import auction from './indexers/auction';
 import transactions from './indexers/transactions';
 import wallets from './indexers/wallets';
@@ -16,10 +15,10 @@ import expressWinston from 'express-winston';
 import RetryProvider from './RetryProvider';
 import { Pool, PoolClient } from 'pg';
 import nouns from './indexers/nouns';
+import { getLatestAuction } from './indexers/queries';
 
 async function main() {
   const port = parseInt(process.env.PORT || '3003', 10);
-  const pool = await createPool(process.env.DATABASE_URL!);
   const provider = new RetryProvider(10, process.env.PROVIDER_URL);
 
   const app = express();
@@ -33,16 +32,16 @@ async function main() {
   const server = http.createServer(app);
   const httpLogger = logger.child({ service: 'http' });
 
+  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+  pgPool.on('connect', () => logger.info('Connected to the database'));
+  pgPool.on('error', (error) => logger.error(error));
+
   const router = express.Router();
 
-  router.get('/health', (req, res) => {
-    pool.connect(async (connection) => {
-      const latestAuction = await connection.one(
-        sql`SELECT * FROM "auction" ORDER BY "id" DESC LIMIT 1`
-      );
-      const latestBlock = await provider.getBlock('latest');
-      res.json({ success: true, latestAuction, latestBlock });
-    });
+  router.get('/health', async (req, res) => {
+    const latestAuction = await getLatestAuction.run(undefined, pgPool);
+    const latestBlock = await provider.getBlock('latest');
+    res.json({ success: true, latestAuction, latestBlock });
   });
 
   router.all('*', (req, res) => nextHandle(req, res));
@@ -73,10 +72,6 @@ async function main() {
   logger.info('Server listening at http://localhost:%s', port, {
     env: process.env.NODE_ENV || 'development',
   });
-
-  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-  pgPool.on('connect', () => logger.info('Connected to the database'));
-  pgPool.on('error', (error) => logger.error(error));
 
   const withPgClient = async (callback: (client: PoolClient) => Promise<void>) => {
     const client = await pgPool.connect();
