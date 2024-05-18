@@ -2,10 +2,9 @@
   "transforms": [
     {
       "mode": "sql",
-      "include": "**/*.sql",
+      "include": "**/queries.sql",
       "emitTemplate": "{{dir}}/{{name}}.ts"
     }
   ],
-  "srcDir": "./server/",
-  "dbUrl": "postgresql://postgres@127.0.0.1/nouns_auction"
+  "srcDir": "./server/"
 }

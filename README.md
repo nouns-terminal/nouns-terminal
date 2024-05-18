@@ -20,6 +20,14 @@ $ yarn typechain
 ```
 
 Create .env as an example you can use .env.example.
+
+Generate TypeScript typings for database queries
+
+```bash
+$ export DATABASE_URL="postgresql://..."
+$ yarn pgtyped
+```
+
 Run sever:
 
 ```bash
