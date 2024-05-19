@@ -26,7 +26,7 @@ const config = createConfig(
     // Your dApps chains
     chains: [mainnet],
     transports: {
-      [mainnet.id]: http(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ID}`),
+      [mainnet.id]: http(process.env.PROVIDER_URL!),
     },
 
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,

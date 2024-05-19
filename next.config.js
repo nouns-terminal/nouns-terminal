@@ -11,7 +11,7 @@ const nextConfig = {
     WS_URL: process.env.WS_URL,
   },
   env: {
-    ALCHEMY_ID: process.env.ALCHEMY_ID,
+    PROVIDER_URL: process.env.PROVIDER_URL,
   },
 };
 
