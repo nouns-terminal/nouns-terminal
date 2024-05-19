@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { ethers } from 'ethers';
+import { ContractEventPayload, ethers } from 'ethers';
 import { NounsAuctionHouse__factory } from '../../typechain';
 import {
   AuctionBidEvent,
@@ -54,10 +54,9 @@ export default async function auction(
     auctionHouse.on(filter, (...args) => {
       // Ethers: the first N arguments are event args verbatim
       // The event object we care about is the last argument
-      const eventLog = args[args.length - 1] as AuctionHouseEventLog;
+      const payload = args[args.length - 1] as unknown as ContractEventPayload;
 
-      // TODO: transactionHash is null for live events?!
-      maybeProcessEvent(eventLog);
+      maybeProcessEvent(payload.log as unknown as AuctionHouseEventLog);
     })
   );
 
