@@ -8,9 +8,7 @@ import { useIsLive } from './LiveStatus';
 export default function Auction({ auctionId }: { auctionId?: number }) {
   const [data, setData] = useState<AuctionData | null | undefined>();
 
-  trpc.useSubscription(['latest', { auctionId }], {
-    onNext: setData,
-  });
+  trpc.onLatest.useSubscription({ auctionId }, { onData: setData });
 
   if (!data) {
     return null;

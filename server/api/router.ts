@@ -1,61 +1,53 @@
-import * as trpc from '@trpc/server';
+import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { Vitals } from './types';
 import getAuctionData, { getLiveAuctionData } from '../getAuctionData';
 import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
+import { observable } from '@trpc/server/observable';
 
-export const appRouter = trpc
-  .router()
-  .query('hello', {
-    input: z
-      .object({
-        text: z.string().nullish(),
+const t = initTRPC.context().create();
+
+const router = t.router;
+const procedure = t.procedure;
+
+export const appRouter = router({
+  latest: procedure
+    .input(
+      z.object({
+        auctionId: z.number().nullish(),
       })
-      .nullish(),
-    resolve({ input }) {
-      return {
-        greeting: `hello ${input?.text ?? 'world'}`,
-      };
-    },
-  })
-  .query('latest', {
-    input: z.object({
-      auctionId: z.number().nullish(),
-    }),
-    async resolve({ input }) {
+    )
+    .query(async ({ input }) => {
       return getAuctionData(input.auctionId);
-    },
-  })
-  .subscription('latest', {
-    input: z.object({
-      auctionId: z.number().nullish(),
     }),
-    resolve({ input }) {
-      return new trpc.Subscription<AuctionData>((emit) => {
+  onLatest: procedure
+    .input(
+      z.object({
+        auctionId: z.number().nullish(),
+      })
+    )
+    .subscription(({ input }) => {
+      return observable<AuctionData>((emit) => {
         return getLiveAuctionData(input.auctionId).subscribe((data) => {
-          emit.data(data);
+          emit.next(data);
         });
       });
-    },
-  })
-  .subscription('vitals', {
-    resolve() {
-      return new trpc.Subscription<Vitals>((emit) => {
-        return liveVitals.subscribe((data) => {
-          emit.data(data);
-        });
+    }),
+  vitals: procedure.input(z.string().nullish()).subscription(() => {
+    return observable<Vitals>((emit) => {
+      return liveVitals.subscribe((data) => {
+        emit.next(data);
       });
-    },
-  })
-  .subscription('keep-alive', {
-    resolve() {
-      return new trpc.Subscription<number>((emit) => {
-        emit.data(Date.now());
-        const interval = setInterval(() => emit.data(Date.now()), 3_000);
-        return () => clearInterval(interval);
-      });
-    },
-  });
+    });
+  }),
+  'keep-alive': procedure.subscription(() => {
+    return observable<number>((emit) => {
+      emit.next(Date.now());
+      const interval = setInterval(() => emit.next(Date.now()), 3_000);
+      return () => clearInterval(interval);
+    });
+  }),
+});
 
 export type AppRouter = typeof appRouter;

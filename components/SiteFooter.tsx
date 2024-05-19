@@ -14,7 +14,8 @@ const gasPreset = atomWithStorage<GasPreset>('nouns.gas_preset', 'average');
 
 export default function SiteFooter() {
   const [vitals, setVitals] = useState<Vitals | null>(null);
-  trpc.useSubscription(['vitals'], { onNext: setVitals });
+
+  trpc.vitals.useSubscription(undefined, { onData: setVitals });
 
   const isLive = useIsLive();
 
