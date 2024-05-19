@@ -1,7 +1,7 @@
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
-import { formatEther, formatGwei, formatUnits } from 'viem';
+import { formatEther, formatGwei } from 'viem';
 import { useEffect, useRef } from 'react';
 import { Bid, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
