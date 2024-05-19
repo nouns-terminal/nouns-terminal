@@ -41,6 +41,15 @@ export default function SiteHeader() {
         </ConnectKitButton.Custom>
       </Text>
       <style jsx>{`
+        .account > button {
+          color: var(--bright-text);
+          display: flex;
+          gap: var(--s-1);
+          align-items: center;
+          border: none !important;
+          background: none;
+          cursor: pointer;
+        }
         .container {
           display: flex;
           flex-direction: row;
@@ -51,17 +60,22 @@ export default function SiteHeader() {
           padding: var(--s-2) var(--s1);
           border-bottom: solid 1px var(--lines);
         }
-        .container button {
-          border: 1px solid var(--yellow);
-          padding: var(--s-1) var(--s1);
-          cursor: pointer;
-          ${textStyle({ variant: 'title-2', bold: true, color: 'dark-bg' })}
-        }
         .connect-wallet {
           background-color: var(--yellow);
         }
         .connect-wallet:hover {
           background-color: var(--light-yellow);
+        }
+        .account {
+          display: flex;
+          gap: var(--s0);
+          align-items: center;
+        }
+        .container button {
+          padding: var(--s-1) var(--s1);
+          border: 1px solid var(--yellow);
+          cursor: pointer;
+          ${textStyle({ variant: 'title-2', bold: true, color: 'dark-bg' })}
         }
         .wrong-network {
           border-color: var(--red);
@@ -69,20 +83,6 @@ export default function SiteHeader() {
         }
         .wrong-network:hover {
           background-color: var(--light-red);
-        }
-        .account {
-          display: flex;
-          gap: var(--s0);
-          align-items: center;
-        }
-        .account > button {
-          color: var(--bright-text);
-          display: flex;
-          gap: var(--s-1);
-          align-items: center;
-          border: none;
-          background: none;
-          cursor: pointer;
         }
       `}</style>
     </div>
