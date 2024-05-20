@@ -53,7 +53,8 @@ async function main() {
   app.use(expressWinston.errorLogger({ winstonInstance: httpLogger }));
 
   server.on('upgrade', (request, socket, head) => {
-    const { pathname } = parse(request.url!);
+    const baseURL = `http://'${request.headers.host}/`;
+    const { pathname } = new URL(request.url!, baseURL);
 
     if (pathname === '/trpc') {
       trpcws.handleUpgrade(request, socket as any, head, (client) => {
