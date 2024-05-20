@@ -13,14 +13,13 @@ const log = logger.child({ indexer: 'wallets' });
 export default async function wallets(
   nounsAddress: string,
   connection: PoolClient,
-  provider: ethers.Provider
+  provider: ethers.Provider,
 ) {
   log.info('Starting');
-  const weth = new ethers.Contract(WETH, abi, provider);
   const nouns = new ethers.Contract(nounsAddress, abi, provider);
 
   async function process() {
-    const wallets = await findUnindexedWallets.run({ limit: 5 }, connection);
+    const wallets = await findUnindexedWallets.run({ limit: 35 }, connection);
     log.debug(`Rows: ${wallets.length}`, { rows: wallets });
 
     if (wallets.length === 0) {
@@ -29,24 +28,20 @@ export default async function wallets(
 
     //TODO: Make resolver for ens
     const ens = await Promise.all(
-      wallets.map((row) => provider.lookupAddress(row.address).catch(() => null))
+      wallets.map((row) => provider.lookupAddress(row.address).catch(() => null)),
     );
-    const balancesEth = await Promise.all(wallets.map((row) => provider.getBalance(row.address)));
-    const balancesWeth = await Promise.all(wallets.map((row) => weth.balanceOf(row.address)));
     const balancesNouns = await Promise.all(wallets.map((row) => nouns.balanceOf(row.address)));
 
-    log.debug('Got data', { ens, balancesEth, balancesWeth, balancesNouns });
+    log.debug('Got data', { ens, balancesNouns });
 
     for (const [index, row] of wallets.entries()) {
       await updateWalletData.run(
         {
           address: row.address,
           ens: ens[index] || '',
-          balanceEth: balancesEth[index].toString(),
-          balanceWeth: balancesWeth[index].toString(),
           nouns: balancesNouns[index].toString(),
         },
-        connection
+        connection,
       );
     }
 

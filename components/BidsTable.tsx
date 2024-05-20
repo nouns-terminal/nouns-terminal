@@ -18,7 +18,7 @@ export default function BidsTable(props: Props) {
   const [address, setAddress] = useAtom(hoveredAddress);
 
   const lookup: { [address: string]: Wallet } = Object.fromEntries(
-    props.wallets.map((wallet) => [wallet.address, wallet])
+    props.wallets.map((wallet) => [wallet.address, wallet]),
   );
 
   if (props.bids.length === 0) {
@@ -37,7 +37,13 @@ export default function BidsTable(props: Props) {
             <th>Bid</th>
             <th>%change</th>
             <th>Gwei</th>
-            <th>ETH&nbsp;Balance</th>
+            <th>
+              ETH&nbsp;LEFT&nbsp;
+              <div className="tooltip">
+                [{TooltipSVG()}]
+                <span className="tooltiptext">ETH balance left after placing this bid</span>
+              </div>
+            </th>
             <th>#All&nbsp;Bids</th>
             <th>#Wins</th>
             <th>When</th>
@@ -67,7 +73,7 @@ export default function BidsTable(props: Props) {
               <td>{formatBalance(bid.value)}</td>
               <td>{formatPercentChanged(bid.value, props.bids[index + 1]?.value)}</td>
               <td>{formatGwei(BigInt(bid.maxFeePerGas)).split('.')[0]}</td>
-              <td>{formatBalance(lookup[bid.walletAddress]?.balance)}</td>
+              <td>{formatBalance(bid.walletBalance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
               <td>
@@ -132,6 +138,35 @@ export default function BidsTable(props: Props) {
             max-width: 35ch;
           }
         }
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+          width: 18ch;
+          visibility: hidden;
+          padding: var(--s-2) var(--s-5);
+          background-color: var(--dark-bg);
+          text-align: center;
+          border-radius: var(--s-3);
+          position: absolute;
+          z-index: 1;
+          top: 100%;
+          left: 100%;
+          transition-property: visibility;
+          transition-delay: 0.1s;
+        }
+
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+          transition-delay: 0.3s;
+        }
+        .info {
+          color: var(--bright-text);
+          font-family:;
+        }
       `}</style>
     </div>
   );
@@ -190,6 +225,23 @@ export function Icon(props: { address: string }) {
           border-radius: 0px !important;
         }
       `}</style>
+    </span>
+  );
+}
+
+function TooltipSVG() {
+  return (
+    <span className="tooltip">
+      <svg width="3" height="8" viewBox="0 0 3 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M1.125 0H1C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H1.125H1.25C1.80228 2 2.25 1.55228 2.25 1C2.25 0.447715 1.80228 0 1.25 0H1.125Z"
+          fill="#E0E0E0"
+        />
+        <path
+          d="M1.125 4H1C0.447715 4 0 4.44772 0 5V6V7C0 7.55228 0.447715 8 1 8H1.125H1.25C1.80228 8 2.25 7.55228 2.25 7V6V5C2.25 4.44772 1.80228 4 1.25 4H1.125Z"
+          fill="#E0E0E0"
+        />
+      </svg>
     </span>
   );
 }

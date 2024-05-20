@@ -12,6 +12,7 @@ export type Bid = {
   extended: boolean;
   timestamp: number;
   maxFeePerGas: string;
+  walletBalance: string | null;
 };
 
 export type Wallet = {
@@ -19,7 +20,6 @@ export type Wallet = {
   ens: string | null;
   bids: number;
   nouns: number | null;
-  balance: string | null;
   wins: number | null;
 };
 

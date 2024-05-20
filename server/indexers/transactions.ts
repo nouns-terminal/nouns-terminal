@@ -20,6 +20,9 @@ export default async function transactions(connection: PoolClient, provider: eth
 
     const txs = await Promise.all(bids.map((row) => provider.getTransaction(row.tx)));
     const blocks = await Promise.all(bids.map((row) => provider.getBlock(row.block)));
+    const balances = await Promise.all(
+      bids.map((row) => provider.getBalance(row.walletAddress, row.block)),
+    );
     for (const [index, row] of bids.entries()) {
       await updateBidTransactionMetadata.run(
         {
@@ -27,8 +30,9 @@ export default async function transactions(connection: PoolClient, provider: eth
           timestamp: blocks[index]?.timestamp || null,
           maxFeePerGas:
             txs[index]?.maxFeePerGas?.toString() || txs[index]?.gasLimit.toString() || null,
+          walletBalance: balances[index]?.toString() || null,
         },
-        connection
+        connection,
       );
     }
 

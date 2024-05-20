@@ -8,13 +8,14 @@ ON CONFLICT ("key") DO UPDATE SET
 "value" = GREATEST("state"."value", :lastBlockNumber!::INTEGER);
 
 /* @name findBidsWithMissingTransactions */
-SELECT "tx", "block", "auctionId" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER;
+SELECT "tx", "block", "auctionId", "walletAddress" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER;
 
 /* @name updateBidTransactionMetadata */
 UPDATE bid
 SET
   "timestamp" = :timestamp, 
-  "maxFeePerGas" = :maxFeePerGas
+  "maxFeePerGas" = :maxFeePerGas,
+  "walletBalance" = :walletBalance
 WHERE "tx" = :txHash;
 
 /* @name findUnindexedWallets */
@@ -24,12 +25,10 @@ LEFT JOIN "wallet" ON "bid"."walletAddress" = "wallet"."address"
 WHERE "ens" IS NULL ORDER BY "bid"."auctionId" DESC LIMIT :limit!::INTEGER;
 
 /* @name updateWalletData */
-INSERT INTO "wallet" ("address", "ens", "balanceEth", "balanceWeth", "nouns")
-VALUES (:address!, :ens!, :balanceEth!, :balanceWeth!, :nouns!)
+INSERT INTO "wallet" ("address", "ens", "nouns")
+VALUES (:address!, :ens!, :nouns!)
 ON CONFLICT ("address") DO UPDATE SET
   "ens" = :ens,
-  "balanceEth" = :balanceEth,
-  "balanceWeth" = :balanceWeth,
   "nouns" = :nouns;
 
 /* @name insertAuction */
@@ -90,6 +89,7 @@ SELECT
   bid."tx", 
   bid."walletAddress", 
   bid."value"::TEXT,
+  bid."walletBalance"::TEXT,
   bid."extended",
   bid."timestamp",
   bid."maxFeePerGas"::TEXT
@@ -101,17 +101,29 @@ ORDER BY
   bid.value DESC;
 
 /* @name getWalletsByAuctionId */
-WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
-SELECT DISTINCT
-  bid."walletAddress" AS "address",
-  wallet.ens,
-  (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
-  wallet."nouns" AS "nouns", 
-  (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
-  (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
+WITH wins_count AS (
+    SELECT winner, COUNT(*) AS count 
+    FROM auction 
+    GROUP BY winner
+),
+bid_counts AS (
+    SELECT "walletAddress", COUNT(*) AS count
+    FROM bid
+    GROUP BY "walletAddress"
+)
+SELECT
+  b."walletAddress" AS "address",
+  w.ens,
+  bc.count AS "bids", 
+  w."nouns", 
+  wc.count AS "wins"
 FROM
-  bid,
-  wallet
+  bid b
+JOIN
+  wallet w ON b."walletAddress" = w.address
+LEFT JOIN
+  wins_count wc ON wc.winner = b."walletAddress"
+LEFT JOIN
+  bid_counts bc ON bc."walletAddress" = w.address
 WHERE
-  bid."walletAddress" = wallet.address
-  AND bid."auctionId" = :id!::INTEGER;
+  b."auctionId" = :id!::INTEGER;
