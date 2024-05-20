@@ -66,6 +66,7 @@ export interface IFindBidsWithMissingTransactionsResult {
   auctionId: number;
   block: number;
   tx: string;
+  walletAddress: string;
 }
 
 /** 'FindBidsWithMissingTransactions' query type */
@@ -74,12 +75,12 @@ export interface IFindBidsWithMissingTransactionsQuery {
   result: IFindBidsWithMissingTransactionsResult;
 }
 
-const findBidsWithMissingTransactionsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":109,"b":115}]}],"statement":"SELECT \"tx\", \"block\", \"auctionId\" FROM \"bid\" WHERE \"bid\".\"timestamp\" IS NULL ORDER BY \"auctionId\" DESC LIMIT :limit!::INTEGER"};
+const findBidsWithMissingTransactionsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":126,"b":132}]}],"statement":"SELECT \"tx\", \"block\", \"auctionId\", \"walletAddress\" FROM \"bid\" WHERE \"bid\".\"timestamp\" IS NULL ORDER BY \"auctionId\" DESC LIMIT :limit!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT "tx", "block", "auctionId" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER
+ * SELECT "tx", "block", "auctionId", "walletAddress" FROM "bid" WHERE "bid"."timestamp" IS NULL ORDER BY "auctionId" DESC LIMIT :limit!::INTEGER
  * ```
  */
 export const findBidsWithMissingTransactions = new PreparedQuery<IFindBidsWithMissingTransactionsParams,IFindBidsWithMissingTransactionsResult>(findBidsWithMissingTransactionsIR);
@@ -90,6 +91,7 @@ export interface IUpdateBidTransactionMetadataParams {
   maxFeePerGas?: NumberOrString | null | void;
   timestamp?: number | null | void;
   txHash?: string | null | void;
+  walletBalance?: NumberOrString | null | void;
 }
 
 /** 'UpdateBidTransactionMetadata' return type */
@@ -101,7 +103,7 @@ export interface IUpdateBidTransactionMetadataQuery {
   result: IUpdateBidTransactionMetadataResult;
 }
 
-const updateBidTransactionMetadataIR: any = {"usedParamSet":{"timestamp":true,"maxFeePerGas":true,"txHash":true},"params":[{"name":"timestamp","required":false,"transform":{"type":"scalar"},"locs":[{"a":31,"b":40}]},{"name":"maxFeePerGas","required":false,"transform":{"type":"scalar"},"locs":[{"a":63,"b":75}]},{"name":"txHash","required":false,"transform":{"type":"scalar"},"locs":[{"a":90,"b":96}]}],"statement":"UPDATE bid\nSET\n  \"timestamp\" = :timestamp, \n  \"maxFeePerGas\" = :maxFeePerGas\nWHERE \"tx\" = :txHash"};
+const updateBidTransactionMetadataIR: any = {"usedParamSet":{"timestamp":true,"maxFeePerGas":true,"walletBalance":true,"txHash":true},"params":[{"name":"timestamp","required":false,"transform":{"type":"scalar"},"locs":[{"a":31,"b":40}]},{"name":"maxFeePerGas","required":false,"transform":{"type":"scalar"},"locs":[{"a":63,"b":75}]},{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":98,"b":111}]},{"name":"txHash","required":false,"transform":{"type":"scalar"},"locs":[{"a":126,"b":132}]}],"statement":"UPDATE bid\nSET\n  \"timestamp\" = :timestamp, \n  \"maxFeePerGas\" = :maxFeePerGas,\n  \"walletBalance\" = :walletBalance\nWHERE \"tx\" = :txHash"};
 
 /**
  * Query generated from SQL:
@@ -109,7 +111,8 @@ const updateBidTransactionMetadataIR: any = {"usedParamSet":{"timestamp":true,"m
  * UPDATE bid
  * SET
  *   "timestamp" = :timestamp, 
- *   "maxFeePerGas" = :maxFeePerGas
+ *   "maxFeePerGas" = :maxFeePerGas,
+ *   "walletBalance" = :walletBalance
  * WHERE "tx" = :txHash
  * ```
  */
@@ -150,8 +153,6 @@ export const findUnindexedWallets = new PreparedQuery<IFindUnindexedWalletsParam
 /** 'UpdateWalletData' parameters type */
 export interface IUpdateWalletDataParams {
   address: string;
-  balanceEth: NumberOrString;
-  balanceWeth: NumberOrString;
   ens: string;
   nouns: number;
 }
@@ -165,17 +166,15 @@ export interface IUpdateWalletDataQuery {
   result: IUpdateWalletDataResult;
 }
 
-const updateWalletDataIR: any = {"usedParamSet":{"address":true,"ens":true,"balanceEth":true,"balanceWeth":true,"nouns":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":86,"b":94}]},{"name":"ens","required":true,"transform":{"type":"scalar"},"locs":[{"a":97,"b":101},{"a":190,"b":193}]},{"name":"balanceEth","required":true,"transform":{"type":"scalar"},"locs":[{"a":104,"b":115},{"a":213,"b":223}]},{"name":"balanceWeth","required":true,"transform":{"type":"scalar"},"locs":[{"a":118,"b":130},{"a":244,"b":255}]},{"name":"nouns","required":true,"transform":{"type":"scalar"},"locs":[{"a":133,"b":139},{"a":270,"b":275}]}],"statement":"INSERT INTO \"wallet\" (\"address\", \"ens\", \"balanceEth\", \"balanceWeth\", \"nouns\")\nVALUES (:address!, :ens!, :balanceEth!, :balanceWeth!, :nouns!)\nON CONFLICT (\"address\") DO UPDATE SET\n  \"ens\" = :ens,\n  \"balanceEth\" = :balanceEth,\n  \"balanceWeth\" = :balanceWeth,\n  \"nouns\" = :nouns"};
+const updateWalletDataIR: any = {"usedParamSet":{"address":true,"ens":true,"nouns":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":57,"b":65}]},{"name":"ens","required":true,"transform":{"type":"scalar"},"locs":[{"a":68,"b":72},{"a":132,"b":135}]},{"name":"nouns","required":true,"transform":{"type":"scalar"},"locs":[{"a":75,"b":81},{"a":150,"b":155}]}],"statement":"INSERT INTO \"wallet\" (\"address\", \"ens\", \"nouns\")\nVALUES (:address!, :ens!, :nouns!)\nON CONFLICT (\"address\") DO UPDATE SET\n  \"ens\" = :ens,\n  \"nouns\" = :nouns"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO "wallet" ("address", "ens", "balanceEth", "balanceWeth", "nouns")
- * VALUES (:address!, :ens!, :balanceEth!, :balanceWeth!, :nouns!)
+ * INSERT INTO "wallet" ("address", "ens", "nouns")
+ * VALUES (:address!, :ens!, :nouns!)
  * ON CONFLICT ("address") DO UPDATE SET
  *   "ens" = :ens,
- *   "balanceEth" = :balanceEth,
- *   "balanceWeth" = :balanceWeth,
  *   "nouns" = :nouns
  * ```
  */
@@ -526,6 +525,7 @@ export interface IGetBidsByAuctionIdResult {
   tx: string;
   value: string | null;
   walletAddress: string;
+  walletBalance: string | null;
 }
 
 /** 'GetBidsByAuctionId' query type */
@@ -534,7 +534,7 @@ export interface IGetBidsByAuctionIdQuery {
   result: IGetBidsByAuctionIdResult;
 }
 
-const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":166,"b":169}]}],"statement":"SELECT\n  bid.\"tx\", \n  bid.\"walletAddress\", \n  bid.\"value\"::TEXT,\n  bid.\"extended\",\n  bid.\"timestamp\",\n  bid.\"maxFeePerGas\"::TEXT\nFROM\n  bid\nWHERE\n  bid.\"auctionId\" = :id!::INTEGER\nORDER BY\n  bid.value DESC"};
+const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":195,"b":198}]}],"statement":"SELECT\n  bid.\"tx\", \n  bid.\"walletAddress\", \n  bid.\"value\"::TEXT,\n  bid.\"walletBalance\"::TEXT,\n  bid.\"extended\",\n  bid.\"timestamp\",\n  bid.\"maxFeePerGas\"::TEXT\nFROM\n  bid\nWHERE\n  bid.\"auctionId\" = :id!::INTEGER\nORDER BY\n  bid.value DESC"};
 
 /**
  * Query generated from SQL:
@@ -543,6 +543,7 @@ const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":
  *   bid."tx", 
  *   bid."walletAddress", 
  *   bid."value"::TEXT,
+ *   bid."walletBalance"::TEXT,
  *   bid."extended",
  *   bid."timestamp",
  *   bid."maxFeePerGas"::TEXT
@@ -565,7 +566,6 @@ export interface IGetWalletsByAuctionIdParams {
 /** 'GetWalletsByAuctionId' return type */
 export interface IGetWalletsByAuctionIdResult {
   address: string;
-  balance: string | null;
   bids: string | null;
   ens: string | null;
   nouns: number | null;
@@ -578,25 +578,37 @@ export interface IGetWalletsByAuctionIdQuery {
   result: IGetWalletsByAuctionIdResult;
 }
 
-const getWalletsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":518,"b":521}]}],"statement":"WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) \nSELECT DISTINCT\n  bid.\"walletAddress\" AS \"address\",\n  wallet.ens,\n  (SELECT COUNT(*) FROM bid WHERE bid.\"walletAddress\" = wallet.address) AS \"bids\", \n  wallet.\"nouns\" AS \"nouns\", \n  (wallet.\"balanceEth\" + wallet.\"balanceWeth\")::TEXT AS \"balance\", \n  (SELECT count FROM wins_count WHERE wins_count.winner = bid.\"walletAddress\") AS \"wins\"\nFROM\n  bid,\n  wallet\nWHERE\n  bid.\"walletAddress\" = wallet.address\n  AND bid.\"auctionId\" = :id!::INTEGER"};
+const getWalletsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":519,"b":522}]}],"statement":"WITH wins_count AS (\n    SELECT winner, COUNT(*) AS count \n    FROM auction \n    GROUP BY winner\n),\nbid_counts AS (\n    SELECT \"walletAddress\", COUNT(*) AS count\n    FROM bid\n    GROUP BY \"walletAddress\"\n)\nSELECT\n  b.\"walletAddress\" AS \"address\",\n  w.ens,\n  bc.count AS \"bids\", \n  w.\"nouns\", \n  wc.count AS \"wins\"\nFROM\n  bid b\nJOIN\n  wallet w ON b.\"walletAddress\" = w.address\nLEFT JOIN\n  wins_count wc ON wc.winner = b.\"walletAddress\"\nLEFT JOIN\n  bid_counts bc ON bc.\"walletAddress\" = w.address\nWHERE\n  b.\"auctionId\" = :id!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * WITH wins_count AS (SELECT auction.winner, COUNT(*) FROM auction GROUP BY auction.winner) 
- * SELECT DISTINCT
- *   bid."walletAddress" AS "address",
- *   wallet.ens,
- *   (SELECT COUNT(*) FROM bid WHERE bid."walletAddress" = wallet.address) AS "bids", 
- *   wallet."nouns" AS "nouns", 
- *   (wallet."balanceEth" + wallet."balanceWeth")::TEXT AS "balance", 
- *   (SELECT count FROM wins_count WHERE wins_count.winner = bid."walletAddress") AS "wins"
+ * WITH wins_count AS (
+ *     SELECT winner, COUNT(*) AS count 
+ *     FROM auction 
+ *     GROUP BY winner
+ * ),
+ * bid_counts AS (
+ *     SELECT "walletAddress", COUNT(*) AS count
+ *     FROM bid
+ *     GROUP BY "walletAddress"
+ * )
+ * SELECT
+ *   b."walletAddress" AS "address",
+ *   w.ens,
+ *   bc.count AS "bids", 
+ *   w."nouns", 
+ *   wc.count AS "wins"
  * FROM
- *   bid,
- *   wallet
+ *   bid b
+ * JOIN
+ *   wallet w ON b."walletAddress" = w.address
+ * LEFT JOIN
+ *   wins_count wc ON wc.winner = b."walletAddress"
+ * LEFT JOIN
+ *   bid_counts bc ON bc."walletAddress" = w.address
  * WHERE
- *   bid."walletAddress" = wallet.address
- *   AND bid."auctionId" = :id!::INTEGER
+ *   b."auctionId" = :id!::INTEGER
  * ```
  */
 export const getWalletsByAuctionId = new PreparedQuery<IGetWalletsByAuctionIdParams,IGetWalletsByAuctionIdResult>(getWalletsByAuctionIdIR);

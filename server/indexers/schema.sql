@@ -15,6 +15,7 @@ CREATE TABLE "public"."bid" (
     "value" numeric(78,0) NOT NULL,
     "maxFeePerGas" numeric(78,0) NOT NULL,
     "block" int4 NOT NULL,
+    "walletBalance" numeric(78,0) DEFAULT NULL,
     "extended" bool NOT NULL,
     "timestamp" int4,
     PRIMARY KEY ("tx")
@@ -42,8 +43,6 @@ CREATE TABLE "public"."state" (
 CREATE TABLE "public"."wallet" (
     "address" text NOT NULL,
     "ens" text,
-    "balanceEth" numeric(78,0),
-    "balanceWeth" numeric(78,0),
     "nouns" int4,
     PRIMARY KEY ("address")
 );
