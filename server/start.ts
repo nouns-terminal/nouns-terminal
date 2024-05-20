@@ -16,10 +16,12 @@ import RetryProvider from './RetryProvider';
 import { Pool, PoolClient } from 'pg';
 import nouns from './indexers/nouns';
 import { getLatestAuction } from './indexers/queries';
+import { MulticallWrapper } from 'ethers-multicall-provider';
 
 async function main() {
   const port = parseInt(process.env.PORT || '3003', 10);
   const provider = new RetryProvider(10, process.env.PROVIDER_URL);
+  const multicallProvider = MulticallWrapper.wrap(provider);
 
   const app = express();
   const nextjs = next({ dev: process.env.NODE_ENV !== 'production' });
@@ -40,7 +42,7 @@ async function main() {
 
   router.get('/health', async (req, res) => {
     const latestAuction = await getLatestAuction.run(undefined, pgPool);
-    const latestBlock = await provider.getBlock('latest');
+    const latestBlock = await multicallProvider.getBlock('latest');
     res.json({ success: true, latestAuction, latestBlock });
   });
 
@@ -83,10 +85,12 @@ async function main() {
   };
 
   await Promise.all([
-    withPgClient((connection) => auction(NOUNS_AUCTION_HOUSE_ADDRESS, connection, provider)),
-    withPgClient((connection) => wallets(NOUNS_TOKEN_ADDRESS, connection, provider)),
-    withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, provider)),
-    withPgClient((connection) => transactions(connection, provider)),
+    withPgClient((connection) =>
+      auction(NOUNS_AUCTION_HOUSE_ADDRESS, connection, multicallProvider),
+    ),
+    withPgClient((connection) => wallets(NOUNS_TOKEN_ADDRESS, connection, multicallProvider)),
+    withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, multicallProvider)),
+    withPgClient((connection) => transactions(connection, multicallProvider)),
   ]);
 }
 
