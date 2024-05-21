@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { findUnindexedWallets, updateWalletData } from './queries';
 import { PoolClient } from 'pg';
-
-const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+import { MulticallWrapper } from 'ethers-multicall-provider';
+import RetryProvider from '../RetryProvider';
 
 const abi = ['function balanceOf(address who) external view returns (uint256)'];
 
@@ -13,10 +13,11 @@ const log = logger.child({ indexer: 'wallets' });
 export default async function wallets(
   nounsAddress: string,
   connection: PoolClient,
-  provider: ethers.Provider,
+  provider: ethers.AbstractProvider,
 ) {
   log.info('Starting');
-  const nouns = new ethers.Contract(nounsAddress, abi, provider);
+
+  const nouns = new ethers.Contract(nounsAddress, abi, MulticallWrapper.wrap(provider));
 
   async function process() {
     const wallets = await findUnindexedWallets.run({ limit: 35 }, connection);
