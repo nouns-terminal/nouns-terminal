@@ -16,7 +16,7 @@ export const appRouter = router({
     .input(
       z.object({
         auctionId: z.number().nullish(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       return getAuctionData(input.auctionId);
@@ -25,7 +25,7 @@ export const appRouter = router({
     .input(
       z.object({
         auctionId: z.number().nullish(),
-      })
+      }),
     )
     .subscription(({ input }) => {
       return observable<AuctionData>((emit) => {
@@ -39,13 +39,6 @@ export const appRouter = router({
       return liveVitals.subscribe((data) => {
         emit.next(data);
       });
-    });
-  }),
-  'keep-alive': procedure.subscription(() => {
-    return observable<number>((emit) => {
-      emit.next(Date.now());
-      const interval = setInterval(() => emit.next(Date.now()), 3_000);
-      return () => clearInterval(interval);
     });
   }),
 });

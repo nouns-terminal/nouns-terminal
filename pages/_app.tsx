@@ -13,7 +13,7 @@ import LiveStatus from '../components/LiveStatus';
 import Head from 'next/head';
 
 const { publicRuntimeConfig } = getConfig();
-const { APP_URL, WS_URL } = publicRuntimeConfig;
+const { APP_URL } = publicRuntimeConfig;
 
 declare module 'wagmi' {
   interface Register {
@@ -38,7 +38,7 @@ const config = createConfig(
     appDescription: 'Advanced interface for Nouns Auction',
     appUrl: 'https://nouns.sh/', // your app's url
     appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
-  })
+  }),
 );
 
 const queryClient = new QueryClient();
