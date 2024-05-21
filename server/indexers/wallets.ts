@@ -4,7 +4,6 @@ import { forever, logger } from '../utils';
 import { findUnindexedWallets, updateWalletData } from './queries';
 import { PoolClient } from 'pg';
 import { MulticallWrapper } from 'ethers-multicall-provider';
-import RetryProvider from '../RetryProvider';
 
 const abi = ['function balanceOf(address who) external view returns (uint256)'];
 

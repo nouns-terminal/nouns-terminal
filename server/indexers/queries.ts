@@ -614,3 +614,63 @@ const getWalletsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"nam
 export const getWalletsByAuctionId = new PreparedQuery<IGetWalletsByAuctionIdParams,IGetWalletsByAuctionIdResult>(getWalletsByAuctionIdIR);
 
 
+/** 'FindWalletsInLatestAuction' parameters type */
+export type IFindWalletsInLatestAuctionParams = void;
+
+/** 'FindWalletsInLatestAuction' return type */
+export interface IFindWalletsInLatestAuctionResult {
+  id: number;
+  walletAddress: string;
+}
+
+/** 'FindWalletsInLatestAuction' query type */
+export interface IFindWalletsInLatestAuctionQuery {
+  params: IFindWalletsInLatestAuctionParams;
+  result: IFindWalletsInLatestAuctionResult;
+}
+
+const findWalletsInLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT DISTINCT ON (bid.\"walletAddress\")\n    bid.\"id\",\n    bid.\"walletAddress\"\nFROM bid\nJOIN auction ON bid.\"auctionId\" = auction.id\nWHERE auction.\"winner\" IS NULL\nORDER BY bid.\"walletAddress\" DESC"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT DISTINCT ON (bid."walletAddress")
+ *     bid."id",
+ *     bid."walletAddress"
+ * FROM bid
+ * JOIN auction ON bid."auctionId" = auction.id
+ * WHERE auction."winner" IS NULL
+ * ORDER BY bid."walletAddress" DESC
+ * ```
+ */
+export const findWalletsInLatestAuction = new PreparedQuery<IFindWalletsInLatestAuctionParams,IFindWalletsInLatestAuctionResult>(findWalletsInLatestAuctionIR);
+
+
+/** 'UpdateWalletsValuesInLatestAuction' parameters type */
+export interface IUpdateWalletsValuesInLatestAuctionParams {
+  id: number;
+  walletBalance?: NumberOrString | null | void;
+}
+
+/** 'UpdateWalletsValuesInLatestAuction' return type */
+export type IUpdateWalletsValuesInLatestAuctionResult = void;
+
+/** 'UpdateWalletsValuesInLatestAuction' query type */
+export interface IUpdateWalletsValuesInLatestAuctionQuery {
+  params: IUpdateWalletsValuesInLatestAuctionParams;
+  result: IUpdateWalletsValuesInLatestAuctionResult;
+}
+
+const updateWalletsValuesInLatestAuctionIR: any = {"usedParamSet":{"walletBalance":true,"id":true},"params":[{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":33,"b":46}]},{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":63,"b":66}]}],"statement":"UPDATE bid\nSET \"walletBalance\" = :walletBalance\nWHERE bid.id = :id!::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE bid
+ * SET "walletBalance" = :walletBalance
+ * WHERE bid.id = :id!::INTEGER
+ * ```
+ */
+export const updateWalletsValuesInLatestAuction = new PreparedQuery<IUpdateWalletsValuesInLatestAuctionParams,IUpdateWalletsValuesInLatestAuctionResult>(updateWalletsValuesInLatestAuctionIR);
+
+
