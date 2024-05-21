@@ -47,8 +47,8 @@ SET "winner" = :winner!, "price" = :price!
 WHERE auction.id = :id!;
 
 /* @name insertAuctionBid */
-INSERT INTO bid("tx", "auctionId", "walletAddress", "value", "maxFeePerGas", "block", "extended")
-VALUES (:tx!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)
+INSERT INTO bid("tx", "index", "auctionId", "walletAddress", "value", "maxFeePerGas", "block", "extended")
+VALUES (:tx!, :index!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)
 ON CONFLICT DO NOTHING;
 
 /* @name findUnindexedNouns */
@@ -130,14 +130,15 @@ WHERE
 
 /* @name findWalletsInLatestAuction */
 SELECT DISTINCT ON (bid."walletAddress")
-    bid."id",
+    bid."tx",
+    bid."index",
     bid."walletAddress"
 FROM bid
 JOIN auction ON bid."auctionId" = auction.id
 WHERE auction."winner" IS NULL
-ORDER BY bid."walletAddress" DESC;
+ORDER BY bid."walletAddress", bid."value" DESC;
 
 /* @name updateWalletsValuesInLatestAuction */
-UPDATE bid
+UPDATE "public"."bid"
 SET "walletBalance" = :walletBalance
-WHERE bid.id = :id!::INTEGER;
+WHERE "tx" = :tx AND "index" = :index;
