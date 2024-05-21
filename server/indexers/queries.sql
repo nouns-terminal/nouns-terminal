@@ -127,3 +127,17 @@ LEFT JOIN
   bid_counts bc ON bc."walletAddress" = w.address
 WHERE
   b."auctionId" = :id!::INTEGER;
+
+/* @name findWalletsInLatestAuction */
+SELECT DISTINCT ON (bid."walletAddress")
+    bid."id",
+    bid."walletAddress"
+FROM bid
+JOIN auction ON bid."auctionId" = auction.id
+WHERE auction."winner" IS NULL
+ORDER BY bid."walletAddress" DESC;
+
+/* @name updateWalletsValuesInLatestAuction */
+UPDATE bid
+SET "walletBalance" = :walletBalance
+WHERE bid.id = :id!::INTEGER;

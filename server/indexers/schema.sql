@@ -9,6 +9,7 @@ CREATE TABLE "public"."auction" (
 
 
 CREATE TABLE "public"."bid" (
+    "id" int4 NOT NULL,
     "tx" text NOT NULL,
     "auctionId" int4 NOT NULL,
     "walletAddress" text NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE "public"."bid" (
     "walletBalance" numeric(78,0) DEFAULT NULL,
     "extended" bool NOT NULL,
     "timestamp" int4,
-    PRIMARY KEY ("tx")
+    PRIMARY KEY ("id")
 );
 
 
@@ -46,3 +47,7 @@ CREATE TABLE "public"."wallet" (
     "nouns" int4,
     PRIMARY KEY ("address")
 );
+
+CREATE SEQUENCE bid_id_seq;
+ALTER TABLE "public"."bid"
+ALTER COLUMN "id" SET DEFAULT nextval('bid_id_seq');
