@@ -29,7 +29,7 @@ const log = logger.child({ indexer: 'auction' });
 export default async function auction(
   auctionAddress: string,
   connection: PoolClient,
-  provider: ethers.Provider
+  provider: ethers.Provider,
 ) {
   log.info('Starting');
   const auctionHouse = NounsAuctionHouse__factory.connect(auctionAddress, provider);
@@ -57,7 +57,7 @@ export default async function auction(
       const payload = args[args.length - 1] as unknown as ContractEventPayload;
 
       maybeProcessEvent(payload.log as unknown as AuctionHouseEventLog);
-    })
+    }),
   );
 
   const result = await getAuctionLastQueriedBlock.run(undefined, connection);
@@ -81,7 +81,7 @@ export default async function auction(
     log.debug('Querying events', { blockFrom, blockTo });
 
     const events = await Promise.all(
-      filters.map((filter) => auctionHouse.queryFilter(filter, blockFrom, blockTo))
+      filters.map((filter) => auctionHouse.queryFilter(filter, blockFrom, blockTo)),
     );
 
     const allEvents = events
@@ -106,7 +106,7 @@ async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventL
     const { nounId, startTime, endTime } = (eventLog as AuctionCreatedEvent.Log).args;
     await insertAuction.run(
       { id: Number(nounId), startTime: Number(startTime), endTime: Number(endTime) },
-      connection
+      connection,
     );
     return;
   }
@@ -125,7 +125,7 @@ async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventL
         winner: winner.toLowerCase(),
         price: amount.toString(),
       },
-      connection
+      connection,
     );
     return;
   }
@@ -135,13 +135,14 @@ async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventL
     await insertAuctionBid.run(
       {
         tx: eventLog.transactionHash,
+        index: eventLog.transactionIndex,
         auctionId: Number(nounId),
         walletAddress: sender.toLowerCase(),
         value: value.toString(),
         block: eventLog.blockNumber,
         extended: extended,
       },
-      connection
+      connection,
     );
     return;
   }

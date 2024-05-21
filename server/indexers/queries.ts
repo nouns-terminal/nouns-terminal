@@ -272,6 +272,7 @@ export interface IInsertAuctionBidParams {
   auctionId: number;
   block: number;
   extended: boolean;
+  index: number;
   tx: string;
   value: NumberOrString;
   walletAddress: string;
@@ -286,13 +287,13 @@ export interface IInsertAuctionBidQuery {
   result: IInsertAuctionBidResult;
 }
 
-const insertAuctionBidIR: any = {"usedParamSet":{"tx":true,"auctionId":true,"walletAddress":true,"value":true,"block":true,"extended":true},"params":[{"name":"tx","required":true,"transform":{"type":"scalar"},"locs":[{"a":106,"b":109}]},{"name":"auctionId","required":true,"transform":{"type":"scalar"},"locs":[{"a":112,"b":122}]},{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":125,"b":139}]},{"name":"value","required":true,"transform":{"type":"scalar"},"locs":[{"a":142,"b":148}]},{"name":"block","required":true,"transform":{"type":"scalar"},"locs":[{"a":154,"b":160}]},{"name":"extended","required":true,"transform":{"type":"scalar"},"locs":[{"a":163,"b":172}]}],"statement":"INSERT INTO bid(\"tx\", \"auctionId\", \"walletAddress\", \"value\", \"maxFeePerGas\", \"block\", \"extended\")\nVALUES (:tx!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)\nON CONFLICT DO NOTHING"};
+const insertAuctionBidIR: any = {"usedParamSet":{"tx":true,"index":true,"auctionId":true,"walletAddress":true,"value":true,"block":true,"extended":true},"params":[{"name":"tx","required":true,"transform":{"type":"scalar"},"locs":[{"a":115,"b":118}]},{"name":"index","required":true,"transform":{"type":"scalar"},"locs":[{"a":121,"b":127}]},{"name":"auctionId","required":true,"transform":{"type":"scalar"},"locs":[{"a":130,"b":140}]},{"name":"walletAddress","required":true,"transform":{"type":"scalar"},"locs":[{"a":143,"b":157}]},{"name":"value","required":true,"transform":{"type":"scalar"},"locs":[{"a":160,"b":166}]},{"name":"block","required":true,"transform":{"type":"scalar"},"locs":[{"a":172,"b":178}]},{"name":"extended","required":true,"transform":{"type":"scalar"},"locs":[{"a":181,"b":190}]}],"statement":"INSERT INTO bid(\"tx\", \"index\", \"auctionId\", \"walletAddress\", \"value\", \"maxFeePerGas\", \"block\", \"extended\")\nVALUES (:tx!, :index!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)\nON CONFLICT DO NOTHING"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO bid("tx", "auctionId", "walletAddress", "value", "maxFeePerGas", "block", "extended")
- * VALUES (:tx!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)
+ * INSERT INTO bid("tx", "index", "auctionId", "walletAddress", "value", "maxFeePerGas", "block", "extended")
+ * VALUES (:tx!, :index!, :auctionId!, :walletAddress!, :value!, 0, :block!, :extended!)
  * ON CONFLICT DO NOTHING
  * ```
  */
@@ -619,7 +620,8 @@ export type IFindWalletsInLatestAuctionParams = void;
 
 /** 'FindWalletsInLatestAuction' return type */
 export interface IFindWalletsInLatestAuctionResult {
-  id: number;
+  index: number;
+  tx: string;
   walletAddress: string;
 }
 
@@ -629,18 +631,19 @@ export interface IFindWalletsInLatestAuctionQuery {
   result: IFindWalletsInLatestAuctionResult;
 }
 
-const findWalletsInLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT DISTINCT ON (bid.\"walletAddress\")\n    bid.\"id\",\n    bid.\"walletAddress\"\nFROM bid\nJOIN auction ON bid.\"auctionId\" = auction.id\nWHERE auction.\"winner\" IS NULL\nORDER BY bid.\"walletAddress\" DESC"};
+const findWalletsInLatestAuctionIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT DISTINCT ON (bid.\"walletAddress\")\n    bid.\"tx\",\n    bid.\"index\",\n    bid.\"walletAddress\"\nFROM bid\nJOIN auction ON bid.\"auctionId\" = auction.id\nWHERE auction.\"winner\" IS NULL\nORDER BY bid.\"walletAddress\", bid.\"value\" DESC"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT DISTINCT ON (bid."walletAddress")
- *     bid."id",
+ *     bid."tx",
+ *     bid."index",
  *     bid."walletAddress"
  * FROM bid
  * JOIN auction ON bid."auctionId" = auction.id
  * WHERE auction."winner" IS NULL
- * ORDER BY bid."walletAddress" DESC
+ * ORDER BY bid."walletAddress", bid."value" DESC
  * ```
  */
 export const findWalletsInLatestAuction = new PreparedQuery<IFindWalletsInLatestAuctionParams,IFindWalletsInLatestAuctionResult>(findWalletsInLatestAuctionIR);
@@ -648,7 +651,8 @@ export const findWalletsInLatestAuction = new PreparedQuery<IFindWalletsInLatest
 
 /** 'UpdateWalletsValuesInLatestAuction' parameters type */
 export interface IUpdateWalletsValuesInLatestAuctionParams {
-  id: number;
+  index?: number | null | void;
+  tx?: string | null | void;
   walletBalance?: NumberOrString | null | void;
 }
 
@@ -661,14 +665,14 @@ export interface IUpdateWalletsValuesInLatestAuctionQuery {
   result: IUpdateWalletsValuesInLatestAuctionResult;
 }
 
-const updateWalletsValuesInLatestAuctionIR: any = {"usedParamSet":{"walletBalance":true,"id":true},"params":[{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":33,"b":46}]},{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":63,"b":66}]}],"statement":"UPDATE bid\nSET \"walletBalance\" = :walletBalance\nWHERE bid.id = :id!::INTEGER"};
+const updateWalletsValuesInLatestAuctionIR: any = {"usedParamSet":{"walletBalance":true,"tx":true,"index":true},"params":[{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":44,"b":57}]},{"name":"tx","required":false,"transform":{"type":"scalar"},"locs":[{"a":72,"b":74}]},{"name":"index","required":false,"transform":{"type":"scalar"},"locs":[{"a":90,"b":95}]}],"statement":"UPDATE \"public\".\"bid\"\nSET \"walletBalance\" = :walletBalance\nWHERE \"tx\" = :tx AND \"index\" = :index"};
 
 /**
  * Query generated from SQL:
  * ```
- * UPDATE bid
+ * UPDATE "public"."bid"
  * SET "walletBalance" = :walletBalance
- * WHERE bid.id = :id!::INTEGER
+ * WHERE "tx" = :tx AND "index" = :index
  * ```
  */
 export const updateWalletsValuesInLatestAuction = new PreparedQuery<IUpdateWalletsValuesInLatestAuctionParams,IUpdateWalletsValuesInLatestAuctionResult>(updateWalletsValuesInLatestAuctionIR);
