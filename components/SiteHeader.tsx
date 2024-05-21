@@ -2,12 +2,20 @@ import Link from 'next/link';
 import Text, { textStyle } from './Text';
 import { ConnectKitButton } from 'connectkit';
 import { Icon } from './BidsTable';
+import { trpc } from '../utils/trpc';
+import { useState } from 'react';
 
 export default function SiteHeader() {
+  const [online, setOnline] = useState(0);
+  trpc.online.useSubscription(undefined, { onData: setOnline });
   return (
     <div className="container">
       <Text variant="title-1" bold color="yellow">
         <Link href="/">nouns.sh</Link>
+      </Text>
+      <div style={{ flex: 1 }} />
+      <Text variant="footnote" bold color="green">
+        {online} users online
       </Text>
       <Text variant="title-3" bold>
         <ConnectKitButton.Custom>
