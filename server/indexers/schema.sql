@@ -7,7 +7,6 @@ CREATE TABLE "public"."auction" (
     PRIMARY KEY ("id")
 );
 
-
 CREATE TABLE "public"."bid" (
     "tx" text NOT NULL,
     "index" int4 NOT NULL,
@@ -22,7 +21,6 @@ CREATE TABLE "public"."bid" (
     PRIMARY KEY ("tx", "index")
 );
 
-
 CREATE TABLE "public"."noun" (
     "id" int4 NOT NULL,
     "background" int4 NOT NULL,
@@ -33,13 +31,11 @@ CREATE TABLE "public"."noun" (
     PRIMARY KEY ("id")
 );
 
-
 CREATE TABLE "public"."state" (
     "key" text NOT NULL,
     "value" int4,
     PRIMARY KEY ("key")
 );
-
 
 CREATE TABLE "public"."wallet" (
     "address" text NOT NULL,
@@ -47,3 +43,9 @@ CREATE TABLE "public"."wallet" (
     "nouns" int4,
     PRIMARY KEY ("address")
 );
+
+CREATE INDEX idx_bid_tx ON public.bid("tx");
+CREATE INDEX idx_bid_auctionId_value ON public.bid("auctionId", value DESC);
+CREATE INDEX idx_bid_walletAddress_auctionId ON public.bid("walletAddress", "auctionId" DESC);
+CREATE INDEX idx_auction_id_desc ON public.auction("id" DESC);
+CREATE INDEX idx_noun_id ON public.noun("id");
