@@ -57,7 +57,7 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
             Waiting…&nbsp;
           </button>
         ) : (
-          <button>Place&nbsp;Bid</button>
+          <button disabled={!isValidBid}>Place&nbsp;Bid</button>
         )}
       </form>
       <style jsx>{`
