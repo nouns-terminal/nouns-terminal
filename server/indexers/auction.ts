@@ -155,9 +155,9 @@ async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventL
     const { nounId, clientId, value } = (eventLog as AuctionBidWithClientIdEvent.Log).args;
     await updateAuctionBidWithClientId.run(
       {
-        auctionId: Number(nounId.toString()), // Noun id and auction id are the same
-        clientId: Number(clientId.toString()),
-        value: Number(value.toString()),
+        auctionId: Number(nounId), // Noun id and auction id are the same
+        clientId: Number(clientId),
+        value: Number(value),
       },
       connection,
     );
