@@ -665,16 +665,45 @@ export interface IUpdateWalletsValuesInLatestAuctionQuery {
   result: IUpdateWalletsValuesInLatestAuctionResult;
 }
 
-const updateWalletsValuesInLatestAuctionIR: any = {"usedParamSet":{"walletBalance":true,"tx":true,"index":true},"params":[{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":44,"b":57}]},{"name":"tx","required":false,"transform":{"type":"scalar"},"locs":[{"a":72,"b":74}]},{"name":"index","required":false,"transform":{"type":"scalar"},"locs":[{"a":90,"b":95}]}],"statement":"UPDATE \"public\".\"bid\"\nSET \"walletBalance\" = :walletBalance\nWHERE \"tx\" = :tx AND \"index\" = :index"};
+const updateWalletsValuesInLatestAuctionIR: any = {"usedParamSet":{"walletBalance":true,"tx":true,"index":true},"params":[{"name":"walletBalance","required":false,"transform":{"type":"scalar"},"locs":[{"a":44,"b":57}]},{"name":"tx","required":false,"transform":{"type":"scalar"},"locs":[{"a":72,"b":74}]},{"name":"index","required":false,"transform":{"type":"scalar"},"locs":[{"a":96,"b":101}]}],"statement":"UPDATE \"public\".\"bid\"\nSET \"walletBalance\" = :walletBalance\nWHERE \"tx\" = :tx::TEXT AND \"index\" = :index::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
  * UPDATE "public"."bid"
  * SET "walletBalance" = :walletBalance
- * WHERE "tx" = :tx AND "index" = :index
+ * WHERE "tx" = :tx::TEXT AND "index" = :index::INTEGER
  * ```
  */
 export const updateWalletsValuesInLatestAuction = new PreparedQuery<IUpdateWalletsValuesInLatestAuctionParams,IUpdateWalletsValuesInLatestAuctionResult>(updateWalletsValuesInLatestAuctionIR);
+
+
+/** 'UpdateAuctionBidWithClientId' parameters type */
+export interface IUpdateAuctionBidWithClientIdParams {
+  auctionId?: number | null | void;
+  clientId?: number | null | void;
+  value: NumberOrString;
+}
+
+/** 'UpdateAuctionBidWithClientId' return type */
+export type IUpdateAuctionBidWithClientIdResult = void;
+
+/** 'UpdateAuctionBidWithClientId' query type */
+export interface IUpdateAuctionBidWithClientIdQuery {
+  params: IUpdateAuctionBidWithClientIdParams;
+  result: IUpdateAuctionBidWithClientIdResult;
+}
+
+const updateAuctionBidWithClientIdIR: any = {"usedParamSet":{"clientId":true,"value":true,"auctionId":true},"params":[{"name":"clientId","required":false,"transform":{"type":"scalar"},"locs":[{"a":39,"b":47}]},{"name":"value","required":true,"transform":{"type":"scalar"},"locs":[{"a":74,"b":80}]},{"name":"auctionId","required":false,"transform":{"type":"scalar"},"locs":[{"a":100,"b":109}]}],"statement":"UPDATE \"public\".\"bid\"\nSET \"clientId\" = :clientId::INTEGER\nWHERE \"value\" = :value! AND \"auctionId\" = :auctionId::INTEGER"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * UPDATE "public"."bid"
+ * SET "clientId" = :clientId::INTEGER
+ * WHERE "value" = :value! AND "auctionId" = :auctionId::INTEGER
+ * ```
+ */
+export const updateAuctionBidWithClientId = new PreparedQuery<IUpdateAuctionBidWithClientIdParams,IUpdateAuctionBidWithClientIdResult>(updateAuctionBidWithClientIdIR);
 
 

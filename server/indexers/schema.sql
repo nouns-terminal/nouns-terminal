@@ -13,6 +13,7 @@ CREATE TABLE "public"."bid" (
     "auctionId" int4 NOT NULL,
     "walletAddress" text NOT NULL,
     "value" numeric(78,0) NOT NULL,
+    "clientId" int4 DEFAULT NULL,
     "maxFeePerGas" numeric(78,0) NOT NULL,
     "block" int4 NOT NULL,
     "walletBalance" numeric(78,0) DEFAULT NULL,
