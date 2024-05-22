@@ -141,4 +141,10 @@ ORDER BY bid."walletAddress", bid."value" DESC;
 /* @name updateWalletsValuesInLatestAuction */
 UPDATE "public"."bid"
 SET "walletBalance" = :walletBalance
-WHERE "tx" = :tx AND "index" = :index;
+WHERE "tx" = :tx::TEXT AND "index" = :index::INTEGER;
+
+
+/* @name updateAuctionBidWithClientId */
+UPDATE "public"."bid"
+SET "clientId" = :clientId::INTEGER
+WHERE "value" = :value! AND "auctionId" = :auctionId::INTEGER;

@@ -6,6 +6,7 @@ import {
   AuctionCreatedEvent,
   AuctionExtendedEvent,
   AuctionSettledEvent,
+  AuctionBidWithClientIdEvent,
 } from '../../typechain/NounsAuctionHouse';
 import { logger } from '../utils';
 import { PoolClient } from 'pg';
@@ -16,13 +17,15 @@ import {
   setAuctionLastQueriedBlock,
   updateAuctionExtended,
   updateAuctionSettled,
+  updateAuctionBidWithClientId,
 } from './queries';
 
 type AuctionHouseEventLog =
   | AuctionCreatedEvent.Log
   | AuctionExtendedEvent.Log
   | AuctionSettledEvent.Log
-  | AuctionBidEvent.Log;
+  | AuctionBidEvent.Log
+  | AuctionBidWithClientIdEvent.Log;
 
 const log = logger.child({ indexer: 'auction' });
 
@@ -39,6 +42,7 @@ export default async function auction(
     auctionHouse.filters.AuctionExtended(),
     auctionHouse.filters.AuctionSettled(),
     auctionHouse.filters.AuctionBid(),
+    auctionHouse.filters.AuctionBidWithClientId(),
   ];
 
   async function maybeProcessEvent(event: AuctionHouseEventLog) {
@@ -141,6 +145,19 @@ async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventL
         value: value.toString(),
         block: eventLog.blockNumber,
         extended: extended,
+      },
+      connection,
+    );
+    return;
+  }
+
+  if (eventLog.eventName === 'AuctionBidWithClientId') {
+    const { nounId, clientId, value } = (eventLog as AuctionBidWithClientIdEvent.Log).args;
+    await updateAuctionBidWithClientId.run(
+      {
+        auctionId: Number(nounId.toString()), // Noun id and auction id are the same
+        clientId: Number(clientId.toString()),
+        value: Number(value.toString()),
       },
       connection,
     );
