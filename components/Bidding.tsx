@@ -25,7 +25,7 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
 
   const handleBump = (percentagePoints: number) => {
     if (currentBid == 0n) {
-      return;
+      currentBid = 1_000_000_000_000_000n;
     }
     // TODO: make the bid "pretty", remove trailing ".0", round up to 3 digits
     const newBid = currentBid + (currentBid * BigInt(percentagePoints)) / 100n;
