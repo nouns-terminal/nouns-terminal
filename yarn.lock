@@ -3614,13 +3614,13 @@ ethereum-cryptography@^2.0.0:
     "@scure/bip32" "1.3.3"
     "@scure/bip39" "1.2.2"
 
-ethers-multicall-provider@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/ethers-multicall-provider/-/ethers-multicall-provider-6.3.0.tgz#860d9bb22dea6597facf27c1562ebdf981fa2841"
-  integrity sha512-erzFK1NrjEbMtqKhVSiEUvUf076aZpQfH3PXKLPGgUtZNnpcXhj2dTOUkYWXK/rzoi8K//SiqGA9u58MZ8WM5Q==
+ethers-multicall-provider@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/ethers-multicall-provider/-/ethers-multicall-provider-6.3.1.tgz#5cd7ac24c187fb4326f5897fd86a96d2ecc3b496"
+  integrity sha512-pHoUo5onIGeQYZFhJIThtw7CWRK0RKpvZZpw0HmvAZAmm7VxkkVef8zlJpBvJjNsvC35NhJ9+/zmL2reFLRPTA==
   dependencies:
     dataloader "^2.2.2"
-    ethers "^6.11.0"
+    ethers "^6.12.0"
 
 ethers@^5.6.8:
   version "5.7.2"
@@ -3658,7 +3658,7 @@ ethers@^5.6.8:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^6.11.0, ethers@^6.12.1:
+ethers@^6.12.0, ethers@^6.12.1:
   version "6.12.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.12.1.tgz#517ff6d66d4fd5433e38e903051da3e57c87ff37"
   integrity sha512-j6wcVoZf06nqEcBbDWkKg8Fp895SS96dSnTCjiXT+8vt2o02raTn4Lo9ERUuIVU5bAjoPYeA+7ytQFexFmLuVw==
