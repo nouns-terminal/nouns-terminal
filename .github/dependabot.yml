@@ -5,10 +5,61 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/' # Location of package manifests
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
       interval: 'weekly'
       day: 'sunday'
       time: '20:00'
       timezone: 'America/Los_Angeles'
+    groups:
+      nouns:
+        patterns:
+          - '@nouns/*'
+      pgtyped:
+        patterns:
+          - '@pgtyped/*'
+      trpc:
+        patterns:
+          - '@trpc/*'
+      types:
+        patterns:
+          - '@types/*'
+      connectkit-deep-equal:
+        patterns:
+          - 'connectkit'
+          - 'deep-equal'
+      environment-config:
+        patterns:
+          - 'dotenv'
+          - 'prettier'
+      ethers:
+        patterns:
+          - '@typechain/ethers-v6'
+          - 'ethers'
+          - 'ethers-multicall-provider'
+      express:
+        patterns:
+          - 'express*'
+      react:
+        patterns:
+          - 'jotai'
+          - 'next'
+          - 'react'
+          - 'react-dom'
+      postgres:
+        patterns:
+          - 'pg'
+      typescript-typechain:
+        patterns:
+          - 'tsx'
+          - 'typechain'
+      wagmi-viem:
+        patterns:
+          - 'viem'
+          - 'wagmi'
+      additional-packages:
+        patterns:
+          - '@metamask/jazzicon'
+          - 'winston'
+          - 'zod'
