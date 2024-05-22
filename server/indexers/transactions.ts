@@ -2,12 +2,7 @@ import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { PoolClient } from 'pg';
-import {
-  findBidsWithMissingTransactions,
-  updateBidTransactionMetadata,
-  findWalletsInLatestAuction,
-  updateWalletsValuesInLatestAuction,
-} from './queries';
+import { findBidsWithMissingTransactions, updateBidTransactionMetadata } from './queries';
 
 const log = logger.child({ indexer: 'transactions' });
 
@@ -18,24 +13,6 @@ export default async function transactions(connection: PoolClient, provider: eth
     const bids = await findBidsWithMissingTransactions.run({ limit: 5 }, connection);
 
     if (bids.length === 0) {
-      const latestBids = await findWalletsInLatestAuction.run(undefined, connection);
-
-      log.debug(`Rows: ${bids.length} ${latestBids.length}`);
-
-      const latestBalances = await Promise.all(
-        latestBids.map((row) => provider.getBalance(row.walletAddress)),
-      );
-
-      for (const [index, row] of latestBids.entries()) {
-        await updateWalletsValuesInLatestAuction.run(
-          {
-            tx: row.tx,
-            index: row.index,
-            walletBalance: latestBalances[index].toString() || null,
-          },
-          connection,
-        );
-      }
       return false;
     }
 

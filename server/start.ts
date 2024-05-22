@@ -15,6 +15,7 @@ import RetryProvider from './RetryProvider';
 import { Pool, PoolClient } from 'pg';
 import nouns from './indexers/nouns';
 import { getLatestAuction } from './indexers/queries';
+import balances from './indexers/balances';
 
 async function main() {
   const port = parseInt(process.env.PORT || '3003', 10);
@@ -87,6 +88,7 @@ async function main() {
     withPgClient((connection) => wallets(NOUNS_TOKEN_ADDRESS, connection, provider)),
     withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, provider)),
     withPgClient((connection) => transactions(connection, provider)),
+    withPgClient((connection) => balances(connection, provider)),
   ]);
 }
 

@@ -3,7 +3,7 @@ import { createLogger, Logger, format, transports } from 'winston';
 import { hostname } from 'os';
 import qs from 'qs';
 
-export async function forever(process: () => Promise<boolean>, log: Logger) {
+export async function forever(process: () => Promise<boolean>, log: Logger, delay?: number) {
   while (true) {
     try {
       const hasMore = await process();
@@ -13,7 +13,7 @@ export async function forever(process: () => Promise<boolean>, log: Logger) {
     } catch (error) {
       log.error(error);
     }
-    await sleep(5_000);
+    await sleep(delay || 5_000);
   }
 }
 
@@ -34,7 +34,7 @@ export const logger = createLogger({
     }),
     format.errors({ stack: true }),
     format.splat(),
-    format.json()
+    format.json(),
   ),
 });
 
@@ -53,6 +53,6 @@ if (DATADOG_API_KEY) {
       path: `/api/v2/logs?${params}`,
       ssl: true,
       level: 'debug',
-    })
+    }),
   );
 }
