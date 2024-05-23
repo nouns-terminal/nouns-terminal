@@ -13,10 +13,6 @@ export default function SiteHeader() {
       <Text variant="title-1" bold color="yellow">
         <Link href="/">nouns.sh</Link>
       </Text>
-      <div style={{ flex: 1 }} />
-      <Text variant="footnote" bold color="green">
-        {online} users online
-      </Text>
       <Text variant="title-3" bold>
         <ConnectKitButton.Custom>
           {({ isConnected, isConnecting, show, hide, address, ensName, unsupported }) => {
