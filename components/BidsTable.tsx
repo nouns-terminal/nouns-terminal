@@ -38,7 +38,10 @@ export default function BidsTable(props: Props) {
             <th>%change</th>
             <th>Gwei</th>
             <th>
-              <span title="ETH balance left after placing this bid">
+              <span
+                title="ETH balance left after placing this bid"
+                style={{ whiteSpace: 'nowrap' }}
+              >
                 ETH&nbsp;LEFT&nbsp;[
                 <span className="tooltip-svg">
                   <TooltipSVG />
