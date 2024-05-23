@@ -22,7 +22,7 @@ export default function SiteHeader() {
                   if (!isConnected) {
                     return (
                       <button className="connect-wallet" onClick={show} type="button">
-                        Connect Wallet
+                        Connect&nbsp;Wallet
                       </button>
                     );
                   }
@@ -32,7 +32,7 @@ export default function SiteHeader() {
                       <button onClick={show} type="button">
                         {address && <Icon address={address} />}
                         <Text variant="title-3" bold>
-                          {ensName}
+                          <div className="ens">{ensName}</div>
                         </Text>
                         <Chevron />
                       </button>
@@ -45,15 +45,6 @@ export default function SiteHeader() {
         </ConnectKitButton.Custom>
       </Text>
       <style jsx>{`
-        .account > button {
-          color: var(--bright-text);
-          display: flex;
-          gap: var(--s-1);
-          align-items: center;
-          border: none !important;
-          background: none;
-          cursor: pointer;
-        }
         .container {
           display: flex;
           flex-direction: row;
@@ -64,8 +55,25 @@ export default function SiteHeader() {
           padding: var(--s-2) var(--s1);
           border-bottom: solid 1px var(--lines);
         }
+        .ens {
+          overflow: hidden;
+          max-width: 15ch;
+        }
+        .account > button {
+          color: var(--bright-text);
+          display: flex;
+          gap: var(--s-1);
+          align-items: center;
+          border: none;
+          background: none;
+          cursor: pointer;
+        }
         .connect-wallet {
           background-color: var(--yellow);
+          border: 1px solid var(--yellow);
+          padding: var(--s-1) var(--s1);
+          cursor: pointer;
+          ${textStyle({ variant: 'title-2', bold: true, color: 'dark-bg' })}
         }
         .connect-wallet:hover {
           background-color: var(--light-yellow);
@@ -74,12 +82,6 @@ export default function SiteHeader() {
           display: flex;
           gap: var(--s0);
           align-items: center;
-        }
-        .container button {
-          padding: var(--s-1) var(--s1);
-          border: 1px solid var(--yellow);
-          cursor: pointer;
-          ${textStyle({ variant: 'title-2', bold: true, color: 'dark-bg' })}
         }
         .wrong-network {
           border-color: var(--red);
