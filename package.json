@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@metamask/jazzicon": "^2.0.0",
+    "@next/bundle-analyzer": "^14.2.3",
     "@nouns/assets": "^0.6.0",
     "@nouns/sdk": "^0.4.0",
     "@pgtyped/cli": "^2.3.0",
