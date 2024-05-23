@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 import { Bid, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
 
-const hoveredAddress = atom('');
+export const hoveredAddress = atom('');
 
 type Props = {
   bids: readonly Bid[];
@@ -56,9 +56,14 @@ export default function BidsTable(props: Props) {
           {props.bids.map((bid, index) => (
             <tr
               key={bid.tx}
-              onMouseEnter={() => setAddress(bid.walletAddress)}
+              onMouseEnter={() => setAddress(lookup[bid.walletAddress]?.ens || bid.walletAddress)}
               onMouseLeave={() => setAddress('')}
-              className={address === bid.walletAddress ? 'hovered' : ''}
+              className={
+                address === bid.walletAddress ||
+                (lookup[bid.walletAddress]?.ens && address === lookup[bid.walletAddress]?.ens)
+                  ? 'hovered'
+                  : ''
+              }
             >
               <td>
                 <Icon address={bid.walletAddress} />
