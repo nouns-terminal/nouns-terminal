@@ -11,7 +11,7 @@ import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
 import { type Noun } from '../server/api/types';
 import Head from 'next/head';
 import { hoveredAddress } from './BidsTable';
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 type Props = {
   id: number;
@@ -19,14 +19,15 @@ type Props = {
   endTime: number;
   maxBid: string | null;
   ended: boolean;
-  winner: string | null;
+  winnerENS: string | null;
+  winnerAddress: string | null;
   noun: Noun | null;
 };
 
 export default function AuctionHeader(props: Props) {
   const { isConnected } = useAccount();
   const write = useWriteContract({});
-  const [address, setAddress] = useAtom(hoveredAddress);
+  const setAddress = useSetAtom(hoveredAddress);
 
   const svgBase64 = useMemo(() => {
     if (!props.noun) {
@@ -86,10 +87,10 @@ export default function AuctionHeader(props: Props) {
           <Text variant="title-1" bold color="mid-text">
             <div
               className="address"
-              onMouseEnter={() => setAddress(props.winner || '')}
+              onMouseEnter={() => setAddress(props.winnerAddress || '')}
               onMouseLeave={() => setAddress('')}
             >
-              {props.winner}
+              {props.winnerENS || props.winnerAddress}
             </div>
           </Text>
         </Stack>

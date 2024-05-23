@@ -58,12 +58,7 @@ export default function BidsTable(props: Props) {
               key={bid.tx}
               onMouseEnter={() => setAddress(lookup[bid.walletAddress]?.ens || bid.walletAddress)}
               onMouseLeave={() => setAddress('')}
-              className={
-                address === bid.walletAddress ||
-                (lookup[bid.walletAddress]?.ens && address === lookup[bid.walletAddress]?.ens)
-                  ? 'hovered'
-                  : ''
-              }
+              className={address === bid.walletAddress ? 'hovered' : ''}
             >
               <td>
                 <Icon address={bid.walletAddress} />

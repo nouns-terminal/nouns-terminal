@@ -23,11 +23,12 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
         startTime={data.auction.startTime}
         endTime={data.auction.endTime}
         maxBid={data.bids[0]?.value}
-        winner={
+        winnerENS={
           (data.auction.winner &&
             data.wallets.find((w) => w.address === data.auction.winner)?.ens) ||
-          data.auction.winner
+          null
         }
+        winnerAddress={data.auction.winner}
         noun={data.noun}
         ended={ended}
       />
