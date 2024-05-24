@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
 import { NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
@@ -12,6 +12,7 @@ import { type Noun } from '../server/api/types';
 import Head from 'next/head';
 import { hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
+import { useMutation } from '@tanstack/react-query';
 
 type Props = {
   id: number;
@@ -24,10 +25,49 @@ type Props = {
   noun: Noun | null;
 };
 
+const abi = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'nounId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'clientId',
+        type: 'uint32',
+      },
+    ],
+    name: 'createBid',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+];
+
 export default function AuctionHeader(props: Props) {
-  const { isConnected } = useAccount();
+  const { isConnected, chainId } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
+
+  const bidMutation = useMutation({
+    mutationFn: async (bid: bigint) => {
+      if (chainId !== 1) {
+        await switchChainAsync({ chainId: 1 });
+      }
+      await write.writeContractAsync({
+        __mode: 'prepared',
+        abi,
+        address: NOUNS_AUCTION_HOUSE_ADDRESS,
+        functionName: 'createBid',
+        args: [props.id, 7],
+        value: bid,
+        chainId: 1,
+      });
+    },
+  });
 
   const svgBase64 = useMemo(() => {
     if (!props.noun) {
@@ -109,37 +149,8 @@ export default function AuctionHeader(props: Props) {
           <div style={{ flex: 1 }} />
           <Bidding
             currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
-            onSubmitBid={(bid) =>
-              write.writeContractAsync({
-                __mode: 'prepared',
-                abi: [
-                  {
-                    inputs: [
-                      {
-                        internalType: 'uint256',
-                        name: 'nounId',
-                        type: 'uint256',
-                      },
-                      {
-                        internalType: 'uint32',
-                        name: 'clientId',
-                        type: 'uint32',
-                      },
-                    ],
-                    name: 'createBid',
-                    outputs: [],
-                    stateMutability: 'payable',
-                    type: 'function',
-                  },
-                ],
-                address: NOUNS_AUCTION_HOUSE_ADDRESS,
-                functionName: 'createBid',
-                args: [props.id, 7],
-                value: bid,
-                chainId: 1,
-              })
-            }
-            isLoading={write.isPending}
+            onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
+            isLoading={bidMutation.isPending}
           />
         </>
       )}
