@@ -1,6 +1,7 @@
+import '@rainbow-me/rainbowkit/styles.css';
 import Link from 'next/link';
 import Text, { textStyle } from './Text';
-import { ConnectKitButton } from 'connectkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Icon } from './BidsTable';
 import { trpc } from '../utils/trpc';
 import { useState } from 'react';
@@ -14,14 +15,28 @@ export default function SiteHeader() {
         <Link href="/">nouns.sh</Link>
       </Text>
       <Text variant="title-3" bold>
-        <ConnectKitButton.Custom>
-          {({ isConnected, isConnecting, show, hide, address, ensName, unsupported }) => {
+        <ConnectButton.Custom>
+          {({
+            account,
+            chain,
+            openAccountModal,
+            openChainModal,
+            openConnectModal,
+            authenticationStatus,
+            mounted,
+          }) => {
+            const ready = mounted && authenticationStatus !== 'loading';
+            const isConnected =
+              ready &&
+              account &&
+              chain &&
+              (!authenticationStatus || authenticationStatus === 'authenticated');
             return (
               <div>
                 {(() => {
                   if (!isConnected) {
                     return (
-                      <button className="connect-wallet" onClick={show} type="button">
+                      <button className="connect-wallet" onClick={openConnectModal} type="button">
                         Connect&nbsp;Wallet
                       </button>
                     );
@@ -29,10 +44,13 @@ export default function SiteHeader() {
 
                   return (
                     <div className="account">
-                      <button onClick={show} type="button">
-                        {address && <Icon address={address} />}
+                      <button
+                        onClick={chain.unsupported ? openChainModal : openAccountModal}
+                        type="button"
+                      >
+                        {account && <Icon address={account.address} />}
                         <Text variant="title-3" bold>
-                          <div className="ens">{ensName}</div>
+                          <div className="ens">{account.ensName}</div>
                         </Text>
                         <Chevron />
                       </button>
@@ -42,7 +60,7 @@ export default function SiteHeader() {
               </div>
             );
           }}
-        </ConnectKitButton.Custom>
+        </ConnectButton.Custom>
       </Text>
       <style jsx>{`
         .container {

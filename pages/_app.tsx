@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConnectKitProvider, getDefaultConfig } from 'connectkit';
+import { getDefaultConfig, midnightTheme, RainbowKitProvider, Theme } from '@rainbow-me/rainbowkit';
 import type { AppProps } from 'next/app';
 import { withTRPC } from '@trpc/next';
 import { type AppRouter } from '../server/api/router';
@@ -11,6 +11,7 @@ import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
 import Head from 'next/head';
+import merge from 'lodash.merge';
 
 const { publicRuntimeConfig } = getConfig();
 const { APP_URL } = publicRuntimeConfig;
@@ -21,39 +22,39 @@ declare module 'wagmi' {
   }
 }
 
-const config = createConfig(
-  getDefaultConfig({
-    // Your dApps chains
-    chains: [mainnet],
-    transports: {
-      [mainnet.id]: http(process.env.PROVIDER_URL!),
-    },
+const config = getDefaultConfig({
+  chains: [mainnet],
+  transports: {
+    [mainnet.id]: http(process.env.PROVIDER_URL!),
+  },
 
-    walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
 
-    // Required App Info
-    appName: 'Nouns Terminal',
+  // Required App Info
+  appName: 'Nouns Terminal',
 
-    // Optional App Info
-    appDescription: 'Advanced interface for Nouns Auction',
-    appUrl: 'https://nouns.sh/', // your app's url
-    appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
-  }),
-);
+  // Optional App Info
+  appDescription: 'Advanced interface for Nouns Auction',
+  appUrl: 'https://nouns.sh/', // your app's url
+  appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
+});
 
 const queryClient = new QueryClient();
+
+const customTheme = merge(midnightTheme(), {
+  colors: {
+    modalBackground: 'var(--surface-bg)',
+  },
+  fonts: {
+    body: '"Proto Mono", sans-serif',
+  },
+} as Theme);
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider
-          theme="midnight"
-          customTheme={{
-            '--ck-border-radius': 0,
-            '--ck-font-family': '"Proto Mono", sans-serif',
-          }}
-        >
+        <RainbowKitProvider theme={customTheme}>
           <Component {...pageProps} />
           <LiveStatus />
           <Head>
@@ -70,7 +71,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <meta name="twitter:image" content="https://nouns.sh/og_image.png" />
             <link rel="icon" href="/favicon.png" />
           </Head>
-        </ConnectKitProvider>
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
