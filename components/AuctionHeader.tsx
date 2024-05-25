@@ -2,7 +2,7 @@
 import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
-import { NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
+import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
 import Text from './Text';
@@ -58,11 +58,11 @@ export default function AuctionHeader(props: Props) {
         await switchChainAsync({ chainId: 1 });
       }
       await write.writeContractAsync({
-        __mode: 'prepared',
+        __mode: 'prepared', //  We are using this to allow the user's wallet to simulate the transaction and show if they don't have enough money
         abi,
         address: NOUNS_AUCTION_HOUSE_ADDRESS,
         functionName: 'createBid',
-        args: [props.id, 7],
+        args: [props.id, CLIENT_ID],
         value: bid,
         chainId: 1,
       });
