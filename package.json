@@ -41,7 +41,7 @@
     "ethers-multicall-provider": "^6.3.0",
     "express": "^4.19.2",
     "express-winston": "^4.2.0",
-    "jotai": "^2.8.0",
+    "jotai": "^2.8.1",
     "next": "^14.2.3",
     "pg": "^8.11.5",
     "prettier": "^3.2.5",
