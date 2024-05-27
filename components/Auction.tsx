@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
@@ -40,7 +40,7 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
           <BidsTable bids={data.bids} wallets={data.wallets} ended={ended} />
         </>
       )}
-      {!ended && <LiveMarquee />}
+      {!ended && <LiveMarquee to={data.auction.endTime * 1000} />}
       <style jsx>{`
         .auction {
           padding: var(--s1);
@@ -66,19 +66,31 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
   );
 }
 
-function LiveMarquee() {
+function LiveMarquee({ to }: { to: number }) {
   const isLive = useIsLive();
+  const now = useNow();
+  const delta = to - now;
+  const isFinalizing = delta <= 0;
 
   return (
     <div className="live">
       <div className="content">
-        {(isLive ? '↑ LIVE AUCTION ' : 'LOADING…\u00A0\u00A0').repeat(50)}
+        {(isLive
+          ? isFinalizing
+            ? '↑ FINALIZING\u00A0\u00A0'
+            : '↑ LIVE AUCTION '
+          : 'LOADING…\u00A0\u00A0'
+        ).repeat(50)}
       </div>
 
       <style jsx>{`
         .live {
           color: var(--dark-bg);
-          background-color: ${isLive ? 'var(--green)' : 'var(--hint-text)'};
+          background-color: ${isLive
+            ? isFinalizing
+              ? 'var(--yellow)'
+              : 'var(--green)'
+            : 'var(--hint-text)'};
           overflow: hidden;
           white-space: nowrap;
           margin: var(--s1) calc(0px - var(--s1)) 0;
@@ -99,4 +111,17 @@ function LiveMarquee() {
       `}</style>
     </div>
   );
+}
+
+function useNow() {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return now;
 }
