@@ -8,7 +8,7 @@ import Stack from './Stack';
 import Text from './Text';
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { type Noun } from '../server/api/types';
+import { Bid, type Noun } from '../server/api/types';
 import Head from 'next/head';
 import { hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
@@ -23,6 +23,7 @@ type Props = {
   winnerENS: string | null;
   winnerAddress: string | null;
   noun: Noun | null;
+  onSubmitBid: (bid: Bid) => unknown;
 };
 
 const abi = [
@@ -47,7 +48,7 @@ const abi = [
 ];
 
 export default function AuctionHeader(props: Props) {
-  const { isConnected, chainId } = useAccount();
+  const { isConnected, chainId, address } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
@@ -57,7 +58,7 @@ export default function AuctionHeader(props: Props) {
       if (chainId !== 1) {
         await switchChainAsync({ chainId: 1 });
       }
-      await write.writeContractAsync({
+      const tx = await write.writeContractAsync({
         __mode: 'prepared', //  We are using this to allow the user's wallet to simulate the transaction and show if they don't have enough money
         abi,
         address: NOUNS_AUCTION_HOUSE_ADDRESS,
@@ -65,6 +66,21 @@ export default function AuctionHeader(props: Props) {
         args: [props.id, CLIENT_ID],
         value: bid,
         chainId: 1,
+      });
+
+      if (!address) {
+        return;
+      }
+
+      props.onSubmitBid({
+        tx,
+        walletAddress: address,
+        value: bid.toString(),
+        extended: false,
+        timestamp: Date.now(),
+        maxFeePerGas: '0',
+        walletBalance: null,
+        pending: true,
       });
     },
   });
