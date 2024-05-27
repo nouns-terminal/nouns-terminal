@@ -183,7 +183,7 @@ export default function AuctionHeader(props: Props) {
 function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
-  return <>{delta <= 0 ? 'Now' : formatTimeLeft(delta)}</>;
+  return <>{delta <= 0 ? 'Finalizing' : formatTimeLeft(delta)}</>;
 }
 
 function formatBidValue(value: bigint) {
