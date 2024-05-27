@@ -59,6 +59,7 @@ export default function BidsTable(props: Props) {
               onMouseEnter={() => setAddress(bid.walletAddress)}
               onMouseLeave={() => setAddress('')}
               className={address === bid.walletAddress ? 'hovered' : ''}
+              style={{ opacity: bid.pending ? 0.5 : 1 }}
             >
               <td>
                 <Icon address={bid.walletAddress} />
