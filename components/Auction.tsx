@@ -86,14 +86,14 @@ function LiveMarquee({ to }: { to: number }) {
   const isLive = useIsLive();
   const now = useNow();
   const delta = to - now;
-  const isFinalizing = delta <= 0;
+  const isSettling = delta <= 0;
 
   return (
     <div className="live">
       <div className="content">
         {(isLive
-          ? isFinalizing
-            ? '↑ FINALIZING\u00A0\u00A0'
+          ? isSettling
+            ? '↑ SETTLING\u00A0\u00A0'
             : '↑ LIVE AUCTION '
           : 'LOADING…\u00A0\u00A0'
         ).repeat(50)}
@@ -103,7 +103,7 @@ function LiveMarquee({ to }: { to: number }) {
         .live {
           color: var(--dark-bg);
           background-color: ${isLive
-            ? isFinalizing
+            ? isSettling
               ? 'var(--yellow)'
               : 'var(--green)'
             : 'var(--hint-text)'};
