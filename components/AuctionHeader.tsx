@@ -1,16 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
-import { useAccount, useSwitchChain, useWriteContract } from 'wagmi';
+import { useAccount, useSwitchChain, useWriteContract, useEnsName } from 'wagmi';
 import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
 import Text from './Text';
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { Bid, type Noun } from '../server/api/types';
+import { type Noun } from '../server/api/types';
 import Head from 'next/head';
-import { hoveredAddress } from './BidsTable';
+import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 
@@ -23,7 +23,7 @@ type Props = {
   winnerENS: string | null;
   winnerAddress: string | null;
   noun: Noun | null;
-  onSubmitBid: (bid: Bid) => unknown;
+  onSubmitBid: (bid: PendingBid) => unknown;
 };
 
 const abi = [
@@ -49,6 +49,7 @@ const abi = [
 
 export default function AuctionHeader(props: Props) {
   const { isConnected, chainId, address } = useAccount();
+  const { data } = useEnsName({ address });
   const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
@@ -75,12 +76,12 @@ export default function AuctionHeader(props: Props) {
       props.onSubmitBid({
         tx,
         walletAddress: address,
+        ens: data ?? null,
         value: bid.toString(),
         extended: false,
         timestamp: Date.now(),
         maxFeePerGas: '0',
         walletBalance: null,
-        pending: true,
       });
     },
   });

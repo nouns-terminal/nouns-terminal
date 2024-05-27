@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Bid, type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
-import BidsTable from './BidsTable';
+import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
 
 export default function Auction({ auctionId }: { auctionId?: number }) {
   const [data, setData] = useState<AuctionData | null | undefined>();
-  const [pendingBid, setPendingBid] = useState<Bid | null>();
+  const [pendingBid, setPendingBid] = useState<PendingBid | null>(null);
 
   trpc.onLatest.useSubscription(
     { auctionId },
     {
       onData: (data) => {
         setData(data);
-        if (data.bids.find((b) => b.tx === pendingBid?.tx)) {
+        if (data.bids.find((b) => pendingBid && b.tx === pendingBid.tx)) {
           setPendingBid(null);
         }
       },
@@ -44,14 +44,15 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
         ended={ended}
         onSubmitBid={setPendingBid}
       />
-      {data.bids.length < 1 ? (
+      {!pendingBid && data.bids.length < 1 ? (
         <div className="info">No bids yet</div>
       ) : (
         <>
           <div className="hr" />
           <BidsTable
-            bids={pendingBid ? [pendingBid, ...data.bids] : data.bids}
+            bids={data.bids}
             wallets={data.wallets}
+            pendingBid={pendingBid}
             ended={ended}
           />
         </>
