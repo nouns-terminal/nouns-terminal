@@ -8,9 +8,12 @@ import { atom, useAtom } from 'jotai';
 
 export const hoveredAddress = atom('');
 
+export type PendingBid = Bid & { ens: string | null };
+
 type Props = {
   bids: readonly Bid[];
   wallets: readonly Wallet[];
+  pendingBid: PendingBid | null;
   ended: boolean;
 };
 
@@ -21,7 +24,19 @@ export default function BidsTable(props: Props) {
     props.wallets.map((wallet) => [wallet.address, wallet]),
   );
 
-  if (props.bids.length === 0) {
+  if (props.pendingBid && !lookup[props.pendingBid.walletAddress]) {
+    lookup[props.pendingBid.walletAddress] = {
+      address: props.pendingBid.walletAddress,
+      ens: props.pendingBid.ens,
+      bids: 1,
+      nouns: 0,
+      wins: 0,
+    };
+  }
+
+  const bids = props.pendingBid ? [props.pendingBid, ...props.bids] : props.bids;
+
+  if (bids.length === 0) {
     return null;
   }
 
@@ -53,13 +68,13 @@ export default function BidsTable(props: Props) {
             <th>#Wins</th>
             <th>When</th>
           </tr>
-          {props.bids.map((bid, index) => (
+          {bids.map((bid, index) => (
             <tr
               key={bid.tx}
               onMouseEnter={() => setAddress(bid.walletAddress)}
               onMouseLeave={() => setAddress('')}
               className={address === bid.walletAddress ? 'hovered' : ''}
-              style={{ opacity: bid.pending ? 0.5 : 1 }}
+              style={{ opacity: bid === props.pendingBid ? 0.5 : 1 }}
             >
               <td>
                 <Icon address={bid.walletAddress} />
