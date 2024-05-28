@@ -12,6 +12,7 @@ import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
 import Head from 'next/head';
 import merge from 'lodash.merge';
+import Script from 'next/script';
 
 const { publicRuntimeConfig } = getConfig();
 const { APP_URL } = publicRuntimeConfig;
@@ -71,6 +72,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             <meta name="twitter:image" content="https://nouns.sh/og_image.png" />
             <link rel="icon" href="/favicon.png" />
           </Head>
+          {process.env.NODE_ENV === 'production' && (
+            <Script
+              defer
+              src="https://stats.nouns.sh/script.js"
+              data-website-id="f7100e88-79e8-4336-ba41-55085c5c4d02"
+            />
+          )}
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
