@@ -3,12 +3,9 @@ import Link from 'next/link';
 import Text, { textStyle } from './Text';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Icon } from './BidsTable';
-import { trpc } from '../utils/trpc';
 import { useEffect, useState } from 'react';
 
 export default function SiteHeader() {
-  const [online, setOnline] = useState(0);
-  trpc.online.useSubscription(undefined, { onData: setOnline });
   return (
     <div className="container">
       <Text variant="title-1" bold color="yellow">

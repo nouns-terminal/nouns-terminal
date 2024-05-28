@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Bid, type AuctionData } from '../server/api/types';
+import { type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
 import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
+import { useAccount } from 'wagmi';
 
 export default function Auction({ auctionId }: { auctionId?: number }) {
   const [data, setData] = useState<AuctionData | null | undefined>();
@@ -84,21 +85,21 @@ export default function Auction({ auctionId }: { auctionId?: number }) {
 }
 
 function LiveMarquee({ to }: { to: number }) {
+  const [online, setOnline] = useState(0);
   const isLive = useIsLive();
   const now = useNow();
   const delta = to - now;
   const isSettling = delta <= 0;
+  const { address } = useAccount();
+  const userStatus = `${online} ${online > 1 ? 'users' : 'user'} ONLINE `;
+  const liveStatus = isSettling ? '↑ SETTLING\u00A0 ↑ ' : '↑ LIVE AUCTION ↑ ';
+  const status = isLive ? liveStatus + userStatus : 'LOADING…\u00A0\u00A0';
+
+  trpc.online.useSubscription({ address }, { onData: setOnline });
 
   return (
     <div className="live">
-      <div className="content">
-        {(isLive
-          ? isSettling
-            ? '↑ SETTLING\u00A0\u00A0'
-            : '↑ LIVE AUCTION '
-          : 'LOADING…\u00A0\u00A0'
-        ).repeat(50)}
-      </div>
+      <div className="content">{status.repeat(50)}</div>
 
       <style jsx>{`
         .live {

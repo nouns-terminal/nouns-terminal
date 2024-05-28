@@ -12,7 +12,9 @@ const t = initTRPC.context().create();
 const router = t.router;
 const procedure = t.procedure;
 const ee = new EventEmitter().setMaxListeners(Infinity);
-let alive = 0;
+
+let anonymousOnline = 0;
+const addressToSessions = new Map<string, number>();
 
 export const appRouter = router({
   latest: procedure
@@ -44,22 +46,44 @@ export const appRouter = router({
       });
     });
   }),
-  online: procedure.subscription(() => {
-    return observable<number>((emit) => {
-      const onChange = () => {
-        emit.next(alive);
-      };
+  online: procedure
+    .input(
+      z.object({
+        address: z.string().optional(),
+      }),
+    )
+    .subscription(({ input }) => {
+      return observable<number>((emit) => {
+        const onChange = () => {
+          // Get the number of sessions
+          emit.next(addressToSessions.size + anonymousOnline);
+        };
 
-      alive++;
-      ee.on('change', onChange);
-      ee.emit('change');
-      return () => {
-        alive--;
-        ee.off('change', onChange);
+        if (!input.address) {
+          anonymousOnline++;
+        } else {
+          const userSessions = addressToSessions.get(input.address) || 0;
+          addressToSessions.set(input.address, userSessions + 1);
+        }
+
+        ee.on('change', onChange);
         ee.emit('change');
-      };
-    });
-  }),
+        return () => {
+          if (!input.address) {
+            anonymousOnline--;
+          } else {
+            const userSessions = addressToSessions.get(input.address);
+            if (userSessions === 1) {
+              addressToSessions.delete(input.address);
+            } else {
+              addressToSessions.set(input.address, userSessions! - 1);
+            }
+          }
+          ee.off('change', onChange);
+          ee.emit('change');
+        };
+      });
+    }),
 });
 
 export type AppRouter = typeof appRouter;
