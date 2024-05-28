@@ -4,7 +4,7 @@ import Text, { textStyle } from './Text';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Icon } from './BidsTable';
 import { trpc } from '../utils/trpc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SiteHeader() {
   const [online, setOnline] = useState(0);
@@ -32,7 +32,16 @@ export default function SiteHeader() {
               chain &&
               (!authenticationStatus || authenticationStatus === 'authenticated');
             return (
-              <div>
+              <div
+                {...(!ready && {
+                  'aria-hidden': true,
+                  style: {
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                  },
+                })}
+              >
                 {(() => {
                   if (!isConnected) {
                     return (
@@ -50,7 +59,13 @@ export default function SiteHeader() {
                       >
                         {account && <Icon address={account.address} />}
                         <Text variant="title-3" bold>
-                          <div className="ens">{account.ensName}</div>
+                          <div className="ens">
+                            <ENSCache
+                              key={account.address}
+                              address={account.address}
+                              ens={account.ensName}
+                            />
+                          </div>
                         </Text>
                         <Chevron />
                       </button>
@@ -111,6 +126,19 @@ export default function SiteHeader() {
       `}</style>
     </div>
   );
+}
+
+function ENSCache({ address, ens }: { address: string; ens?: string }) {
+  const [cachedEns, setCachedEns] = useState(() => localStorage.getItem('nouns.sh-' + address));
+
+  useEffect(() => {
+    if (ens && ens !== cachedEns) {
+      setCachedEns(ens);
+      localStorage.setItem('nouns.sh-' + address, ens);
+    }
+  }, [ens, cachedEns, address]);
+
+  return ens ?? cachedEns ?? address;
 }
 
 function Chevron() {
