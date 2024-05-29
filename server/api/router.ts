@@ -1,7 +1,7 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 import { Vitals } from './types';
-import getAuctionData, { getLiveAuctionData } from '../getAuctionData';
+import { getLiveAuctionData } from '../getAuctionData';
 import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
@@ -17,15 +17,6 @@ let anonymousOnline = 0;
 const addressToSessions = new Map<string, number>();
 
 export const appRouter = router({
-  latest: procedure
-    .input(
-      z.object({
-        auctionId: z.number().nullish(),
-      }),
-    )
-    .query(async ({ input }) => {
-      return getAuctionData(input.auctionId);
-    }),
   onLatest: procedure
     .input(
       z.object({
