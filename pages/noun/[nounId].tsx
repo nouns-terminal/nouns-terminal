@@ -3,20 +3,26 @@ import SiteHead from '../../components/SiteHead';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import getAuctionData from '../../server/getAuctionData';
-import { AuctionData } from '../../server/api/types';
+import { AuctionData, Wallet } from '../../server/api/types';
 
 export default function NounAuctionPage({ auctionData }: { auctionData: AuctionData }) {
+  const lookup: { [address: string]: Wallet } = Object.fromEntries(
+    auctionData.wallets.map((wallet) => [wallet.address, wallet]),
+  );
+
   const data = {
     nounId: auctionData.auction.id,
     startTime: auctionData.auction.startTime,
-    winner: auctionData.auction.winner,
+    winnerAddress: auctionData.auction.winner,
+    winnerENS: lookup[auctionData.auction.winner ?? '']?.ens || null,
     price: auctionData.auction.price,
     noun: auctionData.noun,
   };
+
   const dataStr = encodeURIComponent(JSON.stringify(data));
   const imgUrl = `/api/opengraph-image?data=${dataStr}`;
+
   return (
     <>
       <SiteHead
@@ -34,6 +40,12 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const auctionId = Number(context.query.nounId) > 0 ? Number(context.query.nounId) : 0;
   const auctionData = await getAuctionData(auctionId);
+
+  if (!auctionData || !auctionData.auction) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

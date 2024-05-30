@@ -30,24 +30,6 @@ export default function Auction({
 
   if (!data) {
     return null;
-  } else if (!data.auction) {
-    return (
-      <>
-        <div className="error-message">No auction found for this Noun.</div>
-        <style jsx>{`
-          .error-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-        `}</style>
-      </>
-    );
   }
 
   const ended = !!data.auction.price;
