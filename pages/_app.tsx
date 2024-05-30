@@ -1,5 +1,5 @@
 import '../styles/globals.css';
-import { WagmiProvider, createConfig, http } from 'wagmi';
+import { WagmiProvider, http } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getDefaultConfig, midnightTheme, RainbowKitProvider, Theme } from '@rainbow-me/rainbowkit';
@@ -10,7 +10,6 @@ import { createWSClient, wsLink } from '@trpc/client/links/wsLink';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
-import Head from 'next/head';
 import merge from 'lodash.merge';
 import Script from 'next/script';
 
@@ -58,20 +57,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <RainbowKitProvider theme={customTheme}>
           <Component {...pageProps} />
           <LiveStatus />
-          <Head>
-            <title>Nouns Terminal</title>
-            <meta name="description" content="Advanced interface for Nouns Auction" />
-            <meta property="og:title" content="Nouns Terminal" />
-            <meta property="og:description" content="Advanced interface for Nouns Auction" />
-            <meta property="og:url" content="https://nouns.sh/" />
-            <meta property="og:image" content="https://nouns.sh/og_image.png" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:creator" content="@w1nt3r_eth" />
-            <meta name="twitter:title" content="Nouns Terminal" />
-            <meta name="twitter:description" content="Advanced interface for Nouns Auction" />
-            <meta name="twitter:image" content="https://nouns.sh/og_image.png" />
-            <link rel="icon" href="/favicon.png" />
-          </Head>
           {process.env.NODE_ENV === 'production' && (
             <Script
               defer

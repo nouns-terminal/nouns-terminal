@@ -3,12 +3,14 @@ import { useState } from 'react';
 import Auction from '../components/Auction';
 import SiteFooter from '../components/SiteFooter';
 import SiteHeader from '../components/SiteHeader';
+import SiteHead from '../components/SiteHead';
 
 const Home: NextPage = () => {
   const [limit, setLimit] = useState(4);
 
   return (
     <div>
+      <SiteHead />
       <SiteHeader />
       <SiteFooter />
       <Auction />
