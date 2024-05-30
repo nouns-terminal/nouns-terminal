@@ -98,7 +98,12 @@ export default function BidsTable(props: Props) {
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
               <td>
-                <a target="_blank" rel="noreferrer" href={`https://etherscan.io/tx/${bid.tx}`}>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://etherscan.io/tx/${bid.tx}`}
+                  suppressHydrationWarning
+                >
                   {bid.timestamp
                     ? new Date(bid.timestamp * 1000)
                         .toLocaleString()

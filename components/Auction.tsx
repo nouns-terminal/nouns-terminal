@@ -6,8 +6,14 @@ import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
 import { useAccount } from 'wagmi';
 
-export default function Auction({ auctionId }: { auctionId?: number }) {
-  const [data, setData] = useState<AuctionData | null | undefined>();
+export default function Auction({
+  auctionId,
+  auctionData,
+}: {
+  auctionId?: number;
+  auctionData?: AuctionData;
+}) {
+  const [data, setData] = useState<AuctionData | null | undefined>(auctionData);
   const [pendingBid, setPendingBid] = useState<PendingBid | null>(null);
 
   trpc.onLatest.useSubscription(
