@@ -15,7 +15,7 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
     noun: auctionData.noun,
   };
   const dataStr = encodeURIComponent(JSON.stringify(data));
-  const imgUrl = `${process.env.APP_URL ? process.env.APP_URL : 'http://localhost:3003'}/api/opengraph-image?data=${dataStr}`;
+  const imgUrl = `/api/opengraph-image?data=${dataStr}`;
   return (
     <>
       <Head>
@@ -32,7 +32,7 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
         <meta name="twitter:image" content={imgUrl} />
       </Head>
       <SiteHeader />
-      <Auction auctionId={auctionData.auction.id} />
+      <Auction auctionId={auctionData.auction.id} auctionData={auctionData} />
       <SiteFooter />
     </>
   );
