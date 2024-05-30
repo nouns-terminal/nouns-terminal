@@ -13,7 +13,7 @@ export default async function handler(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const dataStr = searchParams.get('data');
   const data = JSON.parse(decodeURIComponent(dataStr || ''));
-  const { nounId, startTime, winner, price, noun } = data;
+  const { nounId, startTime, winnerAddress, winnerENS, price, noun } = data;
   const fontData = await fetch(
     new URL('../../public/fonts/ProtoMono-Regular.otf', import.meta.url),
   ).then((res) => res.arrayBuffer());
@@ -29,10 +29,9 @@ export default async function handler(req: NextRequest) {
           display: 'flex',
           width: '100%',
           height: '100%',
-          paddingLeft: '20px',
+          padding: '40px',
           fontFamily: '"Proto Mono", sans-serif',
-          backgroundColor: '#13202F',
-          color: '#E0E0E0',
+          backgroundColor: '#000000',
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
@@ -43,6 +42,7 @@ export default async function handler(req: NextRequest) {
               flexDirection: 'column',
               alignContent: 'center',
               justifyContent: 'center',
+              color: '#E0E0E0',
               marginLeft: '50px',
             }}
           >
@@ -56,7 +56,6 @@ export default async function handler(req: NextRequest) {
               <div
                 style={{
                   display: 'flex',
-                  color: '#8A95A3',
                   fontSize: 25,
                 }}
               >
@@ -82,7 +81,7 @@ export default async function handler(req: NextRequest) {
               <div
                 style={{
                   display: 'flex',
-                  color: '#5B6674',
+                  color: '#999999',
                   fontSize: 25,
                 }}
               >
@@ -91,7 +90,6 @@ export default async function handler(req: NextRequest) {
               <div
                 style={{
                   display: 'flex',
-                  color: '#8A95A3',
                   fontSize: 45,
                 }}
               >
@@ -107,7 +105,7 @@ export default async function handler(req: NextRequest) {
               <div
                 style={{
                   display: 'flex',
-                  color: '#5B6674',
+                  color: '#999999',
                   fontSize: 25,
                 }}
               >
@@ -116,7 +114,6 @@ export default async function handler(req: NextRequest) {
               <div
                 style={{
                   display: 'flex',
-                  color: '#8A95A3',
                   fontSize: 45,
                   overflow: 'hidden',
                   whiteSpace: 'nowrap',
@@ -124,7 +121,7 @@ export default async function handler(req: NextRequest) {
                   maxWidth: '400px',
                 }}
               >
-                {winner || '—'}
+                {winnerENS || winnerAddress || '—'}
               </div>
             </div>
           </div>

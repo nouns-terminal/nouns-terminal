@@ -75,6 +75,7 @@ a {
 
 html {
   color-scheme: dark;
+  background: var(--dark-bg);
 }
 body {
   color: var(--bright-text);
