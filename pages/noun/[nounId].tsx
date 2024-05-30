@@ -1,4 +1,5 @@
 import Auction from '../../components/Auction';
+import SiteHead from '../../components/SiteHead';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import { GetServerSideProps } from 'next';
@@ -18,19 +19,11 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
   const imgUrl = `/api/opengraph-image?data=${dataStr}`;
   return (
     <>
-      <Head>
-        <title>Noun {auctionData.auction.id}</title>
-        <meta name="description" content="Advanced interface for Nouns Auction" />
-        <meta property="og:title" content={`Noun ${auctionData.auction.id}`} />
-        <meta property="og:description" content="Advanced interface for Nouns Auction" />
-        <meta property="og:image" content={imgUrl} />
-        <meta property="og:url" content={`https://nouns.sh/noun/${auctionData.auction.id}`} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:creator" content="@w1nt3r_eth" />
-        <meta name="twitter:title" content={`Noun ${auctionData.auction.id}`} />
-        <meta name="twitter:description" content="Advanced interface for Nouns Auction" />
-        <meta name="twitter:image" content={imgUrl} />
-      </Head>
+      <SiteHead
+        title={`Noun ${auctionData.auction.id}`}
+        image={imgUrl}
+        url={`https://nouns.sh/noun/${auctionData.auction.id}`}
+      />
       <SiteHeader />
       <Auction auctionId={auctionData.auction.id} auctionData={auctionData} />
       <SiteFooter />
