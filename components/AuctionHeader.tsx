@@ -122,11 +122,13 @@ export default function AuctionHeader(props: Props) {
       </a>
       <Stack direction="column" gap={-1}>
         <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
-          {new Date(props.startTime * 1000).toDateString()}
+          <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
         </Text>
-        <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
-          Noun {props.id}
-        </Text>
+        <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
+          <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
+            Noun {props.id}
+          </Text>
+        </a>
       </Stack>
       <Stack direction="column" gap={-1}>
         <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
@@ -162,14 +164,14 @@ export default function AuctionHeader(props: Props) {
         </Stack>
       )}
       {!props.ended && isConnected && (
-        <>
+        <ClientOnly>
           <div style={{ flex: 1 }} />
           <Bidding
             currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
             onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
             isLoading={bidMutation.isPending}
           />
-        </>
+        </ClientOnly>
       )}
       <style jsx>{`
         .address {
@@ -200,7 +202,14 @@ export default function AuctionHeader(props: Props) {
 function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
-  return <>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</>;
+  return <span suppressHydrationWarning>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</span>;
+}
+
+// TODO: Extract to a separate file
+function ClientOnly({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted ? <>{children}</> : <></>;
 }
 
 function formatBidValue(value: bigint) {
