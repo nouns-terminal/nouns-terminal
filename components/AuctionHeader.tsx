@@ -13,6 +13,7 @@ import Head from 'next/head';
 import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
+import ClientOnly from './ClientOnly';
 
 type Props = {
   id: number;
@@ -203,13 +204,6 @@ function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
   return <span suppressHydrationWarning>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</span>;
-}
-
-// TODO: Extract to a separate file
-function ClientOnly({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  return mounted ? <>{children}</> : <></>;
 }
 
 function formatBidValue(value: bigint) {
