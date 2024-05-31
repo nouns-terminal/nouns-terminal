@@ -520,7 +520,6 @@ export interface IGetBidsByAuctionIdParams {
 
 /** 'GetBidsByAuctionId' return type */
 export interface IGetBidsByAuctionIdResult {
-  clientId: number | null;
   extended: boolean;
   maxFeePerGas: string | null;
   timestamp: number | null;
@@ -536,7 +535,7 @@ export interface IGetBidsByAuctionIdQuery {
   result: IGetBidsByAuctionIdResult;
 }
 
-const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":213,"b":216}]}],"statement":"SELECT\n  bid.\"tx\", \n  bid.\"walletAddress\", \n  bid.\"value\"::TEXT,\n  bid.\"walletBalance\"::TEXT,\n  bid.\"extended\",\n  bid.\"timestamp\",\n  bid.\"clientId\",\n  bid.\"maxFeePerGas\"::TEXT\nFROM\n  bid\nWHERE\n  bid.\"auctionId\" = :id!::INTEGER\nORDER BY\n  bid.value DESC"};
+const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":195,"b":198}]}],"statement":"SELECT\n  bid.\"tx\", \n  bid.\"walletAddress\", \n  bid.\"value\"::TEXT,\n  bid.\"walletBalance\"::TEXT,\n  bid.\"extended\",\n  bid.\"timestamp\",\n  bid.\"maxFeePerGas\"::TEXT\nFROM\n  bid\nWHERE\n  bid.\"auctionId\" = :id!::INTEGER\nORDER BY\n  bid.value DESC"};
 
 /**
  * Query generated from SQL:
@@ -548,7 +547,6 @@ const getBidsByAuctionIdIR: any = {"usedParamSet":{"id":true},"params":[{"name":
  *   bid."walletBalance"::TEXT,
  *   bid."extended",
  *   bid."timestamp",
- *   bid."clientId",
  *   bid."maxFeePerGas"::TEXT
  * FROM
  *   bid
