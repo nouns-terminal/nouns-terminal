@@ -97,11 +97,7 @@ export default function BidsTable(props: Props) {
               <td>{formatBalance(bid.walletBalance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
-              <td
-                style={{
-                  width: '20vw',
-                }}
-              >
+              <td>
                 <a target="_blank" rel="noreferrer" href={`https://etherscan.io/tx/${bid.tx}`}>
                   {bid.timestamp
                     ? new Date(bid.timestamp * 1000)
@@ -110,15 +106,7 @@ export default function BidsTable(props: Props) {
                         .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
                 </a>
-                {bid.clientId && (
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    href={`https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${bid.clientId}`}
-                  >
-                    <PlaceBidIcon clientId={bid.clientId} />
-                  </a>
-                )}
+                <ClientIdIcon clientId={bid.clientId} />
               </td>
             </tr>
           ))}
@@ -261,38 +249,48 @@ function jsNumberForAddress(address: string) {
   return seed;
 }
 
-function PlaceBidIcon({ clientId }: { clientId: number }) {
+function ClientIdIcon({ clientId }: { clientId: number | null }) {
   return (
-    <span
-      title={`This bid was placed by client id: ${clientId}. Click on the icon for more information.`}
-      className="place-bid-icon"
+    <a
+      target="_blank"
+      rel="noreferrer"
+      href={`https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${clientId}`}
+      className="client-id-link"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        width={13}
-        height={13}
-        strokeWidth={1.5}
-        stroke="currentColor"
+      <span
+        title={`This bid was placed by client id: ${clientId}. Click on the icon for more information.`}
+        className="client-id-icon"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-        />
-      </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          width={13}
+          height={13}
+          strokeWidth={1.5}
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+          />
+        </svg>
+      </span>
       {/* TODO: rewrite */}
       <style jsx>{`
-        .place-bid-icon {
+        .client-id-icon {
           position: relative;
           top: 2.5px;
           margin-left: var(--s-1);
         }
-        .place-bid-icon:hover {
+        .client-id-icon:hover {
           color: var(--yellow);
         }
+        .client-id-link {
+          visibility: ${clientId ? 'visible' : 'hidden'};
+        }
       `}</style>
-    </span>
+    </a>
   );
 }
