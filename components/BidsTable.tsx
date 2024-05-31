@@ -273,6 +273,7 @@ function PlaceBidIcon({ clientId }: { clientId: number }) {
         viewBox="0 0 24 24"
         width={13}
         height={13}
+        strokeWidth={1.5}
         stroke="currentColor"
       >
         <path
@@ -281,10 +282,15 @@ function PlaceBidIcon({ clientId }: { clientId: number }) {
           d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
         />
       </svg>
+      {/* TODO: rewrite */}
       <style jsx>{`
         .place-bid-icon {
-          cursor: help;
+          position: relative;
+          top: 2.5px;
           margin-left: var(--s-1);
+        }
+        .place-bid-icon:hover {
+          color: var(--yellow);
         }
       `}</style>
     </span>
