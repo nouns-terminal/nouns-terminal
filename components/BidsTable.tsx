@@ -110,14 +110,15 @@ export default function BidsTable(props: Props) {
                         .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
                 </a>
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href={`https://opensea.io/collection/nouns-client-token`}
-                >
-                  {' '}
-                  {bid.clientId && <PlaceBidIcon clientId={bid.clientId} />}
-                </a>
+                {bid.clientId && (
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href={`https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${bid.clientId}`}
+                  >
+                    <PlaceBidIcon clientId={bid.clientId} />
+                  </a>
+                )}
               </td>
             </tr>
           ))}
@@ -280,6 +281,12 @@ function PlaceBidIcon({ clientId }: { clientId: number }) {
           d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
         />
       </svg>
+      <style jsx>{`
+        .place-bid-icon {
+          cursor: help;
+          margin-left: var(--s-1);
+        }
+      `}</style>
     </span>
   );
 }
