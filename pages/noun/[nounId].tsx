@@ -7,15 +7,12 @@ import getAuctionData from '../../server/getAuctionData';
 import { AuctionData, Wallet } from '../../server/api/types';
 
 export default function NounAuctionPage({ auctionData }: { auctionData: AuctionData }) {
-  const lookup: { [address: string]: Wallet } = Object.fromEntries(
-    auctionData.wallets.map((wallet) => [wallet.address, wallet]),
-  );
-
   const data = {
     nounId: auctionData.auction.id,
     startTime: auctionData.auction.startTime,
     winnerAddress: auctionData.auction.winner,
-    winnerENS: lookup[auctionData.auction.winner ?? '']?.ens || null,
+    winnerENS:
+      auctionData.wallets.find((wallet) => wallet.address === auctionData.auction.winner) || null,
     price: auctionData.auction.price,
     noun: auctionData.noun,
   };
@@ -28,7 +25,7 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
       <SiteHead
         title={`Noun ${auctionData.auction.id}`}
         image={imgUrl}
-        url={`https://nouns.sh/noun/${auctionData.auction.id}`}
+        url={`${process.env.APP_URL}/noun/${auctionData.auction.id}`}
       />
       <SiteHeader />
       <Auction auctionId={auctionData.auction.id} auctionData={auctionData} />
