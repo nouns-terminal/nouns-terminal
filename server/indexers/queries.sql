@@ -92,6 +92,7 @@ SELECT
   bid."walletBalance"::TEXT,
   bid."extended",
   bid."timestamp",
+  bid."clientId",
   bid."maxFeePerGas"::TEXT
 FROM
   bid

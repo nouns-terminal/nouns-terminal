@@ -82,6 +82,7 @@ export default function AuctionHeader(props: Props) {
         timestamp: Date.now(),
         maxFeePerGas: '0',
         walletBalance: null,
+        clientId: CLIENT_ID,
       });
     },
   });

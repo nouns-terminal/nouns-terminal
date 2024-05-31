@@ -97,7 +97,11 @@ export default function BidsTable(props: Props) {
               <td>{formatBalance(bid.walletBalance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
-              <td>
+              <td
+                style={{
+                  width: '20vw',
+                }}
+              >
                 <a target="_blank" rel="noreferrer" href={`https://etherscan.io/tx/${bid.tx}`}>
                   {bid.timestamp
                     ? new Date(bid.timestamp * 1000)
@@ -105,6 +109,14 @@ export default function BidsTable(props: Props) {
                         .replace(/, (\d):/, ',  $1:') // Add space to maintain the same characters count -> (6:35:23 PM) to ( 6:35:23 PM)
                         .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
+                </a>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://opensea.io/collection/nouns-client-token`}
+                >
+                  {' '}
+                  {bid.clientId && <PlaceBidIcon clientId={bid.clientId} />}
                 </a>
               </td>
             </tr>
@@ -148,7 +160,9 @@ export default function BidsTable(props: Props) {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          width: 42ch;
         }
+
         @media only screen and (max-width: 950px) {
           .address {
             max-width: 20ch;
@@ -244,4 +258,28 @@ function jsNumberForAddress(address: string) {
   const addr = address.slice(2, 10);
   const seed = parseInt(addr, 16);
   return seed;
+}
+
+function PlaceBidIcon({ clientId }: { clientId: number }) {
+  return (
+    <span
+      title={`This bid was placed by client id: ${clientId}. Click on the icon for more information.`}
+      className="place-bid-icon"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        width={13}
+        height={13}
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+        />
+      </svg>
+    </span>
+  );
 }
