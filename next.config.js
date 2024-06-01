@@ -16,6 +16,7 @@ const nextConfig = {
   },
   env: {
     PROVIDER_URL: process.env.PROVIDER_URL,
+    APP_URL: process.env.APP_URL,
   },
 };
 

@@ -1,18 +1,19 @@
 import Head from 'next/head';
-
+import { useRouter } from 'next/router';
 type Props = {
   title?: string;
   description?: string;
-  image?: string;
-  url?: string;
+  ogImageRelativePath?: string;
 };
 
 export default function SiteHead({
   title = 'Nouns Terminal',
   description = 'Advanced interface for Nouns Auction',
-  image = '/og_image.png',
-  url = process.env.APP_URL,
+  ogImageRelativePath = '/og_image.png',
 }: Props) {
+  const router = useRouter();
+  const previewImageFull = process.env.APP_URL + ogImageRelativePath;
+  const url = process.env.APP_URL + router.asPath.replace(/\/$/, '');
   return (
     <Head>
       <title>{title}</title>
@@ -20,12 +21,12 @@ export default function SiteHead({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
-      <meta property="og:image" content={image} />
+      <meta property="og:image" content={previewImageFull} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:creator" content="@w1nt3r_eth" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+      <meta name="twitter:image" content={previewImageFull} />
       <link rel="icon" href="/favicon.png" />
     </Head>
   );
