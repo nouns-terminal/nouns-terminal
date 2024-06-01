@@ -4,7 +4,7 @@ import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
 import { GetServerSideProps } from 'next';
 import getAuctionData from '../../server/getAuctionData';
-import { AuctionData, Wallet } from '../../server/api/types';
+import { AuctionData } from '../../server/api/types';
 
 export default function NounAuctionPage({ auctionData }: { auctionData: AuctionData }) {
   const data = {
@@ -12,20 +12,20 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
     startTime: auctionData.auction.startTime,
     winnerAddress: auctionData.auction.winner,
     winnerENS:
-      auctionData.wallets.find((wallet) => wallet.address === auctionData.auction.winner) || null,
+      auctionData.wallets.find((wallet) => wallet.address === auctionData.auction.winner)?.ens ||
+      null,
     price: auctionData.auction.price,
     noun: auctionData.noun,
   };
 
   const dataStr = encodeURIComponent(JSON.stringify(data));
-  const imgUrl = `/api/opengraph-image?data=${dataStr}`;
+  const ogImageRelativePath = `/api/opengraph-image?data=${dataStr}`;
 
   return (
     <>
       <SiteHead
         title={`Noun ${auctionData.auction.id}`}
-        image={imgUrl}
-        url={`${process.env.APP_URL}/noun/${auctionData.auction.id}`}
+        ogImageRelativePath={ogImageRelativePath}
       />
       <SiteHeader />
       <Auction auctionId={auctionData.auction.id} auctionData={auctionData} />
