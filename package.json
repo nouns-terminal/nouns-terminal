@@ -3,13 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "api": "tsx server/start.ts",
-    "watch": "nodemon --exec 'tsx' server/start.ts",
+    "start": "tsx server/start.ts",
+    "dev": "nodemon --exec tsx server/start.ts",
     "typechain": "typechain --target=ethers-v6 utils/abi/*.json --out-dir=typechain",
     "pgtyped": "pgtyped -c pgtyped.config.json",
-    "build": "yarn typechain && next build",
-    "start": "next start",
+    "build": "yarn typechain && yarn pgtyped && next build",
     "lint": "next lint"
   },
   "prettier": {

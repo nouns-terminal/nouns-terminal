@@ -31,9 +31,9 @@ $ yarn pgtyped
 Run sever:
 
 ```bash
-$ yarn api
+$ yarn dev
 # or
-$ yarn watch
+$ yarn start
 ```
 
 Open [http://localhost:3003](http://localhost:3003) with your browser to see the result.
