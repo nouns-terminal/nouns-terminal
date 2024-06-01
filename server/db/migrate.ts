@@ -25,7 +25,7 @@ async function main() {
 async function ensureDatabaseExists(databaseUrl: string) {
   const url = new URL(databaseUrl);
   const databaseName = url.pathname.slice(1);
-  url.pathname = '';
+  url.pathname = 'postgres';
 
   console.log(`Checking if database ${databaseName} exists at ${url.host}`);
   const pool = new Pool({ connectionString: url.toString() });

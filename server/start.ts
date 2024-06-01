@@ -16,6 +16,7 @@ import { Pool, PoolClient } from 'pg';
 import nouns from './indexers/nouns';
 import { getLatestAuction } from './db/queries';
 import balances from './indexers/balances';
+import transfers from './indexers/transfers';
 
 async function main() {
   const port = parseInt(process.env.PORT || '3003', 10);
@@ -89,6 +90,7 @@ async function main() {
     withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, provider)),
     withPgClient((connection) => transactions(connection, provider)),
     withPgClient((connection) => balances(connection, provider)),
+    withPgClient((connection) => transfers(NOUNS_TOKEN_ADDRESS, connection, provider)),
   ]);
 }
 
