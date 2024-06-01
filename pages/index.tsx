@@ -19,7 +19,9 @@ const Home: NextPage = () => {
       ))}
 
       <div className="footer-offset">
-        <button onClick={() => setLimit((limit) => limit + 5)}>Load More</button>
+        <button data-umami-event="Load More" onClick={() => setLimit((limit) => limit + 5)}>
+          Load More
+        </button>
       </div>
       <style jsx>{`
         .footer-offset {

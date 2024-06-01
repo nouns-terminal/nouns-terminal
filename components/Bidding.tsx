@@ -37,10 +37,10 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
 
   return (
     <div className="container">
-      <button className="option" onClick={() => handleBump(5)}>
+      <button data-umami-event="Plus 5%" className="option" onClick={() => handleBump(5)}>
         +5%
       </button>
-      <button className="option" onClick={() => handleBump(10)}>
+      <button data-umami-event="Plus 10%" className="option" onClick={() => handleBump(10)}>
         +10%
       </button>
       <form onSubmit={handleSubmit} onClick={() => inputRef.current?.focus()}>
@@ -57,7 +57,9 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
             Waiting…&nbsp;
           </button>
         ) : (
-          <button disabled={!isValidBid}>Place&nbsp;Bid</button>
+          <button data-umami-event="Place Bid" disabled={!isValidBid}>
+            Place&nbsp;Bid
+          </button>
         )}
       </form>
       <style jsx>{`

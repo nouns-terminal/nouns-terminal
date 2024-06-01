@@ -42,7 +42,12 @@ export default function SiteHeader() {
                 {(() => {
                   if (!isConnected) {
                     return (
-                      <button className="connect-wallet" onClick={openConnectModal} type="button">
+                      <button
+                        data-umami-event="Connect Wallet"
+                        className="connect-wallet"
+                        onClick={openConnectModal}
+                        type="button"
+                      >
                         Connect&nbsp;Wallet
                       </button>
                     );
