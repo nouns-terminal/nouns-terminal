@@ -28,6 +28,31 @@ const getAuctionLastQueriedBlockIR: any = {"usedParamSet":{},"params":[],"statem
 export const getAuctionLastQueriedBlock = new PreparedQuery<IGetAuctionLastQueriedBlockParams,IGetAuctionLastQueriedBlockResult>(getAuctionLastQueriedBlockIR);
 
 
+/** 'GetTransferLastQueriedBlock' parameters type */
+export type IGetTransferLastQueriedBlockParams = void;
+
+/** 'GetTransferLastQueriedBlock' return type */
+export interface IGetTransferLastQueriedBlockResult {
+  value: number | null;
+}
+
+/** 'GetTransferLastQueriedBlock' query type */
+export interface IGetTransferLastQueriedBlockQuery {
+  params: IGetTransferLastQueriedBlockParams;
+  result: IGetTransferLastQueriedBlockResult;
+}
+
+const getTransferLastQueriedBlockIR: any = {"usedParamSet":{},"params":[],"statement":"SELECT \"value\" FROM \"state\" WHERE \"key\" = 'transfer_last_queried_block' LIMIT 1"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT "value" FROM "state" WHERE "key" = 'transfer_last_queried_block' LIMIT 1
+ * ```
+ */
+export const getTransferLastQueriedBlock = new PreparedQuery<IGetTransferLastQueriedBlockParams,IGetTransferLastQueriedBlockResult>(getTransferLastQueriedBlockIR);
+
+
 /** 'SetAuctionLastQueriedBlock' parameters type */
 export interface ISetAuctionLastQueriedBlockParams {
   lastBlockNumber: number;
@@ -54,6 +79,34 @@ const setAuctionLastQueriedBlockIR: any = {"usedParamSet":{"lastBlockNumber":tru
  * ```
  */
 export const setAuctionLastQueriedBlock = new PreparedQuery<ISetAuctionLastQueriedBlockParams,ISetAuctionLastQueriedBlockResult>(setAuctionLastQueriedBlockIR);
+
+
+/** 'SetTransferLastQueriedBlock' parameters type */
+export interface ISetTransferLastQueriedBlockParams {
+  lastBlockNumber: number;
+}
+
+/** 'SetTransferLastQueriedBlock' return type */
+export type ISetTransferLastQueriedBlockResult = void;
+
+/** 'SetTransferLastQueriedBlock' query type */
+export interface ISetTransferLastQueriedBlockQuery {
+  params: ISetTransferLastQueriedBlockParams;
+  result: ISetTransferLastQueriedBlockResult;
+}
+
+const setTransferLastQueriedBlockIR: any = {"usedParamSet":{"lastBlockNumber":true},"params":[{"name":"lastBlockNumber","required":true,"transform":{"type":"scalar"},"locs":[{"a":76,"b":92},{"a":174,"b":190}]}],"statement":"INSERT INTO \"state\" (\"key\", \"value\")\nVALUES ('transfer_last_queried_block', :lastBlockNumber!::INTEGER)\nON CONFLICT (\"key\") DO UPDATE SET\n\"value\" = GREATEST(\"state\".\"value\", :lastBlockNumber!::INTEGER)"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * INSERT INTO "state" ("key", "value")
+ * VALUES ('transfer_last_queried_block', :lastBlockNumber!::INTEGER)
+ * ON CONFLICT ("key") DO UPDATE SET
+ * "value" = GREATEST("state"."value", :lastBlockNumber!::INTEGER)
+ * ```
+ */
+export const setTransferLastQueriedBlock = new PreparedQuery<ISetTransferLastQueriedBlockParams,ISetTransferLastQueriedBlockResult>(setTransferLastQueriedBlockIR);
 
 
 /** 'FindBidsWithMissingTransactions' parameters type */
@@ -126,8 +179,8 @@ export interface IFindUnindexedWalletsParams {
 
 /** 'FindUnindexedWallets' return type */
 export interface IFindUnindexedWalletsResult {
-  address: string;
-  auctionId: number;
+  address: string | null;
+  auctionId: number | null;
 }
 
 /** 'FindUnindexedWallets' query type */
@@ -136,15 +189,32 @@ export interface IFindUnindexedWalletsQuery {
   result: IFindUnindexedWalletsResult;
 }
 
-const findUnindexedWalletsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":195,"b":201}]}],"statement":"SELECT \"bid\".\"auctionId\", \"bid\".\"walletAddress\" as \"address\"\nFROM \"bid\"\nLEFT JOIN \"wallet\" ON \"bid\".\"walletAddress\" = \"wallet\".\"address\"\nWHERE \"ens\" IS NULL ORDER BY \"bid\".\"auctionId\" DESC LIMIT :limit!::INTEGER"};
+const findUnindexedWalletsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":494,"b":500}]}],"statement":"(\n  SELECT \n    \"bid\".\"auctionId\", \n    \"bid\".\"walletAddress\" as \"address\" \n  FROM \"bid\" \n  LEFT JOIN \"wallet\" \n    ON \"bid\".\"walletAddress\" = \"wallet\".\"address\" \n  WHERE \"wallet\".\"ens\" IS NULL AND \"bid\".\"walletAddress\" IS NOT NULL\n)\nUNION\n(\n  SELECT \n    NULL as \"auctionId\",\n    \"noun\".\"owner\" as \"address\"\n  FROM \"noun\"\n  LEFT JOIN \"wallet\"\n    ON \"noun\".\"owner\" = \"wallet\".\"address\"\n  WHERE \"wallet\".\"ens\" IS NULL AND \"noun\".\"owner\" IS NOT NULL\n)\nORDER BY \"auctionId\" DESC NULLS LAST\nLIMIT :limit!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT "bid"."auctionId", "bid"."walletAddress" as "address"
- * FROM "bid"
- * LEFT JOIN "wallet" ON "bid"."walletAddress" = "wallet"."address"
- * WHERE "ens" IS NULL ORDER BY "bid"."auctionId" DESC LIMIT :limit!::INTEGER
+ * (
+ *   SELECT 
+ *     "bid"."auctionId", 
+ *     "bid"."walletAddress" as "address" 
+ *   FROM "bid" 
+ *   LEFT JOIN "wallet" 
+ *     ON "bid"."walletAddress" = "wallet"."address" 
+ *   WHERE "wallet"."ens" IS NULL AND "bid"."walletAddress" IS NOT NULL
+ * )
+ * UNION
+ * (
+ *   SELECT 
+ *     NULL as "auctionId",
+ *     "noun"."owner" as "address"
+ *   FROM "noun"
+ *   LEFT JOIN "wallet"
+ *     ON "noun"."owner" = "wallet"."address"
+ *   WHERE "wallet"."ens" IS NULL AND "noun"."owner" IS NOT NULL
+ * )
+ * ORDER BY "auctionId" DESC NULLS LAST
+ * LIMIT :limit!::INTEGER
  * ```
  */
 export const findUnindexedWallets = new PreparedQuery<IFindUnindexedWalletsParams,IFindUnindexedWalletsResult>(findUnindexedWalletsIR);
@@ -307,7 +377,13 @@ export interface IFindUnindexedNounsParams {
 
 /** 'FindUnindexedNouns' return type */
 export interface IFindUnindexedNounsResult {
+  accessory: number | null;
+  background: number | null;
+  body: number | null;
+  glasses: number | null;
+  head: number | null;
   id: number;
+  owner: string | null;
 }
 
 /** 'FindUnindexedNouns' query type */
@@ -316,17 +392,12 @@ export interface IFindUnindexedNounsQuery {
   result: IFindUnindexedNounsResult;
 }
 
-const findUnindexedNounsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":146,"b":152}]}],"statement":"SELECT \"auction\".\"id\" as \"id\"\nFROM \"auction\"\nLEFT JOIN \"noun\" ON \"auction\".\"id\" = \"noun\".\"id\"\nWHERE \"background\" IS NULL\nORDER BY \"id\" DESC\nLIMIT :limit!::INTEGER"};
+const findUnindexedNounsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":73,"b":79}]}],"statement":"SELECT * FROM \"noun\" WHERE \"background\" IS NULL ORDER BY \"id\" DESC LIMIT :limit!::INTEGER"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT "auction"."id" as "id"
- * FROM "auction"
- * LEFT JOIN "noun" ON "auction"."id" = "noun"."id"
- * WHERE "background" IS NULL
- * ORDER BY "id" DESC
- * LIMIT :limit!::INTEGER
+ * SELECT * FROM "noun" WHERE "background" IS NULL ORDER BY "id" DESC LIMIT :limit!::INTEGER
  * ```
  */
 export const findUnindexedNouns = new PreparedQuery<IFindUnindexedNounsParams,IFindUnindexedNounsResult>(findUnindexedNounsIR);
@@ -367,6 +438,35 @@ const updateNounSeedsIR: any = {"usedParamSet":{"id":true,"background":true,"bod
  * ```
  */
 export const updateNounSeeds = new PreparedQuery<IUpdateNounSeedsParams,IUpdateNounSeedsResult>(updateNounSeedsIR);
+
+
+/** 'UpdateNounOwner' parameters type */
+export interface IUpdateNounOwnerParams {
+  id: number;
+  owner: string;
+}
+
+/** 'UpdateNounOwner' return type */
+export type IUpdateNounOwnerResult = void;
+
+/** 'UpdateNounOwner' query type */
+export interface IUpdateNounOwnerQuery {
+  params: IUpdateNounOwnerParams;
+  result: IUpdateNounOwnerResult;
+}
+
+const updateNounOwnerIR: any = {"usedParamSet":{"id":true,"owner":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":43,"b":46}]},{"name":"owner","required":true,"transform":{"type":"scalar"},"locs":[{"a":49,"b":55},{"a":103,"b":109}]}],"statement":"INSERT INTO \"noun\" (\"id\", \"owner\")\nVALUES (:id!, :owner!)\nON CONFLICT (\"id\") DO UPDATE SET\n  \"owner\" = :owner!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * INSERT INTO "noun" ("id", "owner")
+ * VALUES (:id!, :owner!)
+ * ON CONFLICT ("id") DO UPDATE SET
+ *   "owner" = :owner!
+ * ```
+ */
+export const updateNounOwner = new PreparedQuery<IUpdateNounOwnerParams,IUpdateNounOwnerResult>(updateNounOwnerIR);
 
 
 /** 'TotalNounsSupply' parameters type */
@@ -488,12 +588,13 @@ export interface IGetNounByIdParams {
 
 /** 'GetNounById' return type */
 export interface IGetNounByIdResult {
-  accessory: number;
-  background: number;
-  body: number;
-  glasses: number;
-  head: number;
+  accessory: number | null;
+  background: number | null;
+  body: number | null;
+  glasses: number | null;
+  head: number | null;
   id: number;
+  owner: string | null;
 }
 
 /** 'GetNounById' query type */

@@ -1,9 +1,18 @@
 /* @name getAuctionLastQueriedBlock */
 SELECT "value" FROM "state" WHERE "key" = 'auction_last_queried_block' LIMIT 1;
 
+/* @name getTransferLastQueriedBlock */
+SELECT "value" FROM "state" WHERE "key" = 'transfer_last_queried_block' LIMIT 1;
+
 /* @name setAuctionLastQueriedBlock */
 INSERT INTO "state" ("key", "value")
 VALUES ('auction_last_queried_block', :lastBlockNumber!::INTEGER)
+ON CONFLICT ("key") DO UPDATE SET
+"value" = GREATEST("state"."value", :lastBlockNumber!::INTEGER);
+
+/* @name setTransferLastQueriedBlock */
+INSERT INTO "state" ("key", "value")
+VALUES ('transfer_last_queried_block', :lastBlockNumber!::INTEGER)
 ON CONFLICT ("key") DO UPDATE SET
 "value" = GREATEST("state"."value", :lastBlockNumber!::INTEGER);
 
@@ -19,10 +28,27 @@ SET
 WHERE "tx" = :txHash;
 
 /* @name findUnindexedWallets */
-SELECT "bid"."auctionId", "bid"."walletAddress" as "address"
-FROM "bid"
-LEFT JOIN "wallet" ON "bid"."walletAddress" = "wallet"."address"
-WHERE "ens" IS NULL ORDER BY "bid"."auctionId" DESC LIMIT :limit!::INTEGER;
+(
+  SELECT 
+    "bid"."auctionId", 
+    "bid"."walletAddress" as "address" 
+  FROM "bid" 
+  LEFT JOIN "wallet" 
+    ON "bid"."walletAddress" = "wallet"."address" 
+  WHERE "wallet"."ens" IS NULL AND "bid"."walletAddress" IS NOT NULL
+)
+UNION
+(
+  SELECT 
+    NULL as "auctionId",
+    "noun"."owner" as "address"
+  FROM "noun"
+  LEFT JOIN "wallet"
+    ON "noun"."owner" = "wallet"."address"
+  WHERE "wallet"."ens" IS NULL AND "noun"."owner" IS NOT NULL
+)
+ORDER BY "auctionId" DESC NULLS LAST
+LIMIT :limit!::INTEGER;
 
 /* @name updateWalletData */
 INSERT INTO "wallet" ("address", "ens", "nouns")
@@ -35,6 +61,7 @@ ON CONFLICT ("address") DO UPDATE SET
 INSERT INTO auction("id", "startTime", "endTime")
 VALUES (:id!, :startTime!, :endTime!)
 ON CONFLICT DO NOTHING;
+
 
 /* @name updateAuctionExtended */
 UPDATE auction
@@ -52,12 +79,7 @@ VALUES (:tx!, :index!, :auctionId!, :walletAddress!, :value!, 0, :block!, :exten
 ON CONFLICT DO NOTHING;
 
 /* @name findUnindexedNouns */
-SELECT "auction"."id" as "id"
-FROM "auction"
-LEFT JOIN "noun" ON "auction"."id" = "noun"."id"
-WHERE "background" IS NULL
-ORDER BY "id" DESC
-LIMIT :limit!::INTEGER;
+SELECT * FROM "noun" WHERE "background" IS NULL ORDER BY "id" DESC LIMIT :limit!::INTEGER;
 
 /* @name updateNounSeeds */
 INSERT INTO "noun" ("id", "background", "body", "accessory", "head", "glasses")
@@ -68,6 +90,12 @@ ON CONFLICT ("id") DO UPDATE SET
   "accessory" = :accessory!,
   "head" = :head!,
   "glasses" = :glasses!;
+
+  /* @name updateNounOwner */
+INSERT INTO "noun" ("id", "owner")
+VALUES (:id!, :owner!)
+ON CONFLICT ("id") DO UPDATE SET
+  "owner" = :owner!;
 
 /* @name totalNounsSupply */
 SELECT (MAX("id") - 1)::INTEGER AS count FROM "auction";

@@ -28,7 +28,7 @@ export default async function wallets(
 
     //TODO: Make resolver for ens
     const ens = await Promise.all(
-      wallets.map((row) => provider.lookupAddress(row.address).catch(() => null)),
+      wallets.map((row) => provider.lookupAddress(row.address || '').catch(() => null)),
     );
     const balancesNouns = await Promise.all(wallets.map((row) => nouns.balanceOf(row.address)));
 
@@ -37,7 +37,7 @@ export default async function wallets(
     for (const [index, row] of wallets.entries()) {
       await updateWalletData.run(
         {
-          address: row.address,
+          address: row.address || '',
           ens: ens[index] || '',
           nouns: balancesNouns[index].toString(),
         },

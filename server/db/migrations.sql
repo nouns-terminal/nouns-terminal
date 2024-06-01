@@ -138,3 +138,22 @@ BEGIN
 END
 $$;
 
+--
+
+DO $$
+DECLARE
+    migration_version INT := 6;
+    migration_comment TEXT := 'Add owner to noun table and attributes optional';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        ALTER TABLE "public"."noun" ADD COLUMN "owner" text;
+        ALTER TABLE "public"."noun" ALTER COLUMN "background" DROP NOT NULL;
+        ALTER TABLE "public"."noun" ALTER COLUMN "body" DROP NOT NULL;
+        ALTER TABLE "public"."noun" ALTER COLUMN "accessory" DROP NOT NULL;
+        ALTER TABLE "public"."noun" ALTER COLUMN "head" DROP NOT NULL;
+        ALTER TABLE "public"."noun" ALTER COLUMN "glasses" DROP NOT NULL;
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
