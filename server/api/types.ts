@@ -40,6 +40,7 @@ export type Noun = {
   accessory: number;
   head: number;
   glasses: number;
+  owner: string | null;
 };
 
 export type AuctionData = {

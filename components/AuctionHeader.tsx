@@ -23,6 +23,8 @@ type Props = {
   ended: boolean;
   winnerENS: string | null;
   winnerAddress: string | null;
+  ownerENS: string | null;
+  ownerAddress: string | null;
   noun: Noun | null;
   onSubmitBid: (bid: PendingBid) => unknown;
 };
@@ -142,20 +144,38 @@ export default function AuctionHeader(props: Props) {
         </Text>
       </Stack>
       {props.ended ? (
-        <Stack direction="column" gap={-1}>
-          <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-            Won By
-          </Text>
-          <Text variant="title-1" bold color="mid-text">
-            <div
-              className="address"
-              onMouseEnter={() => setAddress(props.winnerAddress || '')}
-              onMouseLeave={() => setAddress('')}
-            >
-              {props.winnerENS || props.winnerAddress}
-            </div>
-          </Text>
-        </Stack>
+        <>
+          <Stack direction="column" gap={-1}>
+            <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+              Won By
+            </Text>
+            <Text variant="title-1" bold color="mid-text">
+              <div
+                className="address"
+                onMouseEnter={() => setAddress(props.winnerAddress || '')}
+                onMouseLeave={() => setAddress('')}
+              >
+                {props.winnerENS || props.winnerAddress}
+              </div>
+            </Text>
+          </Stack>
+          {props.ownerAddress && props.ownerAddress !== props.winnerAddress && (
+            <Stack direction="column" gap={-1}>
+              <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+                Current Owner
+              </Text>
+              <Text variant="title-1" bold color="mid-text">
+                <div
+                  className="address"
+                  onMouseEnter={() => setAddress(props.ownerAddress || '')}
+                  onMouseLeave={() => setAddress('')}
+                >
+                  {props.ownerENS || props.ownerAddress}
+                </div>
+              </Text>
+            </Stack>
+          )}
+        </>
       ) : (
         <Stack direction="column" gap={-1}>
           <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>

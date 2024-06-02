@@ -47,6 +47,11 @@ export default function Auction({
           null
         }
         winnerAddress={data.auction.winner}
+        ownerENS={
+          (data.noun?.owner && data.wallets.find((w) => w.address === data.noun?.owner)?.ens) ||
+          null
+        }
+        ownerAddress={data.noun?.owner ?? null}
         noun={data.noun}
         ended={ended}
         onSubmitBid={setPendingBid}
