@@ -7,7 +7,7 @@ import {
   getNounById,
   getWalletsByAuctionId,
 } from './db/queries';
-import { AuctionData } from './api/types';
+import { AuctionData, Bid } from './api/types';
 
 const liveCache = new Map();
 
@@ -38,10 +38,34 @@ export default async function getAuctionData(id?: number | null) {
   const bids = await getBidsByAuctionId.run({ id }, pgPool);
   const wallets = await getWalletsByAuctionId.run({ id }, pgPool);
 
+  const bidsWithBalanceChange = bids.map((bid) => ({
+    ...bid,
+    walletBalanceChange: null as null | string,
+  }));
+
+  const lastSeenBalance = new Map<string, bigint>();
+  for (let i = bidsWithBalanceChange.length - 1; i >= 0; i--) {
+    const bid = bidsWithBalanceChange[i];
+    if (bid.walletBalance == null) {
+      continue;
+    }
+
+    const lastBalance = lastSeenBalance.get(bid.walletAddress);
+    if (lastBalance) {
+      bid.walletBalanceChange = (
+        BigInt(bid.walletBalance) +
+        BigInt(bid.value!) -
+        lastBalance
+      ).toString();
+    }
+
+    lastSeenBalance.set(bid.walletAddress, BigInt(bid.walletBalance) + BigInt(bid.value!));
+  }
+
   return {
     auction,
     noun,
-    bids,
+    bids: bidsWithBalanceChange,
     wallets,
   };
 }

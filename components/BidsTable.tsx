@@ -95,11 +95,26 @@ export default function BidsTable(props: Props) {
               <td>{formatBalance(BigInt(bid.value))}</td>
               <td>{formatPercentChanged(bid.value, props.bids[index + 1]?.value)}</td>
               <td>{formatGwei(BigInt(bid.maxFeePerGas)).split('.')[0]}</td>
-              <td>{formatBalance(BigInt(bid.walletBalance ?? 0) + BigInt(bid.value))}</td>
-              <td>{lookup[bid.walletAddress]?.bids}</td>
-              <td>{lookup[bid.walletAddress]?.wins || 0}</td>
-              <td>{lookup[bid.walletAddress]?.nouns || 0}</td>
               <td>
+                {formatBalance(BigInt(bid.walletBalance ?? 0) + BigInt(bid.value))}
+                {bid.walletBalanceChange &&
+                  Math.max(Number(formatEther(BigInt(bid.walletBalanceChange)))) > 0.01 && (
+                    <span
+                      style={{
+                        color: bid.walletBalanceChange.startsWith('-')
+                          ? 'var(--red)'
+                          : 'var(--green)',
+                      }}
+                    >
+                      {' '}
+                      {formatBalance(BigInt(bid.walletBalanceChange), '+')}
+                    </span>
+                  )}
+              </td>
+              <td>{lookup[bid.walletAddress]?.bids}</td>
+              <td>{lookup[bid.walletAddress]?.wins || ' '}</td>
+              <td>{lookup[bid.walletAddress]?.nouns || ' '}</td>
+              <td style={{ whiteSpace: 'nowrap' }}>
                 <a
                   target="_blank"
                   rel="noreferrer"

@@ -13,6 +13,7 @@ export type Bid = {
   timestamp: number;
   maxFeePerGas: string;
   walletBalance: string | null;
+  walletBalanceChange: string | null;
   clientId: number | null;
 };
 
