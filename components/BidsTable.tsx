@@ -2,9 +2,10 @@
 import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
 import { formatEther, formatGwei } from 'viem';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Bid, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
+import ClientOnly from './ClientOnly';
 
 export const hoveredAddress = atom('');
 
@@ -229,8 +230,31 @@ function formatPercentChanged(value: string, prevValue?: string) {
   return diff.toString() + '%';
 }
 
+function Avatar({
+  address,
+  visible,
+  onSuccess,
+}: {
+  address: string;
+  visible: boolean;
+  onSuccess: () => void;
+}) {
+  return (
+    <ClientOnly>
+      <img
+        src={`https://ensdata.net/media/avatar/${address}`}
+        onLoad={onSuccess}
+        width={visible ? 24 : 0}
+        height={visible ? 24 : 0}
+      />
+    </ClientOnly>
+  );
+}
+
 export function Icon(props: { address: string }) {
   const iconRef = useRef<HTMLSpanElement>(null);
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
+
   useEffect(() => {
     const parent = iconRef.current;
     if (parent) {
@@ -241,13 +265,23 @@ export function Icon(props: { address: string }) {
   }, [props.address]);
 
   return (
-    <span className="icon" ref={iconRef}>
-      <style jsx>{`
-        .icon > :global(div) {
-          border-radius: 0px !important;
-        }
-      `}</style>
-    </span>
+    <>
+      <Avatar
+        address={props.address}
+        visible={avatarLoaded}
+        onSuccess={() => setAvatarLoaded(true)}
+      />
+
+      {!avatarLoaded && (
+        <span className="icon" ref={iconRef}>
+          <style jsx>{`
+            .icon > :global(div) {
+              border-radius: 0px !important;
+            }
+          `}</style>
+        </span>
+      )}
+    </>
   );
 }
 
