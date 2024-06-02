@@ -5,6 +5,7 @@
   "scripts": {
     "start": "tsx server/start.ts",
     "dev": "nodemon --exec tsx server/start.ts",
+    "migrate": "tsx server/db/migrate.ts",
     "typechain": "typechain --target=ethers-v6 utils/abi/*.json --out-dir=typechain",
     "pgtyped": "pgtyped -c pgtyped.config.json",
     "build": "yarn typechain && yarn pgtyped && next build",
