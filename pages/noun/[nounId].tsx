@@ -29,7 +29,13 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
       />
       <SiteHeader />
       <Auction auctionId={auctionData.auction.id} auctionData={auctionData} />
+      <div className="extra-space" />
       <SiteFooter />
+      <style jsx>{`
+        .extra-space {
+          height: 100px;
+        }
+      `}</style>
     </>
   );
 }
