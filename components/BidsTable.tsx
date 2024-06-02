@@ -177,7 +177,7 @@ export default function BidsTable(props: Props) {
   );
 }
 
-function formatBalance(balance: bigint) {
+function formatBalance(balance: bigint, prefix = 'Ξ') {
   let [a, b] = formatEther(balance).split('.');
   if (!b) {
     b = '0';
@@ -186,9 +186,15 @@ function formatBalance(balance: bigint) {
     b = b.substring(0, 2);
   }
 
+  if (a == '0' && b == '00') {
+    prefix = '<';
+    b = '01';
+  }
+
   return (
     <>
-      Ξ{a}
+      {prefix}
+      {a}
       <small style={{ opacity: 0.5 }}>.{b}</small>
     </>
   );
