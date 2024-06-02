@@ -64,8 +64,9 @@ export default function BidsTable(props: Props) {
                 ]
               </span>
             </th>
-            <th>#All&nbsp;Bids</th>
+            <th>#Bids</th>
             <th>#Wins</th>
+            <th>#Nouns</th>
             <th>When</th>
           </tr>
           {bids.map((bid, index) => (
@@ -96,7 +97,8 @@ export default function BidsTable(props: Props) {
               <td>{formatGwei(BigInt(bid.maxFeePerGas)).split('.')[0]}</td>
               <td>{formatBalance(bid.walletBalance)}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
-              <td>{lookup[bid.walletAddress]?.wins || '0'}</td>
+              <td>{lookup[bid.walletAddress]?.wins || 0}</td>
+              <td>{lookup[bid.walletAddress]?.nouns || 0}</td>
               <td>
                 <a
                   target="_blank"

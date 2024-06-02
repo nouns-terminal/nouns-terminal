@@ -157,3 +157,18 @@ BEGIN
     END IF;
 END
 $$;
+
+--
+
+DO $$
+DECLARE
+    migration_version INT := 7;
+    migration_comment TEXT := 'Remove unused nouns field from wallet table';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        ALTER TABLE "public"."wallet" DROP COLUMN "nouns";
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;

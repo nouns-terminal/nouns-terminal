@@ -51,11 +51,10 @@ ORDER BY "auctionId" DESC NULLS LAST
 LIMIT :limit!::INTEGER;
 
 /* @name updateWalletData */
-INSERT INTO "wallet" ("address", "ens", "nouns")
-VALUES (:address!, :ens!, :nouns!)
+INSERT INTO "wallet" ("address", "ens")
+VALUES (:address!, :ens!)
 ON CONFLICT ("address") DO UPDATE SET
-  "ens" = :ens,
-  "nouns" = :nouns;
+  "ens" = :ens;
 
 /* @name insertAuction */
 INSERT INTO auction("id", "startTime", "endTime")
@@ -139,13 +138,18 @@ bid_counts AS (
     SELECT "walletAddress", COUNT(*) AS count
     FROM bid
     GROUP BY "walletAddress"
+),
+nouns_counts AS (
+    SELECT "owner", COUNT(*) AS count
+    FROM noun
+    GROUP BY "owner"
 )
 SELECT
   b."walletAddress" AS "address",
   w.ens,
-  bc.count AS "bids", 
-  w."nouns", 
-  wc.count AS "wins"
+  COALESCE(bc.count, 0)::INT AS "bids", 
+  COALESCE(nc.count, 0)::INT AS "nouns",
+  COALESCE(wc.count, 0)::INT AS "wins"
 FROM
   bid b
 JOIN
@@ -154,6 +158,8 @@ LEFT JOIN
   wins_count wc ON wc.winner = b."walletAddress"
 LEFT JOIN
   bid_counts bc ON bc."walletAddress" = w.address
+LEFT JOIN
+  nouns_counts nc ON nc."owner" = w.address
 WHERE
   b."auctionId" = :id!::INTEGER;
 

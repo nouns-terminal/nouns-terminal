@@ -86,7 +86,7 @@ async function main() {
 
   await Promise.all([
     withPgClient((connection) => auction(NOUNS_AUCTION_HOUSE_ADDRESS, connection, provider)),
-    withPgClient((connection) => wallets(NOUNS_TOKEN_ADDRESS, connection, provider)),
+    withPgClient((connection) => wallets(connection, provider)),
     withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, provider)),
     withPgClient((connection) => transactions(connection, provider)),
     withPgClient((connection) => balances(connection, provider)),
