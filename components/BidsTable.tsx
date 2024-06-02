@@ -54,10 +54,10 @@ export default function BidsTable(props: Props) {
             <th>Gwei</th>
             <th>
               <span
-                title="ETH balance left after placing this bid"
+                title="Max ETH liquidity available to the bidder at the time of the bid"
                 style={{ whiteSpace: 'nowrap' }}
               >
-                ETH&nbsp;LEFT&nbsp;[
+                MAX&nbsp;BID&nbsp;[
                 <span className="tooltip-svg">
                   <TooltipSVG />
                 </span>
@@ -92,10 +92,10 @@ export default function BidsTable(props: Props) {
                   </a>
                 </div>
               </td>
-              <td>{formatBalance(bid.value)}</td>
+              <td>{formatBalance(BigInt(bid.value))}</td>
               <td>{formatPercentChanged(bid.value, props.bids[index + 1]?.value)}</td>
               <td>{formatGwei(BigInt(bid.maxFeePerGas)).split('.')[0]}</td>
-              <td>{formatBalance(bid.walletBalance)}</td>
+              <td>{formatBalance(BigInt(bid.walletBalance ?? 0) + BigInt(bid.value))}</td>
               <td>{lookup[bid.walletAddress]?.bids}</td>
               <td>{lookup[bid.walletAddress]?.wins || 0}</td>
               <td>{lookup[bid.walletAddress]?.nouns || 0}</td>
@@ -177,12 +177,8 @@ export default function BidsTable(props: Props) {
   );
 }
 
-function formatBalance(balance?: string | null) {
-  if (!balance) {
-    return null;
-  }
-
-  let [a, b] = formatEther(BigInt(balance)).split('.');
+function formatBalance(balance: bigint) {
+  let [a, b] = formatEther(balance).split('.');
   if (!b) {
     b = '0';
   }
