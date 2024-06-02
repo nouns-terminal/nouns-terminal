@@ -6,7 +6,7 @@ import {
   getLatestAuctionId,
   getNounById,
   getWalletsByAuctionId,
-} from './indexers/queries';
+} from './db/queries';
 import { AuctionData } from './api/types';
 
 const liveCache = new Map();
@@ -15,7 +15,7 @@ export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
   if (!liveCache.has(id)) {
     liveCache.set(
       id,
-      liveQuery(() => getAuctionData(id))
+      liveQuery(() => getAuctionData(id)),
     );
   }
 

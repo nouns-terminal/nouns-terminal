@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
-import { findUnindexedWallets, updateWalletData } from './queries';
+import { findUnindexedWallets, updateWalletData } from '../db/queries';
 import { PoolClient } from 'pg';
 import { MulticallWrapper } from 'ethers-multicall-provider';
 

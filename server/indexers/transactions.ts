@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { PoolClient } from 'pg';
-import { findBidsWithMissingTransactions, updateBidTransactionMetadata } from './queries';
+import { findBidsWithMissingTransactions, updateBidTransactionMetadata } from '../db/queries';
 
 const log = logger.child({ indexer: 'transactions' });
 

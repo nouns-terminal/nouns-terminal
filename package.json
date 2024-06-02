@@ -8,7 +8,7 @@
     "migrate": "tsx server/db/migrate.ts",
     "typechain": "typechain --target=ethers-v6 utils/abi/*.json --out-dir=typechain",
     "pgtyped": "pgtyped -c pgtyped.config.json",
-    "build": "yarn typechain && yarn pgtyped && next build",
+    "build": "yarn typechain && next build",
     "lint": "next lint"
   },
   "prettier": {

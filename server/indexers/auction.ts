@@ -18,7 +18,7 @@ import {
   updateAuctionExtended,
   updateAuctionSettled,
   updateAuctionBidWithClientId,
-} from './queries';
+} from '../db/queries';
 
 type AuctionHouseEventLog =
   | AuctionCreatedEvent.Log

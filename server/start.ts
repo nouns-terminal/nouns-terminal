@@ -14,7 +14,7 @@ import expressWinston from 'express-winston';
 import RetryProvider from './RetryProvider';
 import { Pool, PoolClient } from 'pg';
 import nouns from './indexers/nouns';
-import { getLatestAuction } from './indexers/queries';
+import { getLatestAuction } from './db/queries';
 import balances from './indexers/balances';
 
 async function main() {

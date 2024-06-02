@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { PoolClient } from 'pg';
-import { findWalletsInLatestAuction, updateWalletsValuesInLatestAuction } from './queries';
+import { findWalletsInLatestAuction, updateWalletsValuesInLatestAuction } from '../db/queries';
 
 const log = logger.child({ indexer: 'balances' });
 
