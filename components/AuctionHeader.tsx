@@ -2,7 +2,7 @@
 import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, useSwitchChain, useWriteContract, useEnsName } from 'wagmi';
-import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS, NOUNS_TOKEN_ADDRESS } from '../utils/constants';
+import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
 import Text from './Text';
@@ -56,6 +56,7 @@ export default function AuctionHeader(props: Props) {
   const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
+  const [isOpen, setIsOpen] = useState(false);
 
   const bidMutation = useMutation({
     mutationFn: async (bid: bigint) => {
@@ -115,16 +116,9 @@ export default function AuctionHeader(props: Props) {
           <link rel="icon" href={svgBase64} type="image/svg+xml" />
         </Head>
       )}
-
-      <a
-        target="_blank"
-        rel="noreferrer"
-        href={`https://opensea.io/assets/ethereum/${NOUNS_TOKEN_ADDRESS}/${props.id}`}
-      >
-        <div className="image">
-          {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
-        </div>
-      </a>
+      <div className="image" onClick={() => setIsOpen(!isOpen)}>
+        {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
+      </div>
       <Stack direction="column" gap={-1}>
         <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
           <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
