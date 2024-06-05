@@ -178,8 +178,58 @@ UPDATE "public"."bid"
 SET "walletBalance" = :walletBalance
 WHERE "tx" = :tx::TEXT AND "index" = :index::INTEGER;
 
-
 /* @name updateAuctionBidWithClientId */
 UPDATE "public"."bid"
 SET "clientId" = :clientId::INTEGER
 WHERE "value" = :value! AND "auctionId" = :auctionId::INTEGER;
+
+/* @name getNounPropertiesById */
+WITH total_nouns AS (
+  SELECT COUNT(*) AS total_count
+  FROM public.noun
+),
+rarities AS (
+  SELECT 
+    body AS "id", 
+    'body' AS "part",
+    COUNT(*)::FLOAT / (SELECT total_count FROM total_nouns) AS rarity
+  FROM public.noun
+  GROUP BY body
+  UNION ALL
+  SELECT 
+    accessory AS "id", 
+    'accessory' AS "part",
+    COUNT(*)::FLOAT / (SELECT total_count FROM total_nouns) AS rarity
+  FROM public.noun
+  GROUP BY accessory
+  UNION ALL
+  SELECT 
+    head AS "id", 
+    'head' AS "part",
+    COUNT(*)::FLOAT / (SELECT total_count FROM total_nouns) AS rarity
+  FROM public.noun
+  GROUP BY head
+  UNION ALL
+  SELECT 
+    glasses AS "id", 
+    'glasses' AS "part",
+    COUNT(*)::FLOAT / (SELECT total_count FROM total_nouns) AS rarity
+  FROM public.noun
+  GROUP BY glasses
+)
+SELECT 
+  r."part",
+  r."id",
+  r.rarity
+FROM 
+  public.noun n
+JOIN 
+  rarities r
+ON 
+  (r."part" = 'background' AND r."id" = n.background) OR
+  (r."part" = 'body' AND r."id" = n.body) OR
+  (r."part" = 'accessory' AND r."id" = n.accessory) OR
+  (r."part" = 'head' AND r."id" = n.head) OR
+  (r."part" = 'glasses' AND r."id" = n.glasses)
+WHERE 
+  n.id = :id::INTEGER;
