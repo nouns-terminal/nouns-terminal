@@ -5,6 +5,7 @@ import {
   getBidsByAuctionId,
   getLatestAuctionId,
   getNounById,
+  getNounPropertiesById,
   getWalletsByAuctionId,
 } from './db/queries';
 import { AuctionData, Bid } from './api/types';
@@ -37,6 +38,7 @@ export default async function getAuctionData(id?: number | null) {
   const [noun] = await getNounById.run({ id }, pgPool);
   const bids = await getBidsByAuctionId.run({ id }, pgPool);
   const wallets = await getWalletsByAuctionId.run({ id }, pgPool);
+  const nounProperties = await getNounPropertiesById.run({ id }, pgPool);
 
   const bidsWithBalanceChange = bids.map((bid) => ({
     ...bid,
@@ -67,5 +69,6 @@ export default async function getAuctionData(id?: number | null) {
     noun,
     bids: bidsWithBalanceChange,
     wallets,
+    nounProperties,
   };
 }

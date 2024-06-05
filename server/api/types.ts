@@ -43,9 +43,16 @@ export type Noun = {
   owner: string | null;
 };
 
+export type NounProperty = {
+  id: number;
+  part: string;
+  rarity: number;
+};
+
 export type AuctionData = {
   auction: Auction;
   noun: Noun | null;
   bids: Bid[];
   wallets: Wallet[];
+  nounProperties: NounProperty[];
 };
