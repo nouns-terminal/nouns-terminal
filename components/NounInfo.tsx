@@ -18,7 +18,7 @@ export default function NounInfo({
   owner: string;
 }) {
   if (!noun || !nounProperties) {
-    return;
+    return null;
   }
 
   const { parts } = getNounData(noun);

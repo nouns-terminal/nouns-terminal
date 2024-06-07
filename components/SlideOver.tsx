@@ -13,18 +13,17 @@ export default function SlideOver({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <ClientOnly>
-        <Drawer
-          open={isOpen}
-          onClose={() => onClose(!isOpen)}
-          direction="right"
-          className="drawer"
-          size={'400px'}
-        >
-          {children}
-        </Drawer>
-      </ClientOnly>
-    </>
+    <ClientOnly>
+      <Drawer
+        open={isOpen}
+        onClose={() => onClose(!isOpen)}
+        direction="right"
+        className="drawer"
+        size={'400px'}
+        style={{ maxWidth: '90vw' }}
+      >
+        {children}
+      </Drawer>
+    </ClientOnly>
   );
 }
