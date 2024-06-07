@@ -55,6 +55,7 @@ export default function Auction({
         noun={data.noun}
         ended={ended}
         onSubmitBid={setPendingBid}
+        nounProperties={data.nounProperties}
       />
       {!pendingBid && data.bids.length < 1 ? (
         <div className="info">No bids yet</div>

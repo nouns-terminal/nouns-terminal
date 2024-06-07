@@ -8,12 +8,14 @@ import Stack from './Stack';
 import Text from './Text';
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { type Noun } from '../server/api/types';
+import { NounProperty, type Noun } from '../server/api/types';
 import Head from 'next/head';
 import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import ClientOnly from './ClientOnly';
+import SlideOver from './SlideOver';
+import NounInfo from './NounInfo';
 
 type Props = {
   id: number;
@@ -27,6 +29,7 @@ type Props = {
   ownerAddress: string | null;
   noun: Noun | null;
   onSubmitBid: (bid: PendingBid) => unknown;
+  nounProperties: NounProperty[] | null;
 };
 
 const abi = [
@@ -116,7 +119,16 @@ export default function AuctionHeader(props: Props) {
           <link rel="icon" href={svgBase64} type="image/svg+xml" />
         </Head>
       )}
-      <div className="image" onClick={() => setIsOpen(!isOpen)}>
+      <div className="image" onClick={() => setIsOpen(true)}>
+        <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <NounInfo
+            noun={props.noun}
+            nounProperties={props.nounProperties}
+            nounSrc={svgBase64}
+            winner={props.winnerENS || props.winnerAddress || ''}
+            owner={props.ownerENS || props.ownerAddress || ''}
+          />
+        </SlideOver>
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
       </div>
       <Stack direction="column" gap={-1}>

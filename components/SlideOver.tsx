@@ -13,7 +13,13 @@ export default function SlideOver({
 }) {
   return (
     <>
-      <Drawer open={isOpen} onClose={() => onClose(!isOpen)} direction="right" className="drawer">
+      <Drawer
+        open={isOpen}
+        onClose={() => onClose(!isOpen)}
+        direction="right"
+        className="drawer"
+        size={'400px'}
+      >
         {children}
       </Drawer>
     </>
