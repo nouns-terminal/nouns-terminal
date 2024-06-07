@@ -81,3 +81,7 @@ body {
   color: var(--bright-text);
   background: var(--dark-bg);
 }
+
+.EZDrawer .EZDrawer__container {
+  background: var(--surface-bg) !important;
+}
