@@ -223,6 +223,11 @@ export default function AuctionHeader(props: Props) {
             max-width: 35ch;
           }
         }
+        @media only screen and (max-width: 767px) {
+          .image {
+            pointer-events: none;
+          }
+        }
       `}</style>
     </Stack>
   );
