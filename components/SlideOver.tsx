@@ -1,6 +1,7 @@
 import React from 'react';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
+import ClientOnly from './ClientOnly';
 
 export default function SlideOver({
   isOpen,
@@ -13,15 +14,17 @@ export default function SlideOver({
 }) {
   return (
     <>
-      <Drawer
-        open={isOpen}
-        onClose={() => onClose(!isOpen)}
-        direction="right"
-        className="drawer"
-        size={'400px'}
-      >
-        {children}
-      </Drawer>
+      <ClientOnly>
+        <Drawer
+          open={isOpen}
+          onClose={() => onClose(!isOpen)}
+          direction="right"
+          className="drawer"
+          size={'400px'}
+        >
+          {children}
+        </Drawer>
+      </ClientOnly>
     </>
   );
 }
