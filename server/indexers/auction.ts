@@ -9,7 +9,7 @@ import {
   AuctionBidWithClientIdEvent,
 } from '../../typechain/NounsAuctionHouse';
 import { logger } from '../utils';
-import { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import {
   getAuctionLastQueriedBlock,
   insertAuction,
@@ -31,7 +31,7 @@ const log = logger.child({ indexer: 'auction' });
 
 export default async function auction(
   auctionAddress: string,
-  connection: PoolClient,
+  connection: Pool,
   provider: ethers.Provider,
 ) {
   log.info('Starting');
@@ -105,7 +105,7 @@ export default async function auction(
   await new Promise((resolve) => {});
 }
 
-async function processEvent(connection: PoolClient, eventLog: AuctionHouseEventLog) {
+async function processEvent(connection: Pool, eventLog: AuctionHouseEventLog) {
   if (eventLog.eventName === 'AuctionCreated') {
     const { nounId, startTime, endTime } = (eventLog as AuctionCreatedEvent.Log).args;
     await insertAuction.run(

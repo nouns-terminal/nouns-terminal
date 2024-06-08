@@ -12,7 +12,7 @@ import ws from 'ws';
 import http from 'http';
 import expressWinston from 'express-winston';
 import RetryProvider from './RetryProvider';
-import { Pool, PoolClient } from 'pg';
+import { Pool } from 'pg';
 import nouns from './indexers/nouns';
 import { getLatestAuction } from './db/queries';
 import balances from './indexers/balances';
@@ -33,14 +33,14 @@ async function main() {
   const server = http.createServer(app);
   const httpLogger = logger.child({ service: 'http' });
 
-  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-  pgPool.on('connect', () => logger.info('Connected to the database'));
-  pgPool.on('error', (error) => logger.error(error));
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  pool.on('connect', () => logger.info('Connected to the database'));
+  pool.on('error', (error) => logger.error(error));
 
   const router = express.Router();
 
   router.get('/health', async (req, res) => {
-    const latestAuction = await getLatestAuction.run(undefined, pgPool);
+    const latestAuction = await getLatestAuction.run(undefined, pool);
     const latestBlock = await provider.getBlock('latest');
     res.json({ success: true, latestAuction, latestBlock });
   });
@@ -75,22 +75,13 @@ async function main() {
     env: process.env.NODE_ENV || 'development',
   });
 
-  const withPgClient = async (callback: (client: PoolClient) => Promise<void>) => {
-    const client = await pgPool.connect();
-    try {
-      await callback(client);
-    } finally {
-      client.release();
-    }
-  };
-
   await Promise.all([
-    withPgClient((connection) => auction(NOUNS_AUCTION_HOUSE_ADDRESS, connection, provider)),
-    withPgClient((connection) => wallets(connection, provider)),
-    withPgClient((connection) => nouns(NOUNS_TOKEN_ADDRESS, connection, provider)),
-    withPgClient((connection) => transactions(connection, provider)),
-    withPgClient((connection) => balances(connection, provider)),
-    withPgClient((connection) => transfers(NOUNS_TOKEN_ADDRESS, connection, provider)),
+    auction(NOUNS_AUCTION_HOUSE_ADDRESS, pool, provider),
+    wallets(pool, provider),
+    nouns(NOUNS_TOKEN_ADDRESS, pool, provider),
+    transactions(pool, provider),
+    balances(pool, provider),
+    transfers(NOUNS_TOKEN_ADDRESS, pool, provider),
   ]);
 }
 

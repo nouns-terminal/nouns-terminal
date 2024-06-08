@@ -2,11 +2,11 @@ import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { findUnindexedWallets, updateWalletData } from '../db/queries';
-import { PoolClient } from 'pg';
+import { Pool } from 'pg';
 
 const log = logger.child({ indexer: 'wallets' });
 
-export default async function wallets(connection: PoolClient, provider: ethers.AbstractProvider) {
+export default async function wallets(connection: Pool, provider: ethers.AbstractProvider) {
   log.info('Starting');
 
   async function process() {

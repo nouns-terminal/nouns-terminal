@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
-import { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { findBidsWithMissingTransactions, updateBidTransactionMetadata } from '../db/queries';
 
 const log = logger.child({ indexer: 'transactions' });
 
-export default async function transactions(connection: PoolClient, provider: ethers.Provider) {
+export default async function transactions(connection: Pool, provider: ethers.Provider) {
   log.info('Starting');
 
   async function process() {

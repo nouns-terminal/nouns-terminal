@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { ContractEventPayload, ethers } from 'ethers';
 import { NounsToken__factory } from '../../typechain';
 import { logger } from '../utils';
-import { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import {
   getTransferLastQueriedBlock,
   setTransferLastQueriedBlock,
@@ -16,7 +16,7 @@ const log = logger.child({ indexer: 'transfer' });
 
 export default async function transfers(
   nounAddress: string,
-  connection: PoolClient,
+  connection: Pool,
   provider: ethers.Provider,
 ) {
   log.info('Starting');
@@ -76,7 +76,7 @@ export default async function transfers(
   await new Promise((resolve) => {});
 }
 
-async function processEvent(connection: PoolClient, eventLog: NounsTokenEventLog) {
+async function processEvent(connection: Pool, eventLog: NounsTokenEventLog) {
   if (eventLog.eventName === 'Transfer') {
     const { to, tokenId } = (eventLog as TransferEvent.Log).args;
 

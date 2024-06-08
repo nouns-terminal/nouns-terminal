@@ -2,14 +2,14 @@ import 'dotenv/config';
 import { ethers } from 'ethers';
 import { forever, logger } from '../utils';
 import { findUnindexedNouns, updateNounSeeds } from '../db/queries';
-import { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { NounsToken__factory } from '../../typechain';
 
 const log = logger.child({ indexer: 'nouns' });
 
 export default async function nouns(
   nounsAddress: string,
-  connection: PoolClient,
+  connection: Pool,
   provider: ethers.Provider,
 ) {
   log.info('Starting');
