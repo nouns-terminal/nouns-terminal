@@ -110,16 +110,18 @@ function TreasuryStatus({ vitals }: { vitals: Vitals | null }) {
   return (
     <>
       <Text variant="body" bold color="mid-text">
-        <Text variant="body" bold color="bright-text">
-          Treasury
-        </Text>
-        &nbsp;
-        {vitals
-          ? 'Ξ' +
-            Math.round(Number(formatEther(BigInt(vitals.treasuryBalanceInWei)))).toLocaleString(
-              'en-US'
-            )
-          : '-'}
+        <a href="https://www.tabs.wtf/" target="_blank" rel="noreferrer">
+          <Text variant="body" bold color="bright-text">
+            Treasury
+          </Text>
+          &nbsp;
+          {vitals
+            ? 'Ξ' +
+              Math.round(Number(formatEther(BigInt(vitals.treasuryBalanceInWei)))).toLocaleString(
+                'en-US',
+              )
+            : '-'}
+        </a>
       </Text>
       <VR />
       <Text variant="body" bold color="mid-text">
@@ -130,7 +132,7 @@ function TreasuryStatus({ vitals }: { vitals: Vitals | null }) {
         {vitals
           ? 'Ξ' +
             Number(
-              formatEther(BigInt(vitals.treasuryBalanceInWei) / BigInt(vitals.adjustedTotalSupply))
+              formatEther(BigInt(vitals.treasuryBalanceInWei) / BigInt(vitals.adjustedTotalSupply)),
             ).toFixed(2)
           : '-'}
       </Text>
