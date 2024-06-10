@@ -86,7 +86,7 @@ export default function AuctionHeader(props: Props) {
         ens: data ?? null,
         value: bid.toString(),
         extended: false,
-        timestamp: Date.now(),
+        timestamp: Date.now() / 1000, // Convert to seconds to match the date format in the database
         maxFeePerGas: '0',
         walletBalance: null,
         walletBalanceChange: null,
