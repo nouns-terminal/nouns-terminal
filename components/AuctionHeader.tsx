@@ -137,7 +137,7 @@ export default function AuctionHeader(props: Props) {
         </Text>
         <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
           <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
-            Noun {props.id}
+            <span data-testid="noun-id">Noun {props.id}</span>
           </Text>
         </a>
       </Stack>

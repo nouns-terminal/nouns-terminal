@@ -44,7 +44,7 @@ export default function BidsTable(props: Props) {
   return (
     <div className="container">
       <table>
-        <tbody>
+        <tbody data-testid="bids-table">
           <tr>
             <th>
               <div className="icon-placeholder" />
@@ -88,6 +88,7 @@ export default function BidsTable(props: Props) {
                     target="_blank"
                     rel="noreferrer"
                     href={`https://etherscan.io/address/${bid.walletAddress}`}
+                    data-testid="wallet-address"
                   >
                     {lookup[bid.walletAddress]?.ens || bid.walletAddress}
                   </a>
