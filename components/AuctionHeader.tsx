@@ -29,7 +29,7 @@ type Props = {
   ownerAddress: string | null;
   noun: Noun | null;
   onSubmitBid: (bid: PendingBid) => unknown;
-  nounProperties: NounProperty[] | null;
+  nounProperties: NounProperty[];
 };
 
 const abi = [
