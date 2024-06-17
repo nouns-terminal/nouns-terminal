@@ -12,12 +12,12 @@ export default function NounInfo({
   owner,
 }: {
   noun: Noun | null;
-  nounProperties: NounProperty[] | null;
+  nounProperties: NounProperty[];
   nounSrc: string;
   winner: string;
   owner: string;
 }) {
-  if (!noun || !nounProperties) {
+  if (!noun || nounProperties.length >= 4) {
     return null;
   }
 
