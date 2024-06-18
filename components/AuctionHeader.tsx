@@ -60,6 +60,7 @@ export default function AuctionHeader(props: Props) {
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
   const [isOpen, setIsOpen] = useState(false);
+  const [slideOverContent, setSlideOverContent] = useState<JSX.Element | null>(null);
 
   const bidMutation = useMutation({
     mutationFn: async (bid: bigint) => {
@@ -113,118 +114,128 @@ export default function AuctionHeader(props: Props) {
   }, [props.noun]);
 
   return (
-    <Stack direction="row" gap={2}>
-      {!props.ended && svgBase64 && (
-        <Head>
-          <link rel="icon" href={svgBase64} type="image/svg+xml" />
-        </Head>
-      )}
-      <div className="image" onClick={() => setIsOpen(true)}>
-        <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <NounInfo
-            noun={props.noun}
-            nounProperties={props.nounProperties}
-            nounSrc={svgBase64}
-            winner={props.winnerENS || props.winnerAddress || ''}
-            owner={props.ownerENS || props.ownerAddress || ''}
-          />
-        </SlideOver>
-        {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
-      </div>
-      <Stack direction="column" gap={-1}>
-        <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
-          <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
-        </Text>
-        <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
-          <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
-            <span data-testid="noun-id">Noun {props.id}</span>
+    <>
+      <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        {slideOverContent}
+      </SlideOver>
+      <Stack direction="row" gap={2}>
+        {!props.ended && svgBase64 && (
+          <Head>
+            <link rel="icon" href={svgBase64} type="image/svg+xml" />
+          </Head>
+        )}
+        <div
+          className="image"
+          onClick={() => {
+            setIsOpen(true);
+            setSlideOverContent(
+              <NounInfo
+                noun={props.noun}
+                nounProperties={props.nounProperties}
+                nounSrc={svgBase64}
+                winner={props.winnerENS || props.winnerAddress || ''}
+                owner={props.ownerENS || props.ownerAddress || ''}
+              />,
+            );
+          }}
+        >
+          {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
+        </div>
+        <Stack direction="column" gap={-1}>
+          <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
+            <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
           </Text>
-        </a>
-      </Stack>
-      <Stack direction="column" gap={-1}>
-        <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-          {props.ended ? 'Winning Bid' : 'Current bid'}
-        </Text>
-        <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
-          {props.maxBid ? `Ξ${formatBidValue(BigInt(props.maxBid))}` : '—'}
-        </Text>
-      </Stack>
-      {props.ended ? (
-        <>
-          <Stack direction="column" gap={-1}>
-            <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-              Won By
+          <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
+            <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
+              <span data-testid="noun-id">Noun {props.id}</span>
             </Text>
-            <Text variant="title-1" bold color="mid-text">
-              <div
-                className="address"
-                onMouseEnter={() => setAddress(props.winnerAddress || '')}
-                onMouseLeave={() => setAddress('')}
-              >
-                {props.winnerENS || props.winnerAddress}
-              </div>
-            </Text>
-          </Stack>
-          {props.ownerAddress && props.ownerAddress !== props.winnerAddress && (
+          </a>
+        </Stack>
+        <Stack direction="column" gap={-1}>
+          <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+            {props.ended ? 'Winning Bid' : 'Current bid'}
+          </Text>
+          <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
+            {props.maxBid ? `Ξ${formatBidValue(BigInt(props.maxBid))}` : '—'}
+          </Text>
+        </Stack>
+        {props.ended ? (
+          <>
             <Stack direction="column" gap={-1}>
               <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-                Current Owner
+                Won By
               </Text>
               <Text variant="title-1" bold color="mid-text">
                 <div
                   className="address"
-                  onMouseEnter={() => setAddress(props.ownerAddress || '')}
+                  onMouseEnter={() => setAddress(props.winnerAddress || '')}
                   onMouseLeave={() => setAddress('')}
                 >
-                  {props.ownerENS || props.ownerAddress}
+                  {props.winnerENS || props.winnerAddress}
                 </div>
               </Text>
             </Stack>
-          )}
-        </>
-      ) : (
-        <Stack direction="column" gap={-1}>
-          <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-            End in
-          </Text>
-          <Text variant="title-1" bold color="bright-text">
-            <Countdown to={props.endTime * 1000} />
-          </Text>
-        </Stack>
-      )}
-      {!props.ended && isConnected && (
-        <ClientOnly>
-          <div style={{ flex: 1 }} />
-          <Bidding
-            currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
-            onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
-            isLoading={bidMutation.isPending}
-          />
-        </ClientOnly>
-      )}
-      <style jsx>{`
-        .address {
-          max-width: 42ch;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-        .image {
-          width: 2.8rem;
-          background-color: #d5d7e1;
-        }
-        @media only screen and (max-width: 950px) {
+            {props.ownerAddress && props.ownerAddress !== props.winnerAddress && (
+              <Stack direction="column" gap={-1}>
+                <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+                  Current Owner
+                </Text>
+                <Text variant="title-1" bold color="mid-text">
+                  <div
+                    className="address"
+                    onMouseEnter={() => setAddress(props.ownerAddress || '')}
+                    onMouseLeave={() => setAddress('')}
+                  >
+                    {props.ownerENS || props.ownerAddress}
+                  </div>
+                </Text>
+              </Stack>
+            )}
+          </>
+        ) : (
+          <Stack direction="column" gap={-1}>
+            <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+              End in
+            </Text>
+            <Text variant="title-1" bold color="bright-text">
+              <Countdown to={props.endTime * 1000} />
+            </Text>
+          </Stack>
+        )}
+        {!props.ended && isConnected && (
+          <ClientOnly>
+            <div style={{ flex: 1 }} />
+            <Bidding
+              currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
+              onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
+              isLoading={bidMutation.isPending}
+            />
+          </ClientOnly>
+        )}
+        <style jsx>{`
           .address {
-            max-width: 20ch;
+            max-width: 42ch;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
-        }
-        @media only screen and (min-width: 950px) and (max-width: 1200px) {
-          .address {
-            max-width: 35ch;
+          .image {
+            width: 2.8rem;
+            background-color: #d5d7e1;
           }
-        }
-      `}</style>
-    </Stack>
+          @media only screen and (max-width: 950px) {
+            .address {
+              max-width: 20ch;
+            }
+          }
+          @media only screen and (min-width: 950px) and (max-width: 1200px) {
+            .address {
+              max-width: 35ch;
+            }
+          }
+        `}</style>
+      </Stack>
+    </>
   );
 }
 
