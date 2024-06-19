@@ -172,3 +172,18 @@ BEGIN
     END IF;
 END
 $$;
+
+--
+
+DO $$
+DECLARE
+    migration_version INT := 8;
+    migration_comment TEXT := 'Add index to noun owner';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        CREATE INDEX idx_noun_owner ON noun("owner");
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
