@@ -30,3 +30,37 @@ export function HoareIcon() {
     </svg>
   );
 }
+
+export function ExternalLinkIcon() {
+  return (
+    <svg
+      height="0.7em"
+      viewBox="0 0 16 16"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.5"
+    >
+      <polyline points="8.25 2.75,2.75 2.75,2.75 13.25,13.25 13.25,13.25 7.75" />
+      <path d="m13.25 2.75-5.5 5.5m3-6.5h3.5v3.5" />
+    </svg>
+  );
+}
+
+export function TooltipIcon() {
+  return (
+    <svg width={3} height={8} viewBox="0 0 3 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M1.125 0H1C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H1.125H1.25C1.80228 2 2.25 1.55228 2.25 1C2.25 0.447715 1.80228 0 1.25 0H1.125Z"
+        fill="currentColor"
+      />
+      <path
+        d="M1.125 4H1C0.447715 4 0 4.44772 0 5V6V7C0 7.55228 0.447715 8 1 8H1.125H1.25C1.80228 8 2.25 7.55228 2.25 7V6V5C2.25 4.44772 1.80228 4 1.25 4H1.125Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
