@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-modern-drawer/dist/index.css';
 import { Noun, NounProperty } from '../server/api/types';
 import { getNounData } from '@nouns/assets';
-import { bgcolors } from '@nouns/assets/dist/image-data.json';
+import imageData from '@nouns/assets/dist/image-data.json';
 
 export default function NounInfo({
   noun,
@@ -21,6 +21,7 @@ export default function NounInfo({
     return null;
   }
 
+  const { bgcolors } = imageData;
   const { parts } = getNounData(noun);
 
   return (
