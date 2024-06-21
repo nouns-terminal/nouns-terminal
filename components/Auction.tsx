@@ -5,6 +5,7 @@ import AuctionHeader from './AuctionHeader';
 import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
 import { useAccount } from 'wagmi';
+import SlideOver from './SlideOver';
 
 export default function Auction({
   auctionId,
@@ -15,6 +16,8 @@ export default function Auction({
 }) {
   const [data, setData] = useState<AuctionData | null | undefined>(auctionData);
   const [pendingBid, setPendingBid] = useState<PendingBid | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [slideOverContent, setSlideOverContent] = useState<JSX.Element | null>(null);
 
   trpc.onLatest.useSubscription(
     { auctionId },
@@ -35,42 +38,47 @@ export default function Auction({
   const ended = !!data.auction.price;
 
   return (
-    <div className="auction">
-      <AuctionHeader
-        id={data.auction.id}
-        startTime={data.auction.startTime}
-        endTime={data.auction.endTime}
-        maxBid={data.bids[0]?.value}
-        winnerENS={
-          (data.auction.winner &&
-            data.wallets.find((w) => w.address === data.auction.winner)?.ens) ||
-          null
-        }
-        winnerAddress={data.auction.winner}
-        ownerENS={
-          (data.noun?.owner && data.wallets.find((w) => w.address === data.noun?.owner)?.ens) ||
-          null
-        }
-        ownerAddress={data.noun?.owner ?? null}
-        noun={data.noun}
-        ended={ended}
-        onSubmitBid={setPendingBid}
-        nounProperties={data.nounProperties}
-      />
-      {!pendingBid && data.bids.length < 1 ? (
-        <div className="info">No bids yet</div>
-      ) : (
-        <>
-          <div className="hr" />
-          <BidsTable
-            bids={data.bids}
-            wallets={data.wallets}
-            pendingBid={pendingBid}
-            ended={ended}
-          />
-        </>
-      )}
-      {!ended && <LiveMarquee to={data.auction.endTime * 1000} />}
+    <>
+      <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        {slideOverContent}
+      </SlideOver>
+      <div className="auction">
+        <AuctionHeader
+          id={data.auction.id}
+          startTime={data.auction.startTime}
+          endTime={data.auction.endTime}
+          maxBid={data.bids[0]?.value}
+          winnerENS={
+            (data.auction.winner &&
+              data.wallets.find((w) => w.address === data.auction.winner)?.ens) ||
+            null
+          }
+          winnerAddress={data.auction.winner}
+          ownerENS={
+            (data.noun?.owner && data.wallets.find((w) => w.address === data.noun?.owner)?.ens) ||
+            null
+          }
+          ownerAddress={data.noun?.owner ?? null}
+          noun={data.noun}
+          ended={ended}
+          onSubmitBid={setPendingBid}
+          nounProperties={data.nounProperties}
+        />
+        {!pendingBid && data.bids.length < 1 ? (
+          <div className="info">No bids yet</div>
+        ) : (
+          <>
+            <div className="hr" />
+            <BidsTable
+              bids={data.bids}
+              wallets={data.wallets}
+              pendingBid={pendingBid}
+              ended={ended}
+            />
+          </>
+        )}
+        {!ended && <LiveMarquee to={data.auction.endTime * 1000} />}
+      </div>
       <style jsx>{`
         .auction {
           padding: var(--s1);
@@ -92,7 +100,7 @@ export default function Auction({
           color: var(--mid-text);
         }
       `}</style>
-    </div>
+    </>
   );
 }
 
