@@ -84,4 +84,5 @@ body {
 
 .EZDrawer .EZDrawer__container {
   background: var(--surface-bg) !important;
+  border: 1px solid var(--lines) !important;
 }
