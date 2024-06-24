@@ -17,12 +17,34 @@ export type Bid = {
   clientId: number | null;
 };
 
+export type BidderHistory = {
+  auctionId: number;
+  countBids: string;
+  latestBidTime: number;
+  maxBid: string;
+  winner: string | null;
+};
+
 export type Wallet = {
   address: string;
   ens: string | null;
   bids: number;
   nouns: number | null;
   wins: number | null;
+};
+
+export type Bidder = {
+  ens: string | null;
+  balance: { eth: string; usd: string } | null;
+  nouns: Noun[] | null;
+  largestBid: { auctionId: number; value: string } | null;
+};
+
+export type Activity = {
+  id: number;
+  maxBid: string;
+  biddsAmount: number;
+  date: number;
 };
 
 export type Auction = {
