@@ -233,3 +233,44 @@ ON
   (r."part" = 'glasses' AND r."id" = n.glasses)
 WHERE 
   n.id = :id::INTEGER;
+
+/* @name getAddressNouns */ 
+SELECT "id", "background", "body", "accessory", "head", "glasses" FROM noun WHERE "owner" = :address!;
+
+/* @name getAddressWins */ 
+SELECT COUNT(*) FROM auction WHERE winner = :address!; 
+
+/* @name getAddressLargestBid */
+SELECT 
+    "bid"."auctionId",
+    "bid"."value",
+    "noun"."accessory",
+    "noun"."body",
+    "noun"."background",
+    "noun"."glasses",
+    "noun"."head"
+FROM 
+    "bid"
+LEFT JOIN "noun" ON "bid"."auctionId" = "noun"."id"
+WHERE 
+    "bid"."walletAddress" = :address!
+    AND "bid"."value" = (
+        SELECT MAX("value") 
+        FROM "bid" 
+        WHERE "walletAddress" = :address!
+    );
+
+/* @name getAddressBidsHistory */
+SELECT 
+    "bid"."auctionId",
+    MAX("bid"."value") AS "maxBid",
+    COUNT("bid"."walletAddress") AS "countBids",
+    "auction"."winner" as "winner",
+    MAX("bid"."timestamp") as "latestBidTime"
+FROM 
+    "bid"
+LEFT JOIN "auction" on "bid"."auctionId" = "auction"."id" 
+WHERE 
+    "bid"."walletAddress" = :address!
+GROUP BY 
+    "bid"."auctionId", "auction"."winner";
