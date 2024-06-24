@@ -63,6 +63,8 @@ export default function Auction({
           ended={ended}
           onSubmitBid={setPendingBid}
           nounProperties={data.nounProperties}
+          onOpen={setIsOpen}
+          onSlideOver={setSlideOverContent}
         />
         {!pendingBid && data.bids.length < 1 ? (
           <div className="info">No bids yet</div>
@@ -74,6 +76,8 @@ export default function Auction({
               wallets={data.wallets}
               pendingBid={pendingBid}
               ended={ended}
+              onOpen={setIsOpen}
+              onSlideOver={setSlideOverContent}
             />
           </>
         )}
