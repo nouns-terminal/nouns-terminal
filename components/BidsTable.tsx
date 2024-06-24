@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Bid, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
 import ClientOnly from './ClientOnly';
+import BidderProfile from './BidderProfile';
 import { TooltipIcon } from './Icons';
 
 export const hoveredAddress = atom('');
@@ -17,6 +18,8 @@ type Props = {
   wallets: readonly Wallet[];
   pendingBid: PendingBid | null;
   ended: boolean;
+  onOpen: (open: boolean) => void;
+  onSlideOver: (content: JSX.Element) => void;
 };
 
 export default function BidsTable(props: Props) {
@@ -84,15 +87,15 @@ export default function BidsTable(props: Props) {
               </td>
               <td>
                 <div className="address">
-                  <a
-                    title={lookup[bid.walletAddress]?.ens || bid.walletAddress}
-                    target="_blank"
-                    rel="noreferrer"
-                    href={`https://etherscan.io/address/${bid.walletAddress}`}
+                  <span
                     data-testid="wallet-address"
+                    onClick={() => {
+                      props.onOpen(true);
+                      props.onSlideOver(<BidderProfile address={bid.walletAddress} />);
+                    }}
                   >
                     {lookup[bid.walletAddress]?.ens || bid.walletAddress}
-                  </a>
+                  </span>
                 </div>
               </td>
               <td>{formatBalance(BigInt(bid.value))}</td>
