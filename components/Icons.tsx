@@ -40,9 +40,9 @@ export function ExternalLinkIcon() {
       version="1.1"
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
     >
       <polyline points="8.25 2.75,2.75 2.75,2.75 13.25,13.25 13.25,13.25 7.75" />
       <path d="m13.25 2.75-5.5 5.5m3-6.5h3.5v3.5" />
