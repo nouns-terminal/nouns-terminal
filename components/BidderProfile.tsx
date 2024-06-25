@@ -171,12 +171,9 @@ function ProfileInfo({
         value: string;
         noun: Noun;
       }
-    | undefined;
+    | undefined
+    | null;
 }) {
-  if (!largestBid || !bidderHistory) {
-    return null;
-  }
-
   const totalBidsCount = bidderHistory?.reduce((acc, curr) => acc + Number(curr.countBids), 0) || 0;
   const nounSVG = createNounSVG(largestBid?.noun as Noun);
 
@@ -212,7 +209,7 @@ function ProfileInfo({
             &nbsp;•&nbsp;{`from ${totalBidsCount} ${totalBidsCount > 1 ? 'bids' : 'bid'}`}
           </Text>
         </span>
-        {bidderHistory && (
+        {bidderHistory && bidderHistory.length > 0 ? (
           <>
             <span className="bidder-history">
               <Text variant="body" color={'bright-text'}>
@@ -235,75 +232,91 @@ function ProfileInfo({
                 ))}
               </Text>
             </span>
-            <HorizontalLine />
           </>
+        ) : (
+          <EmptySection />
         )}
+        <HorizontalLine />
         <Stack direction="column" gap={2}>
           <Stack direction="column" gap={0}>
             <Text variant="title-1" bold color="low-text">
               Largest bid:
             </Text>
-            <Text variant="large-title" bold color="low-text">
-              <Text variant="large-title" bold color="yellow">
-                {formatEther(BigInt(largestBid?.value || '0'))}
+            {largestBid ? (
+              <Text variant="large-title" bold color="low-text">
+                <Text variant="large-title" bold color="yellow">
+                  {formatEther(BigInt(largestBid?.value || '0'))}
+                </Text>
+                &nbsp;•&nbsp;
+                <Text variant="large-title" bold color="bright-text">
+                  <Link target="_blank" rel="noreferrer" href={`/noun/${largestBid?.id}`}>
+                    Noun&nbsp;{`#${largestBid?.id}`}
+                  </Link>
+                  <Link
+                    target="_blank"
+                    rel="noreferrer"
+                    href={`https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${largestBid?.id}`}
+                  >
+                    <img
+                      src={nounSVG}
+                      alt={`Noun ${largestBid?.id}`}
+                      style={{ width: '24px' }}
+                      className="hide-on-mobile"
+                    />
+                  </Link>
+                </Text>
               </Text>
-              &nbsp;•&nbsp;
-              <Text variant="large-title" bold color="bright-text">
-                <Link target="_blank" rel="noreferrer" href={`/noun/${largestBid?.id}`}>
-                  {`Noun #${largestBid?.id}`}&nbsp;
-                </Link>
-                <Link
-                  target="_blank"
-                  rel="noreferrer"
-                  href={`https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${largestBid?.id}`}
-                >
-                  <img src={nounSVG} alt={`Noun ${largestBid?.id}`} style={{ width: '24px' }} />
-                </Link>
-              </Text>
-            </Text>
+            ) : (
+              <EmptySection />
+            )}
           </Stack>
           <Stack direction="column" gap={0}>
             <Text variant="title-1" bold color="low-text">
               Recent Activity:
             </Text>
-            <div className="activity-table">
-              <table>
-                <tbody>
-                  {bidderHistory
-                    .sort((a, b) => b.auctionId - a.auctionId)
-                    .map((activity, index) => (
-                      <tr key={index}>
-                        <td>
-                          <Link
-                            href={`/noun/${activity.auctionId}`}
-                            target="_blank"
-                            rel="noreferrer"
+            {bidderHistory && bidderHistory.length > 0 ? (
+              <div className="activity-table">
+                <table>
+                  <tbody>
+                    {bidderHistory
+                      .sort((a, b) => b.auctionId - a.auctionId)
+                      .map((activity, index) => (
+                        <tr key={index}>
+                          <td>
+                            <Link
+                              href={`/noun/${activity.auctionId}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              #{activity.auctionId}
+                            </Link>
+                          </td>
+                          <td className="dot">•</td>
+                          <td>{formatBalance(BigInt(activity.maxBid))}</td>
+                          <td className="dot">•</td>
+                          <td>{`${activity.countBids} ${Number(activity.countBids) > 1 ? 'bids' : 'bid'}`}</td>
+                          <td className="dot">•</td>
+                          <td
+                            style={{
+                              color: `${activity.winner === address ? 'var(--green)' : 'var(--red)'}`,
+                            }}
                           >
-                            #{activity.auctionId}
-                          </Link>
-                        </td>
-                        <td className="dot">•</td>
-                        <td>{formatBalance(BigInt(activity.maxBid))}</td>
-                        <td className="dot">•</td>
-                        <td>{`${activity.countBids} ${Number(activity.countBids) > 1 ? 'bids' : 'bid'}`}</td>
-                        <td className="dot">•</td>
-                        <td
-                          style={{
-                            color: `${activity.winner === address ? 'var(--green)' : 'var(--red)'}`,
-                          }}
-                        >
-                          {activity.winner === address ? 'WON' : 'LOST'}
-                        </td>
-                        <td style={{ color: 'var(--low-text)', textAlign: 'right' }}>
-                          <span suppressHydrationWarning>
-                            {formatTime(Number(activity.latestBidTime) * 1000)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                            {activity.winner === address ? 'WON' : 'LOST'}
+                          </td>
+                          <td style={{ color: 'var(--low-text)', textAlign: 'right' }}>
+                            <span suppressHydrationWarning>
+                              {formatTime(Number(activity.latestBidTime) * 1000)}
+                              <span className="hide-on-mobile">&nbsp;ago</span>
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <EmptySection />
+            )}
           </Stack>
         </Stack>
       </Stack>
@@ -392,18 +405,23 @@ function formatUsdPrice(amount: number) {
 }
 
 function createNounSVG(noun: Noun, isBackground?: boolean): string {
-  const data = getNounData(noun);
-  const { parts, background } = data;
+  try {
+    const data = getNounData(noun);
+    const { parts, background } = data;
 
-  let svgBinary;
+    let svgBinary;
 
-  if (isBackground) {
-    svgBinary = buildSVG(parts, ImageData.palette, background);
-  } else {
-    svgBinary = buildSVG(parts, ImageData.palette);
+    if (isBackground) {
+      svgBinary = buildSVG(parts, ImageData.palette, background);
+    } else {
+      svgBinary = buildSVG(parts, ImageData.palette);
+    }
+
+    return 'data:image/svg+xml;base64,' + btoa(svgBinary);
+  } catch (e) {
+    console.error(e);
+    return '';
   }
-
-  return 'data:image/svg+xml;base64,' + btoa(svgBinary);
 }
 
 function formatTime(lastActivity: number) {

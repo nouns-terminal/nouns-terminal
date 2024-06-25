@@ -37,6 +37,15 @@ async function getAddressDataFromDB(address: string) {
   const [largestBid] = await getAddressLargestBid.run({ address }, pgPool);
   const bidderHistory = await getAddressBidsHistory.run({ address }, pgPool);
 
+  if (!largestBid) {
+    return {
+      nouns,
+      wins,
+      largestBid: null, 
+      bidderHistory,
+    };
+  }
+
   return {
     nouns,
     wins,
