@@ -30,6 +30,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
         address={address}
         largestBid={wallet.data?.largestBid}
       />
+      <div style={{ height: 'var(--s2)' }} />
     </>
   );
 }
@@ -120,7 +121,7 @@ function ProfileHeader({
           height: 1px;
           background-image: linear-gradient(to right, var(--lines) 90%, rgba(0, 0, 0, 0) 10%);
           background-size: var(--s2) 1px;
-          margin: var(--s1) 0 var(--s1);
+          margin: var(--s1) 0;
         }
         .extra-space {
           width: var(--s5);
@@ -145,6 +146,9 @@ function ProfileHeader({
           display: flex;
           flex-wrap: wrap;
           gap: var(${'--s-2'});
+          max-width: 50%;
+          max-height: 6rem;
+          overflow-y: auto;
         }
       `}</style>
       <HorizontalLine />
@@ -320,7 +324,7 @@ function ProfileInfo({
           white-space: nowrap;
         }
         .activity-table {
-          max-height: 13rem;
+          max-height: 12rem;
           overflow-y: auto;
         }
         .dot {
@@ -330,7 +334,28 @@ function ProfileInfo({
           width: 20px;
           color: var(--low-text);
         }
+
+        @media only screen and (max-width: 600px) {
+          .hide-on-mobile {
+            display: none;
+          }
+        }
       `}</style>
+    </div>
+  );
+}
+
+function EmptySection() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: 'var(--low-text)',
+      }}
+    >
+      Empty
     </div>
   );
 }
@@ -343,7 +368,7 @@ function HorizontalLine() {
         .hr {
           height: 1px;
           background-color: var(--lines);
-          margin: var(--s1) 0 var(--s1);
+          margin: var(--s1) 0;
         }
       `}</style>
     </>
@@ -390,14 +415,14 @@ function formatTime(lastActivity: number) {
   const hours = Math.floor(delta / (60 * 60 * 1000));
 
   if (hours < 24) {
-    return `${pad2(hours)}h ago`;
+    return `${pad2(hours)}h`;
   } else if (days < 30) {
-    return `${pad2(days)}d ago`;
+    return `${pad2(days)}d`;
   } else if (months < 12) {
-    return `${pad2(months)}m ago`;
+    return `${pad2(months)}m`;
   }
 
-  return `${pad2(years)}y ago`;
+  return `${pad2(years)}y`;
 }
 
 function formatBalance(balance: bigint, prefix = 'Ξ') {
