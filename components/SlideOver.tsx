@@ -20,7 +20,7 @@ export default function SlideOver({
         direction="right"
         className="drawer"
         size={'400px'}
-        style={{ maxWidth: '90vw' }}
+        style={{ maxWidth: '90vw', maxHeight: '100vh', overflowY: 'auto' }}
       >
         {children}
       </Drawer>
