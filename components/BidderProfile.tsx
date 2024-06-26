@@ -405,6 +405,10 @@ function formatUsdPrice(amount: number) {
 }
 
 function createNounSVG(noun: Noun, isBackground?: boolean): string {
+  if (!noun) {
+    return '';
+  }
+
   try {
     const data = getNounData(noun);
     const { parts, background } = data;
