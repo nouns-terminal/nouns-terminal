@@ -17,6 +17,7 @@ const nextConfig = {
   env: {
     PROVIDER_URL: process.env.PROVIDER_URL,
     APP_URL: process.env.APP_URL,
+    AIRSTACK_API_KEY: process.env.AIRSTACK_API_KEY,
   },
 };
 
