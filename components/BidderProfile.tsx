@@ -142,24 +142,27 @@ function ProfileHeader({
             {nouns &&
               nounSVGs &&
               nounSVGs.length > 0 &&
-              nounSVGs.map((nounSVG, index) => (
-                <Link
-                  href={
-                    nouns[index].id % 10 === 0
-                      ? `https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${nouns[index].id}`
-                      : `/noun/${nouns[index].id}`
-                  }
-                  target="_blank"
-                  rel="noreferrer"
-                  key={index}
-                >
-                  <img
-                    src={nounSVG}
-                    alt={`Noun ${nouns[index].id}`}
-                    style={{ paddingBottom: 'var(--s-2)', width: '24px' }}
-                  />
-                </Link>
-              ))}
+              nounSVGs.map(
+                (nounSVG, index) =>
+                  nounSVG && (
+                    <Link
+                      href={
+                        nouns[index].id % 10 === 0
+                          ? `https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${nouns[index].id}`
+                          : `/noun/${nouns[index].id}`
+                      }
+                      target="_blank"
+                      rel="noreferrer"
+                      key={index}
+                    >
+                      <img
+                        src={nounSVG}
+                        alt={`Noun ${nouns[index].id}`}
+                        style={{ paddingBottom: 'var(--s-2)', width: '24px' }}
+                      />
+                    </Link>
+                  ),
+              )}
           </div>
         </div>
       </div>
@@ -302,18 +305,20 @@ function ProfileInfo({
                   <Link target="_blank" rel="noreferrer" href={`/noun/${largestBid?.id}`}>
                     Noun&nbsp;{`#${largestBid?.id}`}
                   </Link>
-                  <Link
-                    target="_blank"
-                    rel="noreferrer"
-                    href={`https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${largestBid?.id}`}
-                  >
-                    <img
-                      src={nounSVG}
-                      alt={`Noun ${largestBid?.id}`}
-                      style={{ width: '24px' }}
-                      className="hide-on-mobile"
-                    />
-                  </Link>
+                  {nounSVG && (
+                    <Link
+                      target="_blank"
+                      rel="noreferrer"
+                      href={`https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${largestBid?.id}`}
+                    >
+                      <img
+                        src={nounSVG}
+                        alt={`Noun ${largestBid?.id}`}
+                        style={{ width: '24px' }}
+                        className="hide-on-mobile"
+                      />
+                    </Link>
+                  )}
                 </Text>
               </Text>
             ) : (
