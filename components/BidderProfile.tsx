@@ -5,7 +5,7 @@ import { trpc } from '../utils/trpc';
 import { formatEther } from 'viem';
 import { ExternalLinkIcon } from './Icons';
 import { ImageData, getNounData } from '@nouns/assets';
-import { Noun, BidderHistory } from '../server/api/types';
+import { Noun, BidderHistory, Social } from '../server/api/types';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
 import Link from 'next/link';
 
@@ -23,6 +23,8 @@ export default function BidderProfile({ address }: { address: string | null }) {
         ens={wallet.data?.ens}
         balance={wallet.data?.balance}
         nouns={wallet.data?.nouns as Noun[]}
+        domains={wallet.data?.domains}
+        dapps={wallet.data?.dapps}
       />
       <ProfileInfo
         wins={Number(wallet.data?.wins.count || 0)}
@@ -40,6 +42,8 @@ function ProfileHeader({
   ens,
   balance,
   nouns,
+  domains,
+  dapps,
 }: {
   address: string;
   ens: string | null | undefined;
@@ -50,8 +54,15 @@ function ProfileHeader({
       }
     | undefined;
   nouns: Noun[] | undefined;
+  domains: Social[] | undefined;
+  dapps: Social[] | undefined;
 }) {
   const nounSVGs = nouns?.map((noun) => createNounSVG(noun, true));
+  const domainNicknames = [
+    ens,
+    ...(domains?.filter((domain) => domain.nickname !== ens).map((domain) => domain.nickname) ||
+      []),
+  ].join(' • ');
 
   return (
     <div style={{ backgroundColor: 'var(--dark-bg)' }}>
@@ -69,11 +80,47 @@ function ProfileHeader({
               <ExternalLinkIcon />
             </a>
           </Text>
-          {ens && (
+          <div
+            style={{
+              height: '1rem',
+              maxWidth: '42ch',
+              overflow: 'hidden',
+              textOverflow: 'clip',
+              whiteSpace: 'nowrap',
+            }}
+          >
             <Text variant="headline" bold color="low-text">
-              {ens}
+              {domainNicknames.length < 42 ? (
+                domainNicknames
+              ) : (
+                <LiveLine text={domainNicknames + ' • '} />
+              )}
             </Text>
-          )}
+          </div>
+          <div
+            style={{
+              height: '1rem',
+            }}
+          >
+            {dapps && dapps.length > 0 && (
+              <Text variant="headline" bold color="low-text">
+                {dapps.map((dapp, index) => (
+                  <>
+                    <a
+                      href={`https://warpcast.com/${dapp.nickname}`}
+                      key={index}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="social-link"
+                    >
+                      {dapp.type}
+                    </a>
+                    {index < dapps.length - 1 ? ' • ' : ''}
+                  </>
+                ))}
+              </Text>
+            )}
+          </div>
           <div className="dotted-hr" />
         </Stack>
         <div className="balance">
@@ -121,13 +168,13 @@ function ProfileHeader({
           height: 1px;
           background-image: linear-gradient(to right, var(--lines) 90%, rgba(0, 0, 0, 0) 10%);
           background-size: var(--s2) 1px;
-          margin: var(--s1) 0;
+          margin: var(--s0) 0 var(--s1) 0;
         }
         .extra-space {
           width: var(--s5);
         }
         .content {
-          padding: var(--s1) var(--s1) 0;
+          margin: var(--s1) var(--s2) 0 var(--s1);
         }
         .external-link {
           margin-left: var(--s-2);
@@ -147,8 +194,11 @@ function ProfileHeader({
           flex-wrap: wrap;
           gap: var(${'--s-2'});
           max-width: 50%;
-          max-height: 6rem;
+          height: 6rem;
           overflow-y: auto;
+        }
+        .social-link:hover {
+          color: var(--bright-text);
         }
       `}</style>
       <HorizontalLine />
@@ -201,7 +251,7 @@ function ProfileInfo({
       </Stack>
       <HorizontalLine />
       <Stack direction="column" gap={-1}>
-        <span>
+        <span style={{ whiteSpace: 'pre' }}>
           <Text variant="title-2" bold color="green">
             {`${wins} ${wins > 1 ? 'Nouns' : 'Noun'} won`}
           </Text>
@@ -234,7 +284,7 @@ function ProfileInfo({
             </span>
           </>
         ) : (
-          <EmptySection />
+          <EmptySection height="6rem" />
         )}
         <HorizontalLine />
         <Stack direction="column" gap={2}>
@@ -267,7 +317,7 @@ function ProfileInfo({
                 </Text>
               </Text>
             ) : (
-              <EmptySection />
+              <EmptySection height="3rem" />
             )}
           </Stack>
           <Stack direction="column" gap={0}>
@@ -315,7 +365,7 @@ function ProfileInfo({
                 </table>
               </div>
             ) : (
-              <EmptySection />
+              <EmptySection height="6rem" />
             )}
           </Stack>
         </Stack>
@@ -325,7 +375,7 @@ function ProfileInfo({
           padding: 0 var(--s1) 0;
         }
         .bidder-history {
-          max-height: 6rem;
+          height: 3rem;
           overflow-y: auto;
         }
         table {
@@ -337,7 +387,7 @@ function ProfileInfo({
           white-space: nowrap;
         }
         .activity-table {
-          max-height: 12rem;
+          height: 6rem;
           overflow-y: auto;
         }
         .dot {
@@ -358,7 +408,7 @@ function ProfileInfo({
   );
 }
 
-function EmptySection() {
+function EmptySection({ height }: { height: string }) {
   return (
     <div
       style={{
@@ -366,6 +416,7 @@ function EmptySection() {
         justifyContent: 'center',
         alignItems: 'center',
         color: 'var(--low-text)',
+        height: height,
       }}
     >
       Empty
@@ -385,6 +436,32 @@ function HorizontalLine() {
         }
       `}</style>
     </>
+  );
+}
+
+function LiveLine({ text }: { text: string }) {
+  return (
+    <div className="live">
+      <div className="content">{text.repeat(50)}</div>
+      <style jsx>{`
+        .live {
+          overflow: hidden;
+          white-space: nowrap;
+        }
+        .content {
+          animation: 60s scroll infinite linear;
+        }
+
+        @keyframes scroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-1000px);
+          }
+        }
+      `}</style>
+    </div>
   );
 }
 

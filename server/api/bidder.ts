@@ -3,8 +3,10 @@ import RetryProvider from '../RetryProvider';
 import { Pool } from 'pg';
 import {
   getAddressBidsHistory,
+  getAddressDomains,
   getAddressLargestBid,
   getAddressNouns,
+  getAddressDapps,
   getAddressWins,
 } from '../db/queries';
 import { Noun } from './types';
@@ -36,13 +38,17 @@ async function getAddressDataFromDB(address: string) {
   const [wins] = await getAddressWins.run({ address }, pgPool);
   const [largestBid] = await getAddressLargestBid.run({ address }, pgPool);
   const bidderHistory = await getAddressBidsHistory.run({ address }, pgPool);
+  const domains = await getAddressDomains.run({ address }, pgPool);
+  const dapps = await getAddressDapps.run({ address }, pgPool);
 
   if (!largestBid) {
     return {
       nouns,
       wins,
-      largestBid: null, 
+      largestBid: null,
       bidderHistory,
+      domains,
+      dapps,
     };
   }
 
@@ -62,6 +68,8 @@ async function getAddressDataFromDB(address: string) {
       } as Noun,
     },
     bidderHistory,
+    domains,
+    dapps,
   };
 }
 
