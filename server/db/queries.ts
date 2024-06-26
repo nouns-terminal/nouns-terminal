@@ -1044,3 +1044,137 @@ const getAddressBidsHistoryIR: any = {"usedParamSet":{"address":true},"params":[
 export const getAddressBidsHistory = new PreparedQuery<IGetAddressBidsHistoryParams,IGetAddressBidsHistoryResult>(getAddressBidsHistoryIR);
 
 
+/** 'GetLastAuctionUnindexedWalletsSocials' parameters type */
+export interface IGetLastAuctionUnindexedWalletsSocialsParams {
+  limit: number;
+}
+
+/** 'GetLastAuctionUnindexedWalletsSocials' return type */
+export interface IGetLastAuctionUnindexedWalletsSocialsResult {
+  walletAddress: string;
+}
+
+/** 'GetLastAuctionUnindexedWalletsSocials' query type */
+export interface IGetLastAuctionUnindexedWalletsSocialsQuery {
+  params: IGetLastAuctionUnindexedWalletsSocialsParams;
+  result: IGetLastAuctionUnindexedWalletsSocialsResult;
+}
+
+const getLastAuctionUnindexedWalletsSocialsIR: any = {"usedParamSet":{"limit":true},"params":[{"name":"limit","required":true,"transform":{"type":"scalar"},"locs":[{"a":329,"b":335}]}],"statement":"SELECT DISTINCT \n    \"bid\".\"walletAddress\"\nFROM\n    \"bid\"\nLEFT JOIN\n    \"socials\" ON \"bid\".\"walletAddress\" = \"socials\".\"address\"\nWHERE\n    \"socials\".\"address\" IS NULL AND\n    \"bid\".\"auctionId\" IN (\n        SELECT \n            \"auctionId\"\n        FROM\n            \"bid\"\n        ORDER BY\n            \"auctionId\" DESC\n        LIMIT :limit!::INTEGER\n    )"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT DISTINCT 
+ *     "bid"."walletAddress"
+ * FROM
+ *     "bid"
+ * LEFT JOIN
+ *     "socials" ON "bid"."walletAddress" = "socials"."address"
+ * WHERE
+ *     "socials"."address" IS NULL AND
+ *     "bid"."auctionId" IN (
+ *         SELECT 
+ *             "auctionId"
+ *         FROM
+ *             "bid"
+ *         ORDER BY
+ *             "auctionId" DESC
+ *         LIMIT :limit!::INTEGER
+ *     )
+ * ```
+ */
+export const getLastAuctionUnindexedWalletsSocials = new PreparedQuery<IGetLastAuctionUnindexedWalletsSocialsParams,IGetLastAuctionUnindexedWalletsSocialsResult>(getLastAuctionUnindexedWalletsSocialsIR);
+
+
+/** 'SetAddressSocials' parameters type */
+export interface ISetAddressSocialsParams {
+  address: string;
+  followers?: number | null | void;
+  nickname?: string | null | void;
+  type?: string | null | void;
+}
+
+/** 'SetAddressSocials' return type */
+export type ISetAddressSocialsResult = void;
+
+/** 'SetAddressSocials' query type */
+export interface ISetAddressSocialsQuery {
+  params: ISetAddressSocialsParams;
+  result: ISetAddressSocialsResult;
+}
+
+const setAddressSocialsIR: any = {"usedParamSet":{"type":true,"nickname":true,"followers":true,"address":true},"params":[{"name":"type","required":false,"transform":{"type":"scalar"},"locs":[{"a":74,"b":78},{"a":164,"b":168}]},{"name":"nickname","required":false,"transform":{"type":"scalar"},"locs":[{"a":81,"b":89},{"a":186,"b":194}]},{"name":"followers","required":false,"transform":{"type":"scalar"},"locs":[{"a":92,"b":101},{"a":213,"b":222}]},{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":104,"b":112}]}],"statement":"INSERT INTO socials (\"type\", \"nickname\", \"followers\", \"address\") \nVALUES (:type, :nickname, :followers, :address!)\nON CONFLICT (\"address\") DO UPDATE SET\n  \"type\" = :type,\n  \"nickname\" = :nickname,\n  \"followers\" = :followers"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * INSERT INTO socials ("type", "nickname", "followers", "address") 
+ * VALUES (:type, :nickname, :followers, :address!)
+ * ON CONFLICT ("address") DO UPDATE SET
+ *   "type" = :type,
+ *   "nickname" = :nickname,
+ *   "followers" = :followers
+ * ```
+ */
+export const setAddressSocials = new PreparedQuery<ISetAddressSocialsParams,ISetAddressSocialsResult>(setAddressSocialsIR);
+
+
+/** 'GetAddressDomains' parameters type */
+export interface IGetAddressDomainsParams {
+  address: string;
+}
+
+/** 'GetAddressDomains' return type */
+export interface IGetAddressDomainsResult {
+  followers: number | null;
+  nickname: string | null;
+  type: string | null;
+}
+
+/** 'GetAddressDomains' query type */
+export interface IGetAddressDomainsQuery {
+  params: IGetAddressDomainsParams;
+  result: IGetAddressDomainsResult;
+}
+
+const getAddressDomainsIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":62,"b":70}]}],"statement":"SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'domain'"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'domain'
+ * ```
+ */
+export const getAddressDomains = new PreparedQuery<IGetAddressDomainsParams,IGetAddressDomainsResult>(getAddressDomainsIR);
+
+
+/** 'GetAddressDapps' parameters type */
+export interface IGetAddressDappsParams {
+  address: string;
+}
+
+/** 'GetAddressDapps' return type */
+export interface IGetAddressDappsResult {
+  followers: number | null;
+  nickname: string | null;
+  type: string | null;
+}
+
+/** 'GetAddressDapps' query type */
+export interface IGetAddressDappsQuery {
+  params: IGetAddressDappsParams;
+  result: IGetAddressDappsResult;
+}
+
+const getAddressDappsIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":62,"b":70}]}],"statement":"SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'farcaster'"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'farcaster'
+ * ```
+ */
+export const getAddressDapps = new PreparedQuery<IGetAddressDappsParams,IGetAddressDappsResult>(getAddressDappsIR);
+
+

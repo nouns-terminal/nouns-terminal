@@ -65,6 +65,12 @@ export type Noun = {
   owner: string | null;
 };
 
+export type Social = {
+  type: string | null;
+  nickname: string | null;
+  followers: number | null;
+};
+
 export type NounProperty = {
   id: number;
   part: string;

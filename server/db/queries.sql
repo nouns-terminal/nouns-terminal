@@ -274,3 +274,37 @@ WHERE
     "bid"."walletAddress" = :address!
 GROUP BY 
     "bid"."auctionId", "auction"."winner";
+
+/* @name getLastAuctionUnindexedWalletsSocials */
+SELECT DISTINCT 
+    "bid"."walletAddress"
+FROM
+    "bid"
+LEFT JOIN
+    "socials" ON "bid"."walletAddress" = "socials"."address"
+WHERE
+    "socials"."address" IS NULL AND
+    "bid"."auctionId" IN (
+        SELECT 
+            "auctionId"
+        FROM
+            "bid"
+        ORDER BY
+            "auctionId" DESC
+        LIMIT :limit!::INTEGER
+    );
+
+
+/* @name setAddressSocials */
+INSERT INTO socials ("type", "nickname", "followers", "address") 
+VALUES (:type, :nickname, :followers, :address!)
+ON CONFLICT ("address") DO UPDATE SET
+  "type" = :type,
+  "nickname" = :nickname,
+  "followers" = :followers;
+
+/* @name getAddressDomains */
+SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'domain';
+
+/* @name getAddressDapps */
+SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'farcaster';
