@@ -84,3 +84,14 @@ export type AuctionData = {
   wallets: Wallet[];
   nounProperties: NounProperty[];
 };
+
+export type SlideOverContent =
+  | {
+      type: 'noun';
+      noun: Noun | null;
+      nounProperties: NounProperty[];
+      nounSrc: string;
+      winner: string;
+      owner: string;
+    }
+  | { type: 'bidder'; address: string | null };
