@@ -2,19 +2,13 @@ import 'dotenv/config';
 import { forever, logger } from '../utils';
 import { getLastAuctionUnindexedWalletsSocials, setAddressSocials } from '../db/queries';
 import { Pool } from 'pg';
-import { fetchQuery } from '@airstack/node';
 
-type QueryResponse = {
+interface QueryResponse {
   data: Data;
-  error: Error;
-};
+}
 
 type Data = {
   Wallet: Wallet;
-};
-
-type Error = {
-  message: string;
 };
 
 type Wallet = {
@@ -33,32 +27,8 @@ type Domain = {
   isPrimary: boolean;
 };
 
-async function getAddressSocials(address: string) {
-  const query = `
-      query GetWalletInfo {
-        Wallet(input: {identity: "${address}", blockchain: ethereum}) {
-          domains(input: {limit: 50}) {
-            name
-            isPrimary
-          }
-          socials {
-            dappName
-            followerCount
-            profileName
-          }
-        }
-      }
-    `;
-
-  const { data, error }: QueryResponse = await fetchQuery(query);
-
-  if (error) {
-    log.error(error);
-    return null;
-  }
-
-  return { address, ...data };
-}
+const AIRSTACK_API_URL = 'https://api.airstack.xyz/graphql';
+const AIRSTACK_API_KEY = process.env.AIRSTACK_API_KEY;
 
 const log = logger.child({ indexer: 'socials' });
 
@@ -66,6 +36,11 @@ export default async function socials(connection: Pool) {
   log.info('Starting');
 
   async function process() {
+    if (!AIRSTACK_API_KEY) {
+      log.error('No AIRSTACK_API_KEY provided');
+      return false;
+    }
+
     const wallets = await getLastAuctionUnindexedWalletsSocials.run({ limit: 100 }, connection);
 
     log.debug(`Rows: ${wallets.length}`, { rows: wallets });
@@ -75,7 +50,7 @@ export default async function socials(connection: Pool) {
     }
 
     const data = await Promise.all(
-      wallets.map((row) => getAddressSocials(row.walletAddress || '')),
+      wallets.map((row) => fetchAddressSocials(row.walletAddress || '')),
     );
 
     for (const row of data) {
@@ -124,4 +99,39 @@ export default async function socials(connection: Pool) {
   }
 
   await forever(process, log);
+}
+
+async function fetchAddressSocials(address: string) {
+  const query = `
+      query GetWalletInfo {
+        Wallet(input: {identity: "${address}", blockchain: ethereum}) {
+          domains(input: {limit: 50}) {
+            name
+            isPrimary
+          }
+          socials {
+            dappName
+            followerCount
+            profileName
+          }
+        }
+      }
+    `;
+
+  try {
+    const res = await fetch(AIRSTACK_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AIRSTACK_API_KEY!,
+      },
+      body: JSON.stringify({ query }),
+    });
+    const json = (await res?.json()) as QueryResponse;
+    const data = json?.data;
+    return { address, ...data };
+  } catch (e) {
+    log.error('Cannot fetch data from Airstack', { error: e });
+    return null;
+  }
 }

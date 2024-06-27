@@ -45,8 +45,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const auctionData = await getAuctionData(auctionId);
 
   if (!auctionData || !auctionData.auction) {
+    // If a noun doesn't exist in the auction or wasn't created, redirect to OpenSea
     return {
-      notFound: true,
+      redirect: {
+        destination: `https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${auctionId}`,
+        permanent: false,
+      },
     };
   }
 

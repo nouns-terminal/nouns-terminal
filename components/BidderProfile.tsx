@@ -31,6 +31,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
         bidderHistory={wallet.data?.bidderHistory as BidderHistory[]}
         address={address}
         largestBid={wallet.data?.largestBid}
+        balance={wallet.data?.balance.eth}
       />
       <div style={{ height: 'var(--s2)' }} />
     </>
@@ -59,7 +60,7 @@ function ProfileHeader({
 }) {
   const nounSVGs = nouns?.map((noun) => createNounSVG(noun, true));
   const domainNicknames = [
-    ens,
+    ...(ens ? [ens] : []), // Only include ens if it exists
     ...(domains?.filter((domain) => domain.nickname !== ens).map((domain) => domain.nickname) ||
       []),
   ].join(' • ');
@@ -80,15 +81,7 @@ function ProfileHeader({
               <ExternalLinkIcon />
             </a>
           </Text>
-          <div
-            style={{
-              height: '1rem',
-              maxWidth: '42ch',
-              overflow: 'hidden',
-              textOverflow: 'clip',
-              whiteSpace: 'nowrap',
-            }}
-          >
+          <div className="social-info">
             <Text variant="headline" bold color="low-text">
               {domainNicknames.length < 42 ? (
                 domainNicknames
@@ -97,11 +90,7 @@ function ProfileHeader({
               )}
             </Text>
           </div>
-          <div
-            style={{
-              height: '1rem',
-            }}
-          >
+          <div className="social-info">
             {dapps && dapps.length > 0 && (
               <Text variant="headline" bold color="low-text">
                 {dapps.map((dapp, index) => (
@@ -146,11 +135,7 @@ function ProfileHeader({
                 (nounSVG, index) =>
                   nounSVG && (
                     <Link
-                      href={
-                        nouns[index].id % 10 === 0
-                          ? `https://opensea.io/assets/ethereum/0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03/${nouns[index].id}`
-                          : `/noun/${nouns[index].id}`
-                      }
+                      href={`/noun/${nouns[index].id}`}
                       target="_blank"
                       rel="noreferrer"
                       key={index}
@@ -159,6 +144,7 @@ function ProfileHeader({
                         src={nounSVG}
                         alt={`Noun ${nouns[index].id}`}
                         style={{ paddingBottom: 'var(--s-2)', width: '24px' }}
+                        title={`Noun ${nouns[index].id}`}
                       />
                     </Link>
                   ),
@@ -200,6 +186,13 @@ function ProfileHeader({
           height: 6rem;
           overflow-y: auto;
         }
+        .social-info {
+          height: 1rem;
+          maxwidth: 42ch;
+          overflow: hidden;
+          textoverflow: clip;
+          whitespace: nowrap;
+        }
         .social-link:hover {
           color: var(--bright-text);
         }
@@ -214,6 +207,7 @@ function ProfileInfo({
   bidderHistory,
   address,
   largestBid,
+  balance,
 }: {
   wins: number;
   bidderHistory: BidderHistory[] | undefined;
@@ -226,9 +220,11 @@ function ProfileInfo({
       }
     | undefined
     | null;
+  balance: string | undefined;
 }) {
   const totalBidsCount = bidderHistory?.reduce((acc, curr) => acc + Number(curr.countBids), 0) || 0;
   const nounSVG = createNounSVG(largestBid?.noun as Noun);
+  const bidderStrength = estimateBidderStrength(wins, BigInt(balance || 0n));
 
   return (
     <div className="content">
@@ -238,18 +234,12 @@ function ProfileInfo({
         </Text>
         <Text variant="title-2" bold color="low-text">
           <Text variant="title-2" bold color="yellow">
-            {wins >= 3 ? '★★★' : wins >= 1 ? '★★' : '★'}
+            {bidderStrength.rank}
           </Text>
           &nbsp;
           <Text variant="title-2" bold color="low-text">
-            •&nbsp;{wins >= 3 ? 'Strong Bidder' : wins >= 1 ? 'Medium Bidder' : 'Weak Bidder'}
+            •&nbsp;{bidderStrength.title}
           </Text>
-        </Text>
-        <Text variant="body" color="low-text">
-          <span style={{ lineHeight: 'var(--s1)' }}>
-            Based on total wallet worth, total nouns held, number of previous rounds lost, and
-            others factors.
-          </span>
         </Text>
       </Stack>
       <HorizontalLine />
@@ -550,4 +540,26 @@ function formatBalance(balance: bigint, prefix = 'Ξ') {
       <small style={{ opacity: 0.5 }}>.{b}</small>
     </>
   );
+}
+
+function estimateBidderStrength(wins: number, balance: bigint) {
+  const formatedBalance = Number(formatEther(balance));
+  const balanceThreshold = 5;
+  let rank, title;
+
+  if (wins >= 3 || (wins >= 1 && formatedBalance >= balanceThreshold)) {
+    rank = '★★★';
+    title = 'Strong Bidder';
+  } else if (wins >= 1 || formatedBalance >= balanceThreshold) {
+    rank = '★★';
+    title = 'Medium Bidder';
+  } else {
+    rank = '★';
+    title = 'Weak Bidder';
+  }
+
+  return {
+    rank,
+    title,
+  };
 }

@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { trpc } from '../utils/trpc';
 import { Vitals } from '../server/api/types';
-import { formatEther, formatGwei, formatUnits } from 'viem';
+import { formatEther, formatGwei } from 'viem';
 import { useIsLive } from './LiveStatus';
 
 type GasPreset = 'average' | 'instant';
