@@ -8,14 +8,12 @@ import Stack from './Stack';
 import Text from './Text';
 import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { NounProperty, type Noun } from '../server/api/types';
+import type { SlideOverContent, NounProperty, Noun } from '../server/api/types';
 import Head from 'next/head';
 import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import ClientOnly from './ClientOnly';
-import NounInfo from './NounInfo';
-import BidderProfile from './BidderProfile';
 
 type Props = {
   id: number;
@@ -28,10 +26,10 @@ type Props = {
   ownerENS: string | null;
   ownerAddress: string | null;
   noun: Noun | null;
-  onSubmitBid: (bid: PendingBid) => unknown;
+  onSubmitBid: (bid: PendingBid) => void;
   nounProperties: NounProperty[];
-  onOpen: (open: boolean) => void;
-  onSlideOver: (content: JSX.Element) => void;
+  onNounClick: (content: SlideOverContent) => void;
+  onBidderClick: (content: SlideOverContent) => void;
 };
 
 const abi = [
@@ -123,16 +121,14 @@ export default function AuctionHeader(props: Props) {
       <div
         className="image"
         onClick={() => {
-          props.onOpen(true);
-          props.onSlideOver(
-            <NounInfo
-              noun={props.noun}
-              nounProperties={props.nounProperties}
-              nounSrc={svgBase64}
-              winner={props.winnerENS || props.winnerAddress || ''}
-              owner={props.ownerENS || props.ownerAddress || ''}
-            />,
-          );
+          props.onNounClick({
+            type: 'noun',
+            noun: props.noun,
+            nounProperties: props.nounProperties,
+            nounSrc: svgBase64,
+            winner: props.winnerENS || props.winnerAddress || '',
+            owner: props.ownerENS || props.ownerAddress || '',
+          });
         }}
       >
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
@@ -167,8 +163,7 @@ export default function AuctionHeader(props: Props) {
                 onMouseEnter={() => setAddress(props.winnerAddress || '')}
                 onMouseLeave={() => setAddress('')}
                 onClick={() => {
-                  props.onOpen(true);
-                  props.onSlideOver(<BidderProfile address={props.winnerAddress} />);
+                  props.onBidderClick({ type: 'bidder', address: props.winnerAddress });
                 }}
               >
                 {props.winnerENS || props.winnerAddress}
@@ -186,8 +181,7 @@ export default function AuctionHeader(props: Props) {
                   onMouseEnter={() => setAddress(props.ownerAddress || '')}
                   onMouseLeave={() => setAddress('')}
                   onClick={() => {
-                    props.onOpen(true);
-                    props.onSlideOver(<BidderProfile address={props.ownerAddress} />);
+                    props.onBidderClick({ type: 'bidder', address: props.ownerAddress });
                   }}
                 >
                   {props.ownerENS || props.ownerAddress}

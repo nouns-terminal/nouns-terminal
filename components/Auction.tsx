@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { type AuctionData } from '../server/api/types';
+import { SlideOverContent, type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
 import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
 import { useAccount } from 'wagmi';
 import SlideOver from './SlideOver';
+import NounInfo from './NounInfo';
+import BidderProfile from './BidderProfile';
 
 export default function Auction({
   auctionId,
@@ -16,8 +18,7 @@ export default function Auction({
 }) {
   const [data, setData] = useState<AuctionData | null | undefined>(auctionData);
   const [pendingBid, setPendingBid] = useState<PendingBid | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [slideOverContent, setSlideOverContent] = useState<JSX.Element | null>(null);
+  const [slideOver, setSlideOver] = useState<SlideOverContent | null>(null);
 
   trpc.onLatest.useSubscription(
     { auctionId },
@@ -39,8 +40,8 @@ export default function Auction({
 
   return (
     <>
-      <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        {slideOverContent}
+      <SlideOver isOpen={!!slideOver} onClose={() => setSlideOver(null)}>
+        {renderSlideOverContent(slideOver)}
       </SlideOver>
       <div className="auction">
         <AuctionHeader
@@ -63,8 +64,8 @@ export default function Auction({
           ended={ended}
           onSubmitBid={setPendingBid}
           nounProperties={data.nounProperties}
-          onOpen={setIsOpen}
-          onSlideOver={setSlideOverContent}
+          onNounClick={setSlideOver}
+          onBidderClick={setSlideOver}
         />
         {!pendingBid && data.bids.length < 1 ? (
           <div className="info">No bids yet</div>
@@ -76,8 +77,7 @@ export default function Auction({
               wallets={data.wallets}
               pendingBid={pendingBid}
               ended={ended}
-              onOpen={setIsOpen}
-              onSlideOver={setSlideOverContent}
+              onBidderClick={setSlideOver}
             />
           </>
         )}
@@ -166,4 +166,27 @@ function useNow() {
   }, []);
 
   return now;
+}
+
+function renderSlideOverContent(props: SlideOverContent | null) {
+  if (!props) {
+    return null;
+  }
+
+  switch (props.type) {
+    case 'noun':
+      return (
+        <NounInfo
+          noun={props.noun}
+          nounProperties={props.nounProperties}
+          nounSrc={props.nounSrc}
+          owner={props.owner}
+          winner={props.winner}
+        />
+      );
+    case 'bidder':
+      return <BidderProfile address={props.address} />;
+    default:
+      return null;
+  }
 }
