@@ -16,7 +16,6 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@airstack/node": "^0.0.7",
     "@metamask/jazzicon": "^2.0.0",
     "@next/bundle-analyzer": "^14.2.3",
     "@nouns/assets": "^0.6.0",

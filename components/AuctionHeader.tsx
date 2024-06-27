@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, useSwitchChain, useWriteContract, useEnsName } from 'wagmi';
 import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS } from '../utils/constants';
@@ -14,6 +13,7 @@ import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import ClientOnly from './ClientOnly';
+import { createNounSVG, formatBidValue } from '../utils/utils';
 
 type Props = {
   id: number;
@@ -99,16 +99,7 @@ export default function AuctionHeader(props: Props) {
       return '';
     }
 
-    try {
-      const data = getNounData(props.noun);
-      const { parts, background } = data;
-
-      const svgBinary = buildSVG(parts, ImageData.palette, background);
-      return 'data:image/svg+xml;base64,' + btoa(svgBinary);
-    } catch (e) {
-      console.error(e);
-      return '';
-    }
+    return createNounSVG(props.noun, true);
   }, [props.noun]);
 
   return (
@@ -240,14 +231,6 @@ function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
   return <span suppressHydrationWarning>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</span>;
-}
-
-function formatBidValue(value: bigint) {
-  const s = formatEther(value);
-  if (s.includes('.')) {
-    return s;
-  }
-  return s + '.0';
 }
 
 function formatTimeLeft(delta: number) {
