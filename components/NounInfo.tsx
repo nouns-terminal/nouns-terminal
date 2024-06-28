@@ -17,7 +17,7 @@ export default function NounInfo({
   winner: string;
   owner: string;
 }) {
-  if (!noun || nounProperties.length < 4) {
+  if (!noun || !nounProperties || nounProperties.length < 4) {
     return null;
   }
 
@@ -37,7 +37,7 @@ export default function NounInfo({
               {parts.map((part, index) => (
                 <tr key={index}>
                   <td style={{ color: 'var(--mid-text)' }}>{nounProperties[index].part}</td>
-                  <td>{formatNounPropertyTitle(part.filename)}</td>
+                  <td>{formatNounPropertyTitle(part.filename || '')}</td>
                   <td style={{ color: 'var(--yellow)', textAlign: 'right' }}>
                     {formatRarity((nounProperties[index].rarity * 100).toString())}
                   </td>
