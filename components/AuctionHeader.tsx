@@ -5,9 +5,7 @@ import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
 import Text from './Text';
-import { ImageData, getNounData } from '@nouns/assets';
-import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import type { SlideOverContent, NounProperty, Noun } from '../server/api/types';
+import type { SlideOverContent, Noun } from '../server/api/types';
 import Head from 'next/head';
 import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
@@ -21,13 +19,10 @@ type Props = {
   endTime: number;
   maxBid: string | null;
   ended: boolean;
-  winnerENS: string | null;
-  winnerAddress: string | null;
-  ownerENS: string | null;
-  ownerAddress: string | null;
+  winner: { address: string; ens: string | null };
+  owner: { address: string; ens: string | null };
   noun: Noun | null;
   onSubmitBid: (bid: PendingBid) => void;
-  nounProperties: NounProperty[];
   onNounClick: (content: SlideOverContent) => void;
   onBidderClick: (content: SlideOverContent) => void;
 };
@@ -112,14 +107,7 @@ export default function AuctionHeader(props: Props) {
       <div
         className="image"
         onClick={() => {
-          props.onNounClick({
-            type: 'noun',
-            noun: props.noun,
-            nounProperties: props.nounProperties,
-            nounSrc: svgBase64,
-            winner: props.winnerENS || props.winnerAddress || '',
-            owner: props.ownerENS || props.ownerAddress || '',
-          });
+          props.onNounClick({ type: 'noun', nounSrc: svgBase64 });
         }}
       >
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
@@ -151,17 +139,17 @@ export default function AuctionHeader(props: Props) {
             <Text variant="title-1" bold color="mid-text">
               <div
                 className="address"
-                onMouseEnter={() => setAddress(props.winnerAddress || '')}
+                onMouseEnter={() => setAddress(props.winner.address || '')}
                 onMouseLeave={() => setAddress('')}
                 onClick={() => {
-                  props.onBidderClick({ type: 'bidder', address: props.winnerAddress });
+                  props.onBidderClick({ type: 'bidder', address: props.winner.address });
                 }}
               >
-                {props.winnerENS || props.winnerAddress}
+                {props.winner.ens || props.winner.address}
               </div>
             </Text>
           </Stack>
-          {props.ownerAddress && props.ownerAddress !== props.winnerAddress && (
+          {props.owner.address && props.owner.address !== props.winner.address && (
             <Stack direction="column" gap={-1}>
               <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
                 Current Owner
@@ -169,13 +157,13 @@ export default function AuctionHeader(props: Props) {
               <Text variant="title-1" bold color="mid-text">
                 <div
                   className="address"
-                  onMouseEnter={() => setAddress(props.ownerAddress || '')}
+                  onMouseEnter={() => setAddress(props.owner.address || '')}
                   onMouseLeave={() => setAddress('')}
                   onClick={() => {
-                    props.onBidderClick({ type: 'bidder', address: props.ownerAddress });
+                    props.onBidderClick({ type: 'bidder', address: props.owner.address });
                   }}
                 >
-                  {props.ownerENS || props.ownerAddress}
+                  {props.owner.ens || props.owner.address}
                 </div>
               </Text>
             </Stack>
@@ -207,10 +195,12 @@ export default function AuctionHeader(props: Props) {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          cursor: pointer;
         }
         .image {
           width: 2.8rem;
           background-color: #d5d7e1;
+          cursor: pointer;
         }
         @media only screen and (max-width: 950px) {
           .address {

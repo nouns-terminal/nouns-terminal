@@ -33,20 +33,6 @@ export type Wallet = {
   wins: number | null;
 };
 
-export type Bidder = {
-  ens: string | null;
-  balance: { eth: string; usd: string } | null;
-  nouns: Noun[] | null;
-  largestBid: { auctionId: number; value: string } | null;
-};
-
-export type Activity = {
-  id: number;
-  maxBid: string;
-  biddsAmount: number;
-  date: number;
-};
-
 export type Auction = {
   id: number;
   startTime: number;
@@ -88,10 +74,6 @@ export type AuctionData = {
 export type SlideOverContent =
   | {
       type: 'noun';
-      noun: Noun | null;
-      nounProperties: NounProperty[];
       nounSrc: string;
-      winner: string;
-      owner: string;
     }
   | { type: 'bidder'; address: string | null };

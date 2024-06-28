@@ -38,10 +38,24 @@ export default function Auction({
 
   const ended = !!data.auction.price;
 
+  const walletEns = (address: string | null) =>
+    (data.auction.winner && data.wallets.find((w) => w.address === address)?.ens) || null;
+
   return (
     <>
       <SlideOver isOpen={!!slideOver} onClose={() => setSlideOver(null)}>
-        {renderSlideOverContent(slideOver)}
+        {slideOver &&
+          (slideOver.type === 'noun' ? (
+            <NounInfo
+              noun={data.noun}
+              nounProperties={data.nounProperties}
+              nounSrc={slideOver.nounSrc}
+              owner={data.noun?.owner || ''}
+              winner={data.auction.winner || ''}
+            />
+          ) : (
+            <BidderProfile address={slideOver.address} />
+          ))}
       </SlideOver>
       <div className="auction">
         <AuctionHeader
@@ -49,21 +63,11 @@ export default function Auction({
           startTime={data.auction.startTime}
           endTime={data.auction.endTime}
           maxBid={data.bids[0]?.value}
-          winnerENS={
-            (data.auction.winner &&
-              data.wallets.find((w) => w.address === data.auction.winner)?.ens) ||
-            null
-          }
-          winnerAddress={data.auction.winner}
-          ownerENS={
-            (data.noun?.owner && data.wallets.find((w) => w.address === data.noun?.owner)?.ens) ||
-            null
-          }
-          ownerAddress={data.noun?.owner ?? null}
+          winner={{ address: data.auction.winner || '', ens: walletEns(data.auction.winner) }}
+          owner={{ address: data.noun?.owner || '', ens: walletEns(data.noun?.owner || null) }}
           noun={data.noun}
           ended={ended}
           onSubmitBid={setPendingBid}
-          nounProperties={data.nounProperties}
           onNounClick={setSlideOver}
           onBidderClick={setSlideOver}
         />
@@ -166,27 +170,4 @@ function useNow() {
   }, []);
 
   return now;
-}
-
-function renderSlideOverContent(props: SlideOverContent | null) {
-  if (!props) {
-    return null;
-  }
-
-  switch (props.type) {
-    case 'noun':
-      return (
-        <NounInfo
-          noun={props.noun}
-          nounProperties={props.nounProperties}
-          nounSrc={props.nounSrc}
-          owner={props.owner}
-          winner={props.winner}
-        />
-      );
-    case 'bidder':
-      return <BidderProfile address={props.address} />;
-    default:
-      return null;
-  }
 }

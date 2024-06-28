@@ -176,6 +176,7 @@ export default function BidsTable(props: Props) {
           white-space: nowrap;
           text-overflow: ellipsis;
           width: 42ch;
+          cursor: pointer;
         }
 
         @media only screen and (max-width: 950px) {
