@@ -82,7 +82,7 @@ export default function BidderProfileInfo({
             </span>
           </>
         ) : (
-          <EmptySection height="6rem" />
+          <EmptySection height="3rem" />
         )}
         <HorizontalLine />
         <Stack direction="column" gap={2}>
@@ -117,7 +117,7 @@ export default function BidderProfileInfo({
                 </Text>
               </Text>
             ) : (
-              <EmptySection height="3rem" />
+              <EmptySection height="2rem" />
             )}
           </Stack>
           <Stack direction="column" gap={0}>
