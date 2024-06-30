@@ -8,6 +8,7 @@ const nextConfig = {
   swcMinify: true,
   serverRuntimeConfig: {
     // Will only be available on the server side
+    AIRSTACK_API_KEY: process.env.AIRSTACK_API_KEY,
   },
   publicRuntimeConfig: {
     // Will be available on both server and client
@@ -17,7 +18,6 @@ const nextConfig = {
   env: {
     PROVIDER_URL: process.env.PROVIDER_URL,
     APP_URL: process.env.APP_URL,
-    AIRSTACK_API_KEY: process.env.AIRSTACK_API_KEY,
   },
 };
 

@@ -131,7 +131,7 @@ async function fetchAddressSocials(address: string) {
     const data = json?.data;
     return { address, ...data };
   } catch (e) {
-    log.error('Cannot fetch data from Airstack', { error: e });
+    log.warn('No AIRSTACK_API_KEY provided, will not index social accounts for bidders');
     return null;
   }
 }

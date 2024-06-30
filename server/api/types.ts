@@ -74,6 +74,6 @@ export type AuctionData = {
 export type SlideOverContent =
   | {
       type: 'noun';
-      nounSrc: string;
+      id: number | undefined;
     }
   | { type: 'bidder'; address: string | null };

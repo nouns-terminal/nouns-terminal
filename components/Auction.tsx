@@ -39,7 +39,7 @@ export default function Auction({
   const ended = !!data.auction.price;
 
   const walletEns = (address: string | null) =>
-    (data.auction.winner && data.wallets.find((w) => w.address === address)?.ens) || null;
+    (data.wallets && address && data.wallets.find((w) => w.address === address)?.ens) || null;
 
   return (
     <>
@@ -49,7 +49,6 @@ export default function Auction({
             <NounInfo
               noun={data.noun}
               nounProperties={data.nounProperties}
-              nounSrc={slideOver.nounSrc}
               owner={data.noun?.owner || ''}
               winner={data.auction.winner || ''}
             />
