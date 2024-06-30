@@ -1,21 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
-import { formatEther } from 'viem';
 import { useEffect, useMemo, useState } from 'react';
 import { useAccount, useSwitchChain, useWriteContract, useEnsName } from 'wagmi';
 import { CLIENT_ID, NOUNS_AUCTION_HOUSE_ADDRESS } from '../utils/constants';
 import Bidding from './Bidding';
 import Stack from './Stack';
 import Text from './Text';
-import { ImageData, getNounData } from '@nouns/assets';
-import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { NounProperty, type Noun } from '../server/api/types';
+import type { SlideOverContent, Noun } from '../server/api/types';
 import Head from 'next/head';
 import { PendingBid, hoveredAddress } from './BidsTable';
 import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import ClientOnly from './ClientOnly';
-import SlideOver from './SlideOver';
-import NounInfo from './NounInfo';
+import { createNounSVG, formatBidValue } from '../utils/utils';
 
 type Props = {
   id: number;
@@ -23,13 +19,12 @@ type Props = {
   endTime: number;
   maxBid: string | null;
   ended: boolean;
-  winnerENS: string | null;
-  winnerAddress: string | null;
-  ownerENS: string | null;
-  ownerAddress: string | null;
+  winner: { address: string; ens: string | null };
+  owner: { address: string; ens: string | null };
   noun: Noun | null;
-  onSubmitBid: (bid: PendingBid) => unknown;
-  nounProperties: NounProperty[];
+  onSubmitBid: (bid: PendingBid) => void;
+  onNounClick: (content: SlideOverContent) => void;
+  onBidderClick: (content: SlideOverContent) => void;
 };
 
 const abi = [
@@ -59,7 +54,6 @@ export default function AuctionHeader(props: Props) {
   const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
-  const [isOpen, setIsOpen] = useState(false);
 
   const bidMutation = useMutation({
     mutationFn: async (bid: bigint) => {
@@ -100,16 +94,7 @@ export default function AuctionHeader(props: Props) {
       return '';
     }
 
-    try {
-      const data = getNounData(props.noun);
-      const { parts, background } = data;
-
-      const svgBinary = buildSVG(parts, ImageData.palette, background);
-      return 'data:image/svg+xml;base64,' + btoa(svgBinary);
-    } catch (e) {
-      console.error(e);
-      return '';
-    }
+    return createNounSVG(props.noun, true);
   }, [props.noun]);
 
   return (
@@ -119,16 +104,12 @@ export default function AuctionHeader(props: Props) {
           <link rel="icon" href={svgBase64} type="image/svg+xml" />
         </Head>
       )}
-      <div className="image" onClick={() => setIsOpen(true)}>
-        <SlideOver isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <NounInfo
-            noun={props.noun}
-            nounProperties={props.nounProperties}
-            nounSrc={svgBase64}
-            winner={props.winnerENS || props.winnerAddress || ''}
-            owner={props.ownerENS || props.ownerAddress || ''}
-          />
-        </SlideOver>
+      <div
+        className="image"
+        onClick={() => {
+          props.onNounClick({ type: 'noun', id: props.noun?.id });
+        }}
+      >
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
       </div>
       <Stack direction="column" gap={-1}>
@@ -158,14 +139,17 @@ export default function AuctionHeader(props: Props) {
             <Text variant="title-1" bold color="mid-text">
               <div
                 className="address"
-                onMouseEnter={() => setAddress(props.winnerAddress || '')}
+                onMouseEnter={() => setAddress(props.winner.address || '')}
                 onMouseLeave={() => setAddress('')}
+                onClick={() => {
+                  props.onBidderClick({ type: 'bidder', address: props.winner.address });
+                }}
               >
-                {props.winnerENS || props.winnerAddress}
+                {props.winner.ens || props.winner.address}
               </div>
             </Text>
           </Stack>
-          {props.ownerAddress && props.ownerAddress !== props.winnerAddress && (
+          {props.owner.address && props.owner.address !== props.winner.address && (
             <Stack direction="column" gap={-1}>
               <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
                 Current Owner
@@ -173,10 +157,13 @@ export default function AuctionHeader(props: Props) {
               <Text variant="title-1" bold color="mid-text">
                 <div
                   className="address"
-                  onMouseEnter={() => setAddress(props.ownerAddress || '')}
+                  onMouseEnter={() => setAddress(props.owner.address || '')}
                   onMouseLeave={() => setAddress('')}
+                  onClick={() => {
+                    props.onBidderClick({ type: 'bidder', address: props.owner.address });
+                  }}
                 >
-                  {props.ownerENS || props.ownerAddress}
+                  {props.owner.ens || props.owner.address}
                 </div>
               </Text>
             </Stack>
@@ -208,10 +195,12 @@ export default function AuctionHeader(props: Props) {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+          cursor: pointer;
         }
         .image {
           width: 2.8rem;
           background-color: #d5d7e1;
+          cursor: pointer;
         }
         @media only screen and (max-width: 950px) {
           .address {
@@ -232,14 +221,6 @@ function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
   return <span suppressHydrationWarning>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</span>;
-}
-
-function formatBidValue(value: bigint) {
-  const s = formatEther(value);
-  if (s.includes('.')) {
-    return s;
-  }
-  return s + '.0';
 }
 
 function formatTimeLeft(delta: number) {

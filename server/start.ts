@@ -17,6 +17,7 @@ import nouns from './indexers/nouns';
 import { getLatestAuction } from './db/queries';
 import balances from './indexers/balances';
 import transfers from './indexers/transfers';
+import socials from './indexers/socials';
 
 async function main() {
   const port = parseInt(process.env.PORT || '3003', 10);
@@ -82,6 +83,7 @@ async function main() {
     transactions(pool, provider),
     balances(pool, provider),
     transfers(NOUNS_TOKEN_ADDRESS, pool, provider),
+    socials(pool),
   ]);
 }
 

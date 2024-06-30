@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { type AuctionData } from '../server/api/types';
+import { SlideOverContent, type AuctionData } from '../server/api/types';
 import { trpc } from '../utils/trpc';
 import AuctionHeader from './AuctionHeader';
 import BidsTable, { PendingBid } from './BidsTable';
 import { useIsLive } from './LiveStatus';
 import { useAccount } from 'wagmi';
+import SlideOver from './SlideOver';
+import NounInfo from './NounInfo';
+import BidderProfile from './BidderProfile';
 
 export default function Auction({
   auctionId,
@@ -15,6 +18,7 @@ export default function Auction({
 }) {
   const [data, setData] = useState<AuctionData | null | undefined>(auctionData);
   const [pendingBid, setPendingBid] = useState<PendingBid | null>(null);
+  const [slideOver, setSlideOver] = useState<SlideOverContent | null>(null);
 
   trpc.onLatest.useSubscription(
     { auctionId },
@@ -34,43 +38,54 @@ export default function Auction({
 
   const ended = !!data.auction.price;
 
+  const walletEns = (address: string | null) =>
+    (data.wallets && address && data.wallets.find((w) => w.address === address)?.ens) || null;
+
   return (
-    <div className="auction">
-      <AuctionHeader
-        id={data.auction.id}
-        startTime={data.auction.startTime}
-        endTime={data.auction.endTime}
-        maxBid={data.bids[0]?.value}
-        winnerENS={
-          (data.auction.winner &&
-            data.wallets.find((w) => w.address === data.auction.winner)?.ens) ||
-          null
-        }
-        winnerAddress={data.auction.winner}
-        ownerENS={
-          (data.noun?.owner && data.wallets.find((w) => w.address === data.noun?.owner)?.ens) ||
-          null
-        }
-        ownerAddress={data.noun?.owner ?? null}
-        noun={data.noun}
-        ended={ended}
-        onSubmitBid={setPendingBid}
-        nounProperties={data.nounProperties}
-      />
-      {!pendingBid && data.bids.length < 1 ? (
-        <div className="info">No bids yet</div>
-      ) : (
-        <>
-          <div className="hr" />
-          <BidsTable
-            bids={data.bids}
-            wallets={data.wallets}
-            pendingBid={pendingBid}
-            ended={ended}
-          />
-        </>
-      )}
-      {!ended && <LiveMarquee to={data.auction.endTime * 1000} />}
+    <>
+      <SlideOver isOpen={!!slideOver} onClose={() => setSlideOver(null)}>
+        {slideOver &&
+          (slideOver.type === 'noun' ? (
+            <NounInfo
+              noun={data.noun}
+              nounProperties={data.nounProperties}
+              owner={data.noun?.owner || ''}
+              winner={data.auction.winner || ''}
+            />
+          ) : (
+            <BidderProfile address={slideOver.address} />
+          ))}
+      </SlideOver>
+      <div className="auction">
+        <AuctionHeader
+          id={data.auction.id}
+          startTime={data.auction.startTime}
+          endTime={data.auction.endTime}
+          maxBid={data.bids[0]?.value}
+          winner={{ address: data.auction.winner || '', ens: walletEns(data.auction.winner) }}
+          owner={{ address: data.noun?.owner || '', ens: walletEns(data.noun?.owner || null) }}
+          noun={data.noun}
+          ended={ended}
+          onSubmitBid={setPendingBid}
+          onNounClick={setSlideOver}
+          onBidderClick={setSlideOver}
+        />
+        {!pendingBid && data.bids.length < 1 ? (
+          <div className="info">No bids yet</div>
+        ) : (
+          <>
+            <div className="hr" />
+            <BidsTable
+              bids={data.bids}
+              wallets={data.wallets}
+              pendingBid={pendingBid}
+              ended={ended}
+              onBidderClick={setSlideOver}
+            />
+          </>
+        )}
+        {!ended && <LiveMarquee to={data.auction.endTime * 1000} />}
+      </div>
       <style jsx>{`
         .auction {
           padding: var(--s1);
@@ -92,7 +107,7 @@ export default function Auction({
           color: var(--mid-text);
         }
       `}</style>
-    </div>
+    </>
   );
 }
 

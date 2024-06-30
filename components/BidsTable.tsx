@@ -1,11 +1,14 @@
+/* eslint-disable jsx-a11y/alt-text */
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
 import { formatEther, formatGwei } from 'viem';
 import { useEffect, useRef, useState } from 'react';
-import { Bid, Wallet } from '../server/api/types';
+import type { Bid, SlideOverContent, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
 import ClientOnly from './ClientOnly';
+import { ClientIdIcon, TooltipIcon } from './Icons';
+import { formatBalance } from '../utils/reactUtils';
 
 export const hoveredAddress = atom('');
 
@@ -16,6 +19,7 @@ type Props = {
   wallets: readonly Wallet[];
   pendingBid: PendingBid | null;
   ended: boolean;
+  onBidderClick: (content: SlideOverContent) => void;
 };
 
 export default function BidsTable(props: Props) {
@@ -60,7 +64,7 @@ export default function BidsTable(props: Props) {
               >
                 MAX&nbsp;BID&nbsp;[
                 <span className="tooltip-svg">
-                  <TooltipSVG />
+                  <TooltipIcon />
                 </span>
                 ]
               </span>
@@ -83,15 +87,14 @@ export default function BidsTable(props: Props) {
               </td>
               <td>
                 <div className="address">
-                  <a
-                    title={lookup[bid.walletAddress]?.ens || bid.walletAddress}
-                    target="_blank"
-                    rel="noreferrer"
-                    href={`https://etherscan.io/address/${bid.walletAddress}`}
+                  <span
                     data-testid="wallet-address"
+                    onClick={() => {
+                      props.onBidderClick({ type: 'bidder', address: bid.walletAddress });
+                    }}
                   >
                     {lookup[bid.walletAddress]?.ens || bid.walletAddress}
-                  </a>
+                  </span>
                 </div>
               </td>
               <td>{formatBalance(BigInt(bid.value))}</td>
@@ -174,6 +177,7 @@ export default function BidsTable(props: Props) {
           white-space: nowrap;
           text-overflow: ellipsis;
           width: 42ch;
+          cursor: pointer;
         }
 
         @media only screen and (max-width: 950px) {
@@ -191,29 +195,6 @@ export default function BidsTable(props: Props) {
         }
       `}</style>
     </div>
-  );
-}
-
-function formatBalance(balance: bigint, prefix = 'Ξ') {
-  let [a, b] = formatEther(balance).split('.');
-  if (!b) {
-    b = '0';
-  }
-  if (b.length > 2) {
-    b = b.substring(0, 2);
-  }
-
-  if (a == '0' && b == '00') {
-    prefix = '<';
-    b = '01';
-  }
-
-  return (
-    <>
-      {prefix}
-      {a}
-      <small style={{ opacity: 0.5 }}>.{b}</small>
-    </>
   );
 }
 
@@ -286,70 +267,9 @@ export function Icon(props: { address: string }) {
   );
 }
 
-function TooltipSVG() {
-  return (
-    <svg width={3} height={8} viewBox="0 0 3 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M1.125 0H1C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H1.125H1.25C1.80228 2 2.25 1.55228 2.25 1C2.25 0.447715 1.80228 0 1.25 0H1.125Z"
-        fill="currentColor"
-      />
-      <path
-        d="M1.125 4H1C0.447715 4 0 4.44772 0 5V6V7C0 7.55228 0.447715 8 1 8H1.125H1.25C1.80228 8 2.25 7.55228 2.25 7V6V5C2.25 4.44772 1.80228 4 1.25 4H1.125Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
 // https://github.com/MetaMask/metamask-extension/blob/6e5c2f03bfbc4a0c8fa334b7beedb19cf35c9d73/ui/helpers/utils/icon-factory.js#L65
 function jsNumberForAddress(address: string) {
   const addr = address.slice(2, 10);
   const seed = parseInt(addr, 16);
   return seed;
-}
-
-function ClientIdIcon({ clientId }: { clientId: number | null }) {
-  return (
-    <a
-      target="_blank"
-      rel="noreferrer"
-      href={`https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${clientId}`}
-      className="client-id-link"
-    >
-      <span
-        title={`This bid was placed by client id: ${clientId}. Click on the icon for more information.`}
-        className="client-id-icon"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          width={13}
-          height={13}
-          strokeWidth={1.5}
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-          />
-        </svg>
-      </span>
-      {/* TODO: rewrite */}
-      <style jsx>{`
-        .client-id-icon {
-          position: relative;
-          top: 2.5px;
-          margin-left: var(--s-1);
-        }
-        .client-id-icon:hover {
-          color: var(--yellow);
-        }
-        .client-id-link {
-          visibility: ${clientId ? 'visible' : 'hidden'};
-        }
-      `}</style>
-    </a>
-  );
 }

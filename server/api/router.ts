@@ -6,6 +6,10 @@ import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
+import { logger } from '../utils';
+import getAddressData from './bidder';
+
+const log = logger.child({ source: 'router' });
 
 const t = initTRPC.context().create();
 
@@ -74,6 +78,15 @@ export const appRouter = router({
           ee.emit('change');
         };
       });
+    }),
+  walletData: procedure
+    .input(
+      z.object({
+        address: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      return getAddressData(input.address);
     }),
 });
 

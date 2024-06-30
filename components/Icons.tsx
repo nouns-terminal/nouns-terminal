@@ -30,3 +30,83 @@ export function HoareIcon() {
     </svg>
   );
 }
+
+export function ExternalLinkIcon() {
+  return (
+    <svg
+      height="0.7em"
+      viewBox="0 0 16 16"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.5"
+    >
+      <polyline points="8.25 2.75,2.75 2.75,2.75 13.25,13.25 13.25,13.25 7.75" />
+      <path d="m13.25 2.75-5.5 5.5m3-6.5h3.5v3.5" />
+    </svg>
+  );
+}
+
+export function TooltipIcon() {
+  return (
+    <svg width={3} height={8} viewBox="0 0 3 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M1.125 0H1C0.447715 0 0 0.447715 0 1C0 1.55228 0.447715 2 1 2H1.125H1.25C1.80228 2 2.25 1.55228 2.25 1C2.25 0.447715 1.80228 0 1.25 0H1.125Z"
+        fill="currentColor"
+      />
+      <path
+        d="M1.125 4H1C0.447715 4 0 4.44772 0 5V6V7C0 7.55228 0.447715 8 1 8H1.125H1.25C1.80228 8 2.25 7.55228 2.25 7V6V5C2.25 4.44772 1.80228 4 1.25 4H1.125Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
+export function ClientIdIcon({ clientId }: { clientId: number | null }) {
+  return (
+    <a
+      target="_blank"
+      rel="noreferrer"
+      href={`https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${clientId}`}
+      className="client-id-link"
+    >
+      <span
+        title={`This bid was placed by client id: ${clientId}. Click on the icon for more information.`}
+        className="client-id-icon"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          width={13}
+          height={13}
+          strokeWidth={1.5}
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+          />
+        </svg>
+      </span>
+      {/* TODO: rewrite */}
+      <style jsx>{`
+        .client-id-icon {
+          position: relative;
+          top: 2.5px;
+          margin-left: var(--s-1);
+        }
+        .client-id-icon:hover {
+          color: var(--yellow);
+        }
+        .client-id-link {
+          visibility: ${clientId ? 'visible' : 'hidden'};
+        }
+      `}</style>
+    </a>
+  );
+}

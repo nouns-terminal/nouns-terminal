@@ -17,6 +17,14 @@ export type Bid = {
   clientId: number | null;
 };
 
+export type BidderHistory = {
+  auctionId: number;
+  countBids: string;
+  latestBidTime: number;
+  maxBid: string;
+  winner: string | null;
+};
+
 export type Wallet = {
   address: string;
   ens: string | null;
@@ -43,6 +51,12 @@ export type Noun = {
   owner: string | null;
 };
 
+export type Social = {
+  type: string | null;
+  nickname: string | null;
+  followers: number | null;
+};
+
 export type NounProperty = {
   id: number;
   part: string;
@@ -56,3 +70,10 @@ export type AuctionData = {
   wallets: Wallet[];
   nounProperties: NounProperty[];
 };
+
+export type SlideOverContent =
+  | {
+      type: 'noun';
+      id: number | undefined;
+    }
+  | { type: 'bidder'; address: string | null };

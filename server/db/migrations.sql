@@ -172,3 +172,39 @@ BEGIN
     END IF;
 END
 $$;
+
+--
+
+DO $$
+DECLARE
+    migration_version INT := 8;
+    migration_comment TEXT := 'Add index to noun owner';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        CREATE INDEX idx_noun_owner ON noun("owner");
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
+
+--
+
+DO $$
+DECLARE
+    migration_version INT := 9;
+    migration_comment TEXT := 'Create socials table';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        CREATE TABLE "public"."socials" (
+            "type" text,
+            "nickname" text,
+            "followers" INT,
+            "address" text NOT NULL,
+            PRIMARY KEY ("address")
+        );
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
