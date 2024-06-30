@@ -8,6 +8,7 @@ import type { Bid, SlideOverContent, Wallet } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
 import ClientOnly from './ClientOnly';
 import { ClientIdIcon, TooltipIcon } from './Icons';
+import { formatBalance } from '../utils/reactUtils';
 
 export const hoveredAddress = atom('');
 
@@ -194,29 +195,6 @@ export default function BidsTable(props: Props) {
         }
       `}</style>
     </div>
-  );
-}
-
-function formatBalance(balance: bigint, prefix = 'Ξ') {
-  let [a, b] = formatEther(balance).split('.');
-  if (!b) {
-    b = '0';
-  }
-  if (b.length > 2) {
-    b = b.substring(0, 2);
-  }
-
-  if (a == '0' && b == '00') {
-    prefix = '<';
-    b = '01';
-  }
-
-  return (
-    <>
-      {prefix}
-      {a}
-      <small style={{ opacity: 0.5 }}>.{b}</small>
-    </>
   );
 }
 
