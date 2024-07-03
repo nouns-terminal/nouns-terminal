@@ -71,7 +71,9 @@ export default function Auction({
           onBidderClick={setSlideOver}
         />
         {!pendingBid && data.bids.length < 1 ? (
-          <div className="info">No bids yet</div>
+          <div className="info" data-testid="bids-table">
+            No bids yet
+          </div>
         ) : (
           <>
             <div className="hr" />
