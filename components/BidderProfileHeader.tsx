@@ -151,9 +151,9 @@ export default function BidderProfileHeader({
         .nouns {
           display: flex;
           flex-wrap: wrap;
-          gap: var(${'--s-2'});
+          gap: var(--s-2);
           max-width: 50%;
-          height: 6rem;
+          height: 6.5rem;
           overflow-y: auto;
         }
         .social-info {

@@ -172,10 +172,6 @@ export default function BidderProfileInfo({
         .content {
           padding: 0 var(--s1) 0;
         }
-        .bidder-history {
-          height: 3rem;
-          overflow-y: auto;
-        }
         table {
           width: 100%;
           border-collapse: collapse;
@@ -185,13 +181,10 @@ export default function BidderProfileInfo({
           white-space: nowrap;
         }
         .activity-table {
-          height: 6rem;
+          height: 11rem;
           overflow-y: auto;
         }
         .dot {
-          display: flex;
-          justify-content: center;
-          align-items: center;
           width: 20px;
           color: var(--low-text);
         }
