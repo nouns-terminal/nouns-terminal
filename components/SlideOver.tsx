@@ -21,6 +21,7 @@ export default function SlideOver({
         className="drawer"
         size={'400px'}
         style={{ maxWidth: '90vw', maxHeight: '100vh', overflowY: 'auto' }}
+        lockBackgroundScroll={true}
       >
         {children}
       </Drawer>
