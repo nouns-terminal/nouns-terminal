@@ -59,31 +59,28 @@ export default function BidderProfileInfo({
           </Text>
         </span>
         {bidderHistory && bidderHistory.length > 0 ? (
-          <>
-            <span className="bidder-history">
-              <Text variant="body" color={'bright-text'}>
-                {bidderHistory.map((activity, index) => (
-                  <span key={index}>
-                    <Link
-                      href={`/noun/${activity.auctionId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        color:
-                          activity.winner === address ? 'var(--bright-text)' : 'var(--low-text)',
-                        lineHeight: 'var(--s1)',
-                      }}
-                    >
-                      {activity.auctionId}
-                    </Link>
-                    {bidderHistory.length - 1 === index ? '' : ', '}
-                  </span>
-                ))}
-              </Text>
-            </span>
-          </>
+          <Text variant="body" color={'bright-text'}>
+            {bidderHistory
+              .sort((a, b) => b.auctionId - a.auctionId)
+              .map((activity, index) => (
+                <span key={index}>
+                  <Link
+                    href={`/noun/${activity.auctionId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      color: activity.winner === address ? 'var(--bright-text)' : 'var(--low-text)',
+                      lineHeight: 'var(--s1)',
+                    }}
+                  >
+                    {activity.auctionId}
+                  </Link>
+                  {bidderHistory.length - 1 === index ? '' : ', '}
+                </span>
+              ))}
+          </Text>
         ) : (
-          <EmptySection height="3rem" />
+          <EmptySection height="2rem" />
         )}
         <HorizontalLine />
         <Stack direction="column" gap={2}>
