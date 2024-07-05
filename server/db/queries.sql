@@ -294,7 +294,6 @@ WHERE
         LIMIT :limit!::INTEGER
     );
 
-
 /* @name setAddressSocials */
 INSERT INTO socials ("type", "nickname", "followers", "address") 
 VALUES (:type, :nickname, :followers, :address!)

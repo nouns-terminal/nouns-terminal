@@ -208,3 +208,58 @@ BEGIN
     END IF;
 END
 $$;
+
+--
+
+CREATE OR REPLACE FUNCTION notify_when_new_auction()
+RETURNS trigger AS $$
+BEGIN
+	IF (OLD."background" IS DISTINCT FROM NEW."background") THEN
+    	PERFORM pg_notify('auction_started', NEW.id::text);
+  	END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DO $$
+DECLARE
+    migration_version INT := 10;
+    migration_comment TEXT := 'Create function and trigger for auction created notification';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        CREATE TRIGGER new_auction_created_trigger
+        AFTER INSERT OR UPDATE ON "public"."noun"
+        FOR EACH ROW EXECUTE FUNCTION notify_when_new_auction();
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
+
+--
+
+CREATE OR REPLACE FUNCTION notify_when_auction_settled()
+RETURNS trigger AS $$
+BEGIN
+	IF (OLD."winner" IS DISTINCT FROM NEW."winner") THEN
+    	PERFORM pg_notify('auction_settled', NEW.id::text);
+  	END IF;
+  RETURN NEW;
+  
+END;
+$$ LANGUAGE plpgsql;
+
+DO $$
+DECLARE
+    migration_version INT := 11;
+    migration_comment TEXT := 'Create function and trigger for auction settled notification';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        CREATE TRIGGER auction_settled_trigger
+        AFTER INSERT OR UPDATE ON "public"."auction"
+        FOR EACH ROW EXECUTE FUNCTION notify_when_auction_settled();
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
