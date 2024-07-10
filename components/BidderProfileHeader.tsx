@@ -133,7 +133,7 @@ export default function BidderProfileHeader({
           width: var(--s5);
         }
         .content {
-          margin: var(--s1) var(--s2) 0 var(--s1);
+          padding: var(--s1) var(--s2) 0 var(--s1);
         }
         .external-link {
           margin-left: var(--s-2);
