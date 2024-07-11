@@ -11,6 +11,7 @@ import {
 import { AuctionData, Bid } from './api/types';
 
 const liveCache = new Map();
+const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
   if (!liveCache.has(id)) {
@@ -24,8 +25,6 @@ export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
 }
 
 export default async function getAuctionData(id?: number | null) {
-  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-
   if (id == null) {
     const [res] = await getLatestAuctionId.run({ offset: 0 }, pgPool);
     id = res.id;
