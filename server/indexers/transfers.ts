@@ -63,7 +63,11 @@ export default async function transfers(
       blockTo,
     );
 
-    for (const event of events) {
+    const sortedEvents = events
+      .flat()
+      .sort((a, b) => a.blockNumber - b.blockNumber || a.index - b.index);
+
+    for (const event of sortedEvents) {
       await maybeProcessEvent(event);
       lastBlockNumber = Math.max(lastBlockNumber, event.blockNumber);
     }
