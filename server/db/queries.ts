@@ -322,14 +322,16 @@ export interface IUpdateAuctionSettledQuery {
   result: IUpdateAuctionSettledResult;
 }
 
-const updateAuctionSettledIR: any = {"usedParamSet":{"winner":true,"price":true,"id":true},"params":[{"name":"winner","required":true,"transform":{"type":"scalar"},"locs":[{"a":30,"b":37}]},{"name":"price","required":true,"transform":{"type":"scalar"},"locs":[{"a":50,"b":56}]},{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":80}]}],"statement":"UPDATE auction\nSET \"winner\" = :winner!, \"price\" = :price!\nWHERE auction.id = :id!"};
+const updateAuctionSettledIR: any = {"usedParamSet":{"id":true,"winner":true,"price":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":80}]},{"name":"winner","required":true,"transform":{"type":"scalar"},"locs":[{"a":89,"b":96}]},{"name":"price","required":true,"transform":{"type":"scalar"},"locs":[{"a":99,"b":105}]}],"statement":"INSERT INTO auction(\"id\", \"startTime\", \"endTime\", \"winner\", \"price\")\nVALUES (:id!, 0, 0, :winner!, :price!)\nON CONFLICT (\"id\") DO UPDATE SET\n  \"winner\" = EXCLUDED.\"winner\",\n  \"price\" = EXCLUDED.\"price\""};
 
 /**
  * Query generated from SQL:
  * ```
- * UPDATE auction
- * SET "winner" = :winner!, "price" = :price!
- * WHERE auction.id = :id!
+ * INSERT INTO auction("id", "startTime", "endTime", "winner", "price")
+ * VALUES (:id!, 0, 0, :winner!, :price!)
+ * ON CONFLICT ("id") DO UPDATE SET
+ *   "winner" = EXCLUDED."winner",
+ *   "price" = EXCLUDED."price"
  * ```
  */
 export const updateAuctionSettled = new PreparedQuery<IUpdateAuctionSettledParams,IUpdateAuctionSettledResult>(updateAuctionSettledIR);

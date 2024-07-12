@@ -59,8 +59,9 @@ ON CONFLICT ("address") DO UPDATE SET
 /* @name insertAuction */
 INSERT INTO auction("id", "startTime", "endTime")
 VALUES (:id!, :startTime!, :endTime!)
-ON CONFLICT DO NOTHING;
-
+ON CONFLICT ("id") DO UPDATE SET
+  "startTime" = EXCLUDED."startTime",
+  "endTime" = EXCLUDED."endTime";
 
 /* @name updateAuctionExtended */
 UPDATE auction
@@ -68,9 +69,11 @@ SET "endTime" = GREATEST("auction"."endTime", :endTime::INTEGER)
 WHERE auction.id = :id!;
 
 /* @name updateAuctionSettled */
-UPDATE auction
-SET "winner" = :winner!, "price" = :price!
-WHERE auction.id = :id!;
+INSERT INTO auction("id", "startTime", "endTime", "winner", "price")
+VALUES (:id!, 0, 0, :winner!, :price!)
+ON CONFLICT ("id") DO UPDATE SET
+  "winner" = EXCLUDED."winner",
+  "price" = EXCLUDED."price";
 
 /* @name insertAuctionBid */
 INSERT INTO bid("tx", "index", "auctionId", "walletAddress", "value", "maxFeePerGas", "block", "extended")
