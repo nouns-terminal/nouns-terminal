@@ -7,7 +7,7 @@ import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
 import { logger } from '../utils';
-import getAddressData from './bidder';
+import getAddressData, { inserNewBio } from './wallets';
 
 const log = logger.child({ source: 'router' });
 
