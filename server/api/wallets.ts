@@ -8,11 +8,14 @@ import {
   getAddressNouns,
   getAddressDapps,
   getAddressWins,
+  getWalletByAddress,
+  insertWalletBio,
 } from '../db/queries';
 import { Noun } from './types';
 
 const log = logger.child({ source: 'bidder' });
 const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
+const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function fetchEtherPrice() {
   const response = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=ETH');
@@ -32,8 +35,7 @@ async function fetchAddressBalance(address: string) {
 }
 
 async function getAddressDataFromDB(address: string) {
-  const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
-
+  const [details] = await getWalletByAddress.run({ address }, pgPool);
   const nouns = await getAddressNouns.run({ address }, pgPool);
   const [wins] = await getAddressWins.run({ address }, pgPool);
   const [largestBid] = await getAddressLargestBid.run({ address }, pgPool);
@@ -43,6 +45,7 @@ async function getAddressDataFromDB(address: string) {
 
   if (!largestBid) {
     return {
+      details,
       nouns,
       wins,
       largestBid: null,
@@ -53,6 +56,7 @@ async function getAddressDataFromDB(address: string) {
   }
 
   return {
+    details,
     nouns,
     wins,
     largestBid: {
@@ -73,11 +77,17 @@ async function getAddressDataFromDB(address: string) {
   };
 }
 
+export async function inserNewBio(bidderAddress: string, bioText: string, author: string) {
+  return await insertWalletBio.run({ author, bidderAddress, bioText }, pgPool);
+}
+
 export default async function getAddressData(address: string) {
-  const [ens, balance, data] = await Promise.all([
-    provider.lookupAddress(address || '').catch(() => null),
+  if (!address) {
+    return null;
+  }
+  const [balance, data] = await Promise.all([
     fetchAddressBalance(address),
     getAddressDataFromDB(address),
   ]);
-  return { ens, balance, ...data };
+  return { balance, ...data };
 }

@@ -15,7 +15,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
     <>
       <BidderProfileHeader
         address={address}
-        ens={wallet.data?.ens}
+        ens={wallet.data?.details?.ens}
         balance={wallet.data?.balance}
         nouns={wallet.data?.nouns as Noun[]}
         domains={wallet.data?.domains}
