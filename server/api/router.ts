@@ -88,6 +88,17 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return getAddressData(input.address);
     }),
+  insertBio: t.procedure
+    .input(
+      z.object({
+        bidderAddress: z.string(),
+        bioText: z.string(),
+        author: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      return inserNewBio(input.bidderAddress, input.bioText, input.author);
+    }),
 });
 
 export type AppRouter = typeof appRouter;
