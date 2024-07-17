@@ -19,7 +19,8 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
   };
 
   const dataStr = encodeURIComponent(JSON.stringify(data));
-  const ogImageRelativePath = `/api/opengraph-image?data=${dataStr}`;
+  const cacheBuster = Math.random().toString(36).substring(7);
+  const ogImageRelativePath = `/api/opengraph-image?${cacheBuster}&data=${dataStr}`;
 
   return (
     <>
