@@ -144,13 +144,23 @@ export default function BidderProfileInfo({
                           <td className="dot">•</td>
                           <td>{`${activity.countBids} ${Number(activity.countBids) > 1 ? 'bids' : 'bid'}`}</td>
                           <td className="dot">•</td>
-                          <td
-                            style={{
-                              color: `${activity.winner === address ? 'var(--green)' : 'var(--red)'}`,
-                            }}
-                          >
-                            {activity.winner === address ? 'WON' : 'LOST'}
-                          </td>
+                          {activity.winner ? (
+                            <td
+                              style={{
+                                color: `${activity.winner === address ? 'var(--green)' : 'var(--red)'}`,
+                              }}
+                            >
+                              {activity.winner === address ? 'WON' : 'LOST'}
+                            </td>
+                          ) : (
+                            <td
+                              style={{
+                                color: `var(--yellow)`,
+                              }}
+                            >
+                              Actv
+                            </td>
+                          )}
                           <td style={{ color: 'var(--low-text)', textAlign: 'right' }}>
                             <span suppressHydrationWarning>
                               {formatLastActivityTime(Number(activity.latestBidTime) * 1000)}
