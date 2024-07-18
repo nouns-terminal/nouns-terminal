@@ -220,7 +220,17 @@ export default function AuctionHeader(props: Props) {
 function Countdown({ to }: { to: number }) {
   const now = useNow();
   const delta = to - now;
-  return <span suppressHydrationWarning>{delta <= 0 ? 'SETTLING' : formatTimeLeft(delta)}</span>;
+  return (
+    <span suppressHydrationWarning>
+      {delta <= 0 ? (
+        <a target="_blank" rel="noreferrer" href="https://fomonouns.wtf/">
+          SETTLING
+        </a>
+      ) : (
+        formatTimeLeft(delta)
+      )}
+    </span>
+  );
 }
 
 function formatTimeLeft(delta: number) {
