@@ -1,4 +1,4 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { Vitals } from './types';
 import { getLiveAuctionData } from '../getAuctionData';
@@ -14,14 +14,50 @@ const log = logger.child({ source: 'router' });
 const t = initTRPC.context().create();
 
 const router = t.router;
-const procedure = t.procedure;
+const publicProcedure = t.procedure;
 const ee = new EventEmitter().setMaxListeners(Infinity);
 
 let anonymousOnline = 0;
 const addressToSessions = new Map<string, number>();
 
+const authorProcedure = publicProcedure
+  .input(
+    z.object({
+      wallet: z.object({
+        address: z.string(),
+        isAuthor: z.boolean(),
+      }),
+    }),
+  )
+  .use(async (opts) => {
+    if (!opts.input.wallet?.isAuthor) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Not authorized to perform this action',
+      });
+    }
+    return opts.next({
+      ctx: {
+        author: opts.input.wallet,
+      },
+    });
+  });
+
+const authorRouter = router({
+  insertBio: authorProcedure
+    .input(
+      z.object({
+        bidderAddress: z.string(),
+        bioText: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await inserNewBio(input.bidderAddress, input.bioText, ctx.author.address);
+    }),
+});
+
 export const appRouter = router({
-  onLatest: procedure
+  onLatest: publicProcedure
     .input(
       z.object({
         auctionId: z.number().nullish(),
@@ -34,14 +70,14 @@ export const appRouter = router({
         });
       });
     }),
-  vitals: procedure.input(z.string().nullish()).subscription(() => {
+  vitals: publicProcedure.input(z.string().nullish()).subscription(() => {
     return observable<Vitals>((emit) => {
       return liveVitals.subscribe((data) => {
         emit.next(data);
       });
     });
   }),
-  online: procedure
+  online: publicProcedure
     .input(
       z.object({
         address: z.string().optional(),
@@ -79,7 +115,7 @@ export const appRouter = router({
         };
       });
     }),
-  walletData: procedure
+  walletData: publicProcedure
     .input(
       z.object({
         address: z.string(),
@@ -88,17 +124,7 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return getAddressData(input.address);
     }),
-  insertBio: t.procedure
-    .input(
-      z.object({
-        bidderAddress: z.string(),
-        bioText: z.string(),
-        author: z.string(),
-      }),
-    )
-    .mutation(({ input }) => {
-      return inserNewBio(input.bidderAddress, input.bioText, input.author);
-    }),
+  author: authorRouter,
 });
 
 export type AppRouter = typeof appRouter;
