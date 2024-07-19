@@ -223,12 +223,17 @@ function Countdown({ to }: { to: number }) {
   return (
     <span suppressHydrationWarning>
       {delta <= 0 ? (
-        <a target="_blank" rel="noreferrer" href="https://fomonouns.wtf/">
+        <a target="_blank" rel="noreferrer" href="https://fomonouns.wtf/" className="settling-link">
           SETTLING
         </a>
       ) : (
         formatTimeLeft(delta)
       )}
+      <style jsx>{`
+        .settling-link:hover {
+          color: var(--yellow);
+        }
+      `}</style>
     </span>
   );
 }
