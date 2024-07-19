@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { createNounSVG } from '../utils/utils';
 import { formatBalance } from '../utils/reactUtils';
 import HorizontalLine from './HorizontalLine';
+import { ExternalLinkIcon } from './Icons';
 
 export default function BidderProfileInfo({
   wins,
@@ -14,6 +15,7 @@ export default function BidderProfileInfo({
   address,
   largestBid,
   balance,
+  bio,
 }: {
   wins: number;
   bidderHistory: BidderHistory[] | undefined;
@@ -27,6 +29,7 @@ export default function BidderProfileInfo({
     | undefined
     | null;
   balance: string | undefined;
+  bio: string | null | undefined;
 }) {
   const totalBidsCount = bidderHistory?.reduce((acc, curr) => acc + Number(curr.countBids), 0) || 0;
   const nounSVG = createNounSVG(largestBid?.noun as Noun);
@@ -177,6 +180,16 @@ export default function BidderProfileInfo({
             )}
           </Stack>
         </Stack>
+        <HorizontalLine />
+        <Stack direction="column" gap={0}>
+          <Text variant="title-1" bold color="low-text">
+            Bio
+            <a href={`/bio/${address}`} target="_blank" rel="noreferrer" className="bio-link">
+              <ExternalLinkIcon />
+            </a>
+          </Text>
+          {bio ? <span className="bio-text">{bio}</span> : <EmptySection height="6rem" />}
+        </Stack>
       </Stack>
       <style jsx>{`
         .content {
@@ -191,14 +204,25 @@ export default function BidderProfileInfo({
           white-space: nowrap;
         }
         .activity-table {
-          height: 11rem;
+          max-height: 11rem;
           overflow-y: auto;
         }
         .dot {
           width: 20px;
           color: var(--low-text);
         }
-
+        .bio-text {
+          line-height: var(--s1);
+          max-height: 17rem;
+          overflow-y: auto;
+        }
+        .bio-link {
+          margin: 0 var(--s-2);
+          color: var(--low-text);
+        }
+        .bio-link:hover {
+          color: var(--bright-text);
+        }
         @media only screen and (max-width: 600px) {
           .hide-on-mobile {
             display: none;
