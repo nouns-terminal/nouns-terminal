@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { textStyle } from './Text';
+import Text, { textStyle } from './Text';
 import { Wallet } from '../server/api/types';
 import { useAccount, useSignMessage } from 'wagmi';
 import { verifyMessage } from '@wagmi/core';
 import { trpc } from '../utils/trpc';
-import { config } from '../utils/utils';
+import { config, formatAddress } from '../utils/utils';
 
 export default function BidderBio({ bidder }: { bidder: Wallet }) {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
-  const mutation = trpc.author.insertBio.useMutation();
+  const mutation = trpc.private.insertBio.useMutation();
   const author = trpc.walletData.useQuery({
     address: address?.toLowerCase() || '',
   });
@@ -38,7 +38,7 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
         if (isValid) {
           await mutation.mutateAsync({
             wallet: {
-              address: author.data?.details.address || '0x',
+              address: author.data?.details.address || '',
               isAuthor,
             },
             bidderAddress: bidder.address.toString().toLowerCase(),
@@ -56,8 +56,11 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
 
   return (
     <>
-      {author.isSuccess && (
+      {bidder && (
         <div className="container">
+          <Text variant="title-1" bold color="bright-text">
+            {bidder.ens ? bidder.ens : formatAddress(bidder.address)}
+          </Text>
           <div className="content">
             <textarea
               className="input-area"
@@ -78,7 +81,7 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
               </div>
             )}
           </div>
-          <div style={{ margin: 'var(--s3) 0', height: 'var(--s1)' }}>
+          <div style={{ height: 'var(--s1)' }}>
             {message && (
               <span
                 style={{
@@ -107,8 +110,11 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
           width: 50vw;
           height: 50vh;
           padding: var(--s1);
+          margin: var(--s3) 0;
         }
         .input-area {
+          font-size: var(--s0);
+          line-height: var(--s2);
           width: 100%;
           height: 100%;
           background-color: var(--dark-bg);

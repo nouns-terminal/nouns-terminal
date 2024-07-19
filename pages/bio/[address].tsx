@@ -14,6 +14,7 @@ export default function AddressBio() {
   if (!bidder.data) {
     return (
       <>
+        <SiteHead />
         <SiteHeader />
         <div className="bidder-status">{bidder.isLoading ? 'Loading…' : 'Bidder not found'}</div>
         <style jsx>

@@ -31,6 +31,10 @@ export function formatBidValue(value: bigint) {
   return s + '.0';
 }
 
+export function formatAddress(address: string) {
+  return `${address.slice(0, 4)}…${address.slice(-5)}`;
+}
+
 export function createNounSVG(noun: Noun, isBackground?: boolean): string {
   if (!noun) {
     return '';

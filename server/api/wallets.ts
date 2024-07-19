@@ -34,43 +34,37 @@ async function fetchAddressBalance(address: string) {
   };
 }
 
-async function getAddressDataFromDB(address: string) {
-  const [details] = await getWalletByAddress.run({ address }, pgPool);
-  const nouns = await getAddressNouns.run({ address }, pgPool);
-  const [wins] = await getAddressWins.run({ address }, pgPool);
-  const [largestBid] = await getAddressLargestBid.run({ address }, pgPool);
-  const bidderHistory = await getAddressBidsHistory.run({ address }, pgPool);
-  const domains = await getAddressDomains.run({ address }, pgPool);
-  const dapps = await getAddressDapps.run({ address }, pgPool);
+async function getAddressDataFromDB(walletAddress: string) {
+  const [details] = await getWalletByAddress.run({ address: walletAddress }, pgPool);
+  const nouns = await getAddressNouns.run({ address: walletAddress }, pgPool);
+  const [wins] = await getAddressWins.run({ address: walletAddress }, pgPool);
+  const [largestBid] = await getAddressLargestBid.run({ address: walletAddress }, pgPool);
+  const bidderHistory = await getAddressBidsHistory.run({ address: walletAddress }, pgPool);
+  const domains = await getAddressDomains.run({ address: walletAddress }, pgPool);
+  const dapps = await getAddressDapps.run({ address: walletAddress }, pgPool);
 
-  if (!largestBid) {
-    return {
-      details,
-      nouns,
-      wins,
-      largestBid: null,
-      bidderHistory,
-      domains,
-      dapps,
-    };
-  }
+  const { address, ens = null, isAuthor = false, bioText = null } = details;
+
+  const largestBidDetails = largestBid
+    ? {
+        id: largestBid.auctionId,
+        value: largestBid.value,
+        noun: {
+          id: largestBid.auctionId,
+          background: largestBid.background,
+          body: largestBid.body,
+          accessory: largestBid.accessory,
+          head: largestBid.head,
+          glasses: largestBid.glasses,
+        } as Noun,
+      }
+    : null;
 
   return {
-    details,
+    details: address ? details : { address: walletAddress, ens, isAuthor, bioText },
     nouns,
     wins,
-    largestBid: {
-      id: largestBid.auctionId,
-      value: largestBid.value,
-      noun: {
-        id: largestBid.auctionId,
-        background: largestBid.background,
-        body: largestBid.body,
-        accessory: largestBid.accessory,
-        head: largestBid.head,
-        glasses: largestBid.glasses,
-      } as Noun,
-    },
+    largestBid: largestBidDetails,
     bidderHistory,
     domains,
     dapps,

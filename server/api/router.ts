@@ -20,7 +20,7 @@ const ee = new EventEmitter().setMaxListeners(Infinity);
 let anonymousOnline = 0;
 const addressToSessions = new Map<string, number>();
 
-const authorProcedure = publicProcedure
+const privateProcedure = publicProcedure
   .input(
     z.object({
       wallet: z.object({
@@ -43,8 +43,8 @@ const authorProcedure = publicProcedure
     });
   });
 
-const authorRouter = router({
-  insertBio: authorProcedure
+const privateRouter = router({
+  insertBio: privateProcedure
     .input(
       z.object({
         bidderAddress: z.string(),
@@ -124,7 +124,7 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return getAddressData(input.address);
     }),
-  author: authorRouter,
+  private: privateRouter,
 });
 
 export type AppRouter = typeof appRouter;
