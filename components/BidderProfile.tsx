@@ -15,7 +15,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
     <>
       <BidderProfileHeader
         address={address}
-        ens={wallet.data?.details?.ens}
+        details={wallet.data?.details}
         balance={wallet.data?.balance}
         nouns={wallet.data?.nouns as Noun[]}
         domains={wallet.data?.domains}
@@ -27,6 +27,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
         address={address}
         largestBid={wallet.data?.largestBid}
         balance={wallet.data?.balance.eth}
+        bio={wallet.data?.details.bioText}
       />
       <div style={{ height: 'var(--s4)' }} />
     </>
