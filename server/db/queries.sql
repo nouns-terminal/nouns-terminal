@@ -309,16 +309,16 @@ SELECT type, nickname, followers FROM socials WHERE address = :address! AND type
 SELECT type, nickname, followers FROM socials WHERE address = :address! AND type = 'farcaster';
 
 /* @name getWalletByAddress */
-SELECT wallet.address, wallet.ens, wallet."isAuthor", bio."bioText"
+SELECT wallet.address, wallet.ens, bio."bio"
 FROM wallet 
-LEFT JOIN bio on wallet.address = bio."bidderAddress" 
+LEFT JOIN bio on wallet.address = bio."bidder" 
 WHERE address = :address!
 ORDER BY bio."timestamp" DESC LIMIT 1;
 
 /* @name insertWalletBio */
-INSERT INTO bio ("bidderAddress", "bioText", "author") 
-VALUES (:bidderAddress, :bioText, :author)
-ON CONFLICT ("bioText") DO NOTHING;
+INSERT INTO bio ("bidder", "bio", "author") 
+VALUES (:bidder, :bio, :author)
+ON CONFLICT ("bio") DO NOTHING;
 
 
 

@@ -23,6 +23,21 @@ export const config = getDefaultConfig({
   appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
 });
 
+export function checkIsAuthor(bidder: string, author: string | undefined) {
+  if (!author) {
+    return false;
+  }
+
+  bidder = bidder.toLocaleLowerCase();
+  author = author.toLocaleLowerCase();
+
+  const authors = process.env.AUTHORS?.toLocaleLowerCase();
+  if (bidder === author) {
+    return true;
+  }
+  return authors?.indexOf(author) != -1 ? true : false;
+}
+
 export function formatBidValue(value: bigint) {
   const s = formatEther(value);
   if (s.includes('.')) {

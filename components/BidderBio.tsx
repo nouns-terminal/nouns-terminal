@@ -2,52 +2,31 @@ import React, { useState } from 'react';
 import Text, { textStyle } from './Text';
 import { Wallet } from '../server/api/types';
 import { useAccount, useSignMessage } from 'wagmi';
-import { verifyMessage } from '@wagmi/core';
 import { trpc } from '../utils/trpc';
-import { config, formatAddress } from '../utils/utils';
+import { formatAddress, checkIsAuthor } from '../utils/utils';
 
 export default function BidderBio({ bidder }: { bidder: Wallet }) {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
   const mutation = trpc.private.insertBio.useMutation();
-  const author = trpc.walletData.useQuery({
-    address: address?.toLowerCase() || '',
-  });
 
-  const [bio, setBio] = useState(bidder.bioText || '');
+  const [bio, setBio] = useState(bidder.bio || '');
   const [message, setMessage] = useState<{ text: string; isSuccess: boolean } | null>(null);
 
-  let isAuthor = false;
-
-  if (bidder.address === address?.toLowerCase()) {
-    isAuthor = true;
-  } else {
-    isAuthor = author.data?.details?.isAuthor || false;
-  }
+  const isAuthor = checkIsAuthor(bidder.address, address);
 
   const signAction = async () => {
     try {
       const signature = await signMessageAsync({ message: bio });
       if (signature) {
-        const isValid = await verifyMessage(config, {
-          address: address || '0x',
-          message: bio,
-          signature,
+        await mutation.mutateAsync({
+          bidder: bidder.address.toString(),
+          author: address?.toString() || '-',
+          bio: bio,
+          signature: signature.toString(),
         });
-        if (isValid) {
-          await mutation.mutateAsync({
-            wallet: {
-              address: author.data?.details.address || '',
-              isAuthor,
-            },
-            bidderAddress: bidder.address.toString().toLowerCase(),
-            bioText: bio,
-          });
-          setMessage({ text: 'Bio added.', isSuccess: true });
-        } else {
-          setMessage({ text: 'Validation failed.', isSuccess: false });
-        }
+        setMessage({ text: 'Bio added.', isSuccess: true });
       }
     } catch (error) {
       setMessage({ text: 'Fail to perform the action. Try again.', isSuccess: false });

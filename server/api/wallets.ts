@@ -26,7 +26,7 @@ async function fetchEtherPrice() {
 async function fetchAddressBalance(address: string) {
   const etherPrice = await fetchEtherPrice();
   const ethBalance = await provider.getBalance(address);
-  const usdBalance = Number(ethBalance) * Math.round(etherPrice);
+  const usdBalance = ethBalance * BigInt(Math.round(etherPrice));
 
   return {
     eth: ethBalance.toString(),
@@ -43,7 +43,7 @@ async function getAddressDataFromDB(walletAddress: string) {
   const domains = await getAddressDomains.run({ address: walletAddress }, pgPool);
   const dapps = await getAddressDapps.run({ address: walletAddress }, pgPool);
 
-  const { address, ens = null, isAuthor = false, bioText = null } = details;
+  const { address, ens = null, bio = null } = details;
 
   const largestBidDetails = largestBid
     ? {
@@ -61,7 +61,7 @@ async function getAddressDataFromDB(walletAddress: string) {
     : null;
 
   return {
-    details: address ? details : { address: walletAddress, ens, isAuthor, bioText },
+    details: address ? details : { address: walletAddress, ens, bio },
     nouns,
     wins,
     largestBid: largestBidDetails,
@@ -71,8 +71,8 @@ async function getAddressDataFromDB(walletAddress: string) {
   };
 }
 
-export async function inserNewBio(bidderAddress: string, bioText: string, author: string) {
-  return await insertWalletBio.run({ author, bidderAddress, bioText }, pgPool);
+export async function inserNewBio(bidder: string, bio: string, author: string) {
+  return await insertWalletBio.run({ author, bidder, bio }, pgPool);
 }
 
 export default async function getAddressData(address: string) {

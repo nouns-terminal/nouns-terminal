@@ -12,6 +12,7 @@ import { useSetAtom } from 'jotai';
 import { useMutation } from '@tanstack/react-query';
 import ClientOnly from './ClientOnly';
 import { createNounSVG, formatBidValue } from '../utils/utils';
+import { ExternalLinkIcon } from './Icons';
 
 type Props = {
   id: number;
@@ -223,13 +224,24 @@ function Countdown({ to }: { to: number }) {
   return (
     <span suppressHydrationWarning>
       {delta <= 0 ? (
-        <a target="_blank" rel="noreferrer" href="https://fomonouns.wtf/" className="settling-link">
-          SETTLING
-        </a>
+        <>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://fomonouns.wtf/"
+            className="settling-link"
+          >
+            <span className="settling-title">SETTLING</span>
+            <ExternalLinkIcon />
+          </a>
+        </>
       ) : (
         formatTimeLeft(delta)
       )}
       <style jsx>{`
+        .settling-title {
+          margin-right: var(--s-2);
+        }
         .settling-link:hover {
           color: var(--yellow);
         }

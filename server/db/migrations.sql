@@ -269,33 +269,18 @@ $$;
 DO $$
 DECLARE
     migration_version INT := 12;
-    migration_comment TEXT := 'Add isAuthor to wallet table';
-BEGIN
-    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
-        RAISE NOTICE '%', migration_comment;
-        ALTER TABLE "public"."wallet" ADD COLUMN "isAuthor" boolean DEFAULT FALSE;
-        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
-    END IF;
-END
-$$;
-
---
-
-DO $$
-DECLARE
-    migration_version INT := 13;
     migration_comment TEXT := 'Add bio table';
 BEGIN
     IF (SELECT MAX(version) FROM migrations) < migration_version THEN
         RAISE NOTICE '%', migration_comment;
         CREATE TABLE "public"."bio" (
             "id" SERIAL PRIMARY KEY,
-            "bidderAddress" text,
-            "bioText" text UNIQUE,
+            "bidder" text,
+            "bio" text UNIQUE,
             "timestamp" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             "author" text
         );
-        CREATE INDEX idx_bio_bidder_address ON public.bio("bidderAddress");
+        CREATE INDEX idx_bio_bidder_address ON public.bio("bidder");
         CREATE INDEX idx_bio_author ON public.bio("author");
         INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
     END IF;

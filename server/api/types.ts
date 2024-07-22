@@ -31,8 +31,7 @@ export type Wallet = {
   bids?: number;
   nouns?: number | null;
   wins?: number | null;
-  isAuthor?: boolean | null;
-  bioText?: string | null;
+  bio?: string | null;
 };
 
 export type Auction = {
