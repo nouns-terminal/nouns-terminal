@@ -1188,9 +1188,8 @@ export interface IGetWalletByAddressParams {
 /** 'GetWalletByAddress' return type */
 export interface IGetWalletByAddressResult {
   address: string;
-  bioText: string | null;
+  bio: string | null;
   ens: string | null;
-  isAuthor: boolean | null;
 }
 
 /** 'GetWalletByAddress' query type */
@@ -1199,14 +1198,14 @@ export interface IGetWalletByAddressQuery {
   result: IGetWalletByAddressResult;
 }
 
-const getWalletByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":152,"b":160}]}],"statement":"SELECT wallet.address, wallet.ens, wallet.\"isAuthor\", bio.\"bioText\"\nFROM wallet \nLEFT JOIN bio on wallet.address = bio.\"bidderAddress\" \nWHERE address = :address!\nORDER BY bio.\"timestamp\" DESC LIMIT 1"};
+const getWalletByAddressIR: any = {"usedParamSet":{"address":true},"params":[{"name":"address","required":true,"transform":{"type":"scalar"},"locs":[{"a":122,"b":130}]}],"statement":"SELECT wallet.address, wallet.ens, bio.\"bio\"\nFROM wallet \nLEFT JOIN bio on wallet.address = bio.\"bidder\" \nWHERE address = :address!\nORDER BY bio.\"timestamp\" DESC LIMIT 1"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT wallet.address, wallet.ens, wallet."isAuthor", bio."bioText"
+ * SELECT wallet.address, wallet.ens, bio."bio"
  * FROM wallet 
- * LEFT JOIN bio on wallet.address = bio."bidderAddress" 
+ * LEFT JOIN bio on wallet.address = bio."bidder" 
  * WHERE address = :address!
  * ORDER BY bio."timestamp" DESC LIMIT 1
  * ```
@@ -1217,8 +1216,8 @@ export const getWalletByAddress = new PreparedQuery<IGetWalletByAddressParams,IG
 /** 'InsertWalletBio' parameters type */
 export interface IInsertWalletBioParams {
   author?: string | null | void;
-  bidderAddress?: string | null | void;
-  bioText?: string | null | void;
+  bidder?: string | null | void;
+  bio?: string | null | void;
 }
 
 /** 'InsertWalletBio' return type */
@@ -1230,14 +1229,14 @@ export interface IInsertWalletBioQuery {
   result: IInsertWalletBioResult;
 }
 
-const insertWalletBioIR: any = {"usedParamSet":{"bidderAddress":true,"bioText":true,"author":true},"params":[{"name":"bidderAddress","required":false,"transform":{"type":"scalar"},"locs":[{"a":64,"b":77}]},{"name":"bioText","required":false,"transform":{"type":"scalar"},"locs":[{"a":80,"b":87}]},{"name":"author","required":false,"transform":{"type":"scalar"},"locs":[{"a":90,"b":96}]}],"statement":"INSERT INTO bio (\"bidderAddress\", \"bioText\", \"author\") \nVALUES (:bidderAddress, :bioText, :author)\nON CONFLICT (\"bioText\") DO NOTHING"};
+const insertWalletBioIR: any = {"usedParamSet":{"bidder":true,"bio":true,"author":true},"params":[{"name":"bidder","required":false,"transform":{"type":"scalar"},"locs":[{"a":53,"b":59}]},{"name":"bio","required":false,"transform":{"type":"scalar"},"locs":[{"a":62,"b":65}]},{"name":"author","required":false,"transform":{"type":"scalar"},"locs":[{"a":68,"b":74}]}],"statement":"INSERT INTO bio (\"bidder\", \"bio\", \"author\") \nVALUES (:bidder, :bio, :author)\nON CONFLICT (\"bio\") DO NOTHING"};
 
 /**
  * Query generated from SQL:
  * ```
- * INSERT INTO bio ("bidderAddress", "bioText", "author") 
- * VALUES (:bidderAddress, :bioText, :author)
- * ON CONFLICT ("bioText") DO NOTHING
+ * INSERT INTO bio ("bidder", "bio", "author") 
+ * VALUES (:bidder, :bio, :author)
+ * ON CONFLICT ("bio") DO NOTHING
  * ```
  */
 export const insertWalletBio = new PreparedQuery<IInsertWalletBioParams,IInsertWalletBioResult>(insertWalletBioIR);

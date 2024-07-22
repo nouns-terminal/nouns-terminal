@@ -27,7 +27,7 @@ export default function BidderProfile({ address }: { address: string | null }) {
         address={address}
         largestBid={wallet.data?.largestBid}
         balance={wallet.data?.balance.eth}
-        bio={wallet.data?.details.bioText}
+        bio={wallet.data?.details.bio}
       />
       <div style={{ height: 'var(--s4)' }} />
     </>

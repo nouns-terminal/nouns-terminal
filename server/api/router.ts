@@ -8,6 +8,8 @@ import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
 import { logger } from '../utils';
 import getAddressData, { inserNewBio } from './wallets';
+import { verifyMessage } from '@wagmi/core';
+import { checkIsAuthor, config } from '../../utils/utils';
 
 const log = logger.child({ source: 'router' });
 
@@ -23,37 +25,50 @@ const addressToSessions = new Map<string, number>();
 const privateProcedure = publicProcedure
   .input(
     z.object({
-      wallet: z.object({
-        address: z.string(),
-        isAuthor: z.boolean(),
-      }),
+      author: z.string(),
+      bidder: z.string(),
+      bio: z.string(),
+      signature: z.string(),
     }),
   )
-  .use(async (opts) => {
-    if (!opts.input.wallet?.isAuthor) {
+  .use(async ({ next, input }) => {
+    const isAuthor = checkIsAuthor(input.bidder, input.author);
+    if (!isAuthor) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: 'Not authorized to perform this action',
       });
     }
-    return opts.next({
+    const isValid = await verifyMessage(config, {
+      address: input.author as `0x${string}`,
+      message: input.bio,
+      signature: input.signature as `0x${string}`,
+    });
+
+    if (!isValid) {
+      throw new TRPCError({
+        code: 'UNPROCESSABLE_CONTENT',
+        message: 'Signature is invalid',
+      });
+    }
+
+    return next({
       ctx: {
-        author: opts.input.wallet,
+        author: input.author,
+        bidder: input.bidder,
+        bio: input.bio,
       },
     });
   });
 
 const privateRouter = router({
-  insertBio: privateProcedure
-    .input(
-      z.object({
-        bidderAddress: z.string(),
-        bioText: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await inserNewBio(input.bidderAddress, input.bioText, ctx.author.address);
-    }),
+  insertBio: privateProcedure.mutation(async ({ ctx }) => {
+    return await inserNewBio(
+      ctx.bidder.toLocaleLowerCase(),
+      ctx.bio,
+      ctx.author.toLocaleLowerCase(),
+    );
+  }),
 });
 
 export const appRouter = router({
