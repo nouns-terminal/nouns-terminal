@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { createLogger, Logger, format, transports } from 'winston';
 import { hostname } from 'os';
 import qs from 'qs';
+import { getAddress } from 'viem';
+import { z } from 'zod';
 
 export async function forever(process: () => Promise<boolean>, log: Logger, delay?: number) {
   while (true) {
@@ -16,6 +18,21 @@ export async function forever(process: () => Promise<boolean>, log: Logger, dela
     await sleep(delay || 5_000);
   }
 }
+
+export const addressSchema = z
+  .string()
+  .regex(/^0x[a-fA-F0-9]{40}$/)
+  .transform((v) => getAddress(v));
+
+export const bytes32Schema = z
+  .string()
+  .regex(/^(0x)?[a-fA-F0-9]{64}$/)
+  .transform((v) => (v.startsWith('0x') ? v : '0x' + v) as `0x${string}`);
+
+export const bytesSchema = z
+  .string()
+  .regex(/^(0x)?([a-fA-F0-9]{2})*$/)
+  .transform((v) => (v.startsWith('0x') ? v : '0x' + v) as `0x${string}`);
 
 export async function sleep(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));

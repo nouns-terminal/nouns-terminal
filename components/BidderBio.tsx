@@ -9,27 +9,23 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
-  const mutation = trpc.private.insertBio.useMutation();
+  const mutation = trpc.insertBio.useMutation();
 
   const [bio, setBio] = useState(bidder.bio || '');
-  const [message, setMessage] = useState<{ text: string; isSuccess: boolean } | null>(null);
 
   const isAuthor = checkIsAuthor(bidder.address, address);
 
   const signAction = async () => {
-    try {
-      const signature = await signMessageAsync({ message: bio });
+    if (address) {
+      const signature = await signMessageAsync({ message: bio }).catch(() => null);
       if (signature) {
-        await mutation.mutateAsync({
-          bidder: bidder.address.toString(),
-          author: address?.toString() || '-',
+        mutation.mutate({
+          bidder: bidder.address,
+          author: address,
           bio: bio,
-          signature: signature.toString(),
+          signature: signature,
         });
-        setMessage({ text: 'Bio added.', isSuccess: true });
       }
-    } catch (error) {
-      setMessage({ text: 'Fail to perform the action. Try again.', isSuccess: false });
     }
   };
 
@@ -61,13 +57,13 @@ export default function BidderBio({ bidder }: { bidder: Wallet }) {
             )}
           </div>
           <div style={{ height: 'var(--s1)' }}>
-            {message && (
+            {(mutation.error || mutation.isSuccess) && (
               <span
                 style={{
-                  color: message.isSuccess ? 'var(--green)' : 'var(--red)',
+                  color: mutation.isSuccess ? 'var(--green)' : 'var(--red)',
                 }}
               >
-                {message.text}
+                {mutation.isSuccess ? 'Bio added!' : mutation.error.message}
               </span>
             )}
           </div>
