@@ -107,8 +107,8 @@ export default function SiteHeader() {
           background-color: var(--yellow);
           border: 1px solid var(--yellow);
           padding: var(--s-1) var(--s1);
-          cursor: pointer;
           ${textStyle({ variant: 'title-2', bold: true, color: 'dark-bg' })}
+          cursor: pointer;
         }
         .connect-wallet:hover {
           background-color: var(--light-yellow);

@@ -28,9 +28,10 @@ export type BidderHistory = {
 export type Wallet = {
   address: string;
   ens: string | null;
-  bids: number;
-  nouns: number | null;
-  wins: number | null;
+  bids?: number;
+  nouns?: number | null;
+  wins?: number | null;
+  bio?: string | null;
 };
 
 export type Auction = {

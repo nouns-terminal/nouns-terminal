@@ -1,4 +1,4 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { Vitals } from './types';
 import { getLiveAuctionData } from '../getAuctionData';
@@ -6,22 +6,24 @@ import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
-import { logger } from '../utils';
-import getAddressData from './bidder';
+import { addressSchema, bytesSchema, logger } from '../utils';
+import getAddressData, { inserNewBio } from './wallets';
+import { verifyMessage } from '@wagmi/core';
+import { checkIsAuthor, config } from '../../utils/utils';
 
 const log = logger.child({ source: 'router' });
 
 const t = initTRPC.context().create();
 
 const router = t.router;
-const procedure = t.procedure;
+const publicProcedure = t.procedure;
 const ee = new EventEmitter().setMaxListeners(Infinity);
 
 let anonymousOnline = 0;
 const addressToSessions = new Map<string, number>();
 
 export const appRouter = router({
-  onLatest: procedure
+  onLatest: publicProcedure
     .input(
       z.object({
         auctionId: z.number().nullish(),
@@ -34,14 +36,14 @@ export const appRouter = router({
         });
       });
     }),
-  vitals: procedure.input(z.string().nullish()).subscription(() => {
+  vitals: publicProcedure.input(z.string().nullish()).subscription(() => {
     return observable<Vitals>((emit) => {
       return liveVitals.subscribe((data) => {
         emit.next(data);
       });
     });
   }),
-  online: procedure
+  online: publicProcedure
     .input(
       z.object({
         address: z.string().optional(),
@@ -79,7 +81,7 @@ export const appRouter = router({
         };
       });
     }),
-  walletData: procedure
+  walletData: publicProcedure
     .input(
       z.object({
         address: z.string(),
@@ -87,6 +89,43 @@ export const appRouter = router({
     )
     .query(async ({ input }) => {
       return getAddressData(input.address);
+    }),
+  insertBio: publicProcedure
+    .input(
+      z.object({
+        author: addressSchema,
+        bidder: addressSchema,
+        bio: z.string(),
+        signature: bytesSchema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const isAuthor = checkIsAuthor(input.bidder, input.author);
+      if (!isAuthor) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Not authorized to perform this action',
+        });
+      }
+
+      const isValid = await verifyMessage(config, {
+        address: input.author,
+        message: input.bio,
+        signature: input.signature,
+      });
+
+      if (!isValid) {
+        throw new TRPCError({
+          code: 'UNPROCESSABLE_CONTENT',
+          message: 'Signature is invalid',
+        });
+      }
+
+      return await inserNewBio(
+        input.bidder.toLocaleLowerCase(),
+        input.bio,
+        input.author.toLocaleLowerCase(),
+      );
     }),
 });
 

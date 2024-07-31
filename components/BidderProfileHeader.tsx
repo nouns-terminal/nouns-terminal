@@ -1,23 +1,23 @@
 import { ExternalLinkIcon } from './Icons';
-import { Noun, Social } from '../server/api/types';
+import { Noun, Social, Wallet } from '../server/api/types';
 import React from 'react';
 import Stack from './Stack';
 import Text from './Text';
 import { formatEther } from 'viem';
 import Link from 'next/link';
-import { createNounSVG } from '../utils/utils';
+import { createNounSVG, formatAddress } from '../utils/utils';
 import HorizontalLine from './HorizontalLine';
 
 export default function BidderProfileHeader({
   address,
-  ens,
+  details,
   balance,
   nouns,
   domains,
   dapps,
 }: {
   address: string;
-  ens: string | null | undefined;
+  details: Wallet | undefined;
   balance:
     | {
         eth: string | undefined;
@@ -30,9 +30,10 @@ export default function BidderProfileHeader({
 }) {
   const nounSVGs = nouns?.map((noun) => createNounSVG(noun, true));
   const domainNicknames = [
-    ...(ens ? [ens] : []), // Only include ens if it exists
-    ...(domains?.filter((domain) => domain.nickname !== ens).map((domain) => domain.nickname) ||
-      []),
+    ...(details?.ens ? [details?.ens] : []), // Only include ens if it exists
+    ...(domains
+      ?.filter((domain) => domain.nickname !== details?.ens)
+      .map((domain) => domain.nickname) || []),
   ].join(' • ');
 
   return (
@@ -40,9 +41,9 @@ export default function BidderProfileHeader({
       <div className="content">
         <Stack direction="column" gap={-1}>
           <Text variant="large-title" bold color="bright-text">
-            {parseAddress(address)}
+            {formatAddress(address)}
             <a
-              title={parseAddress(address)}
+              title={formatAddress(address)}
               target="_blank"
               rel="noreferrer"
               href={`https://etherscan.io/address/${address}`}
@@ -196,10 +197,6 @@ function LiveLine({ text }: { text: string }) {
       `}</style>
     </div>
   );
-}
-
-function parseAddress(address: string) {
-  return `${address.slice(0, 4)}…${address.slice(-5)}`;
 }
 
 function formatUsdPrice(amount: number) {
