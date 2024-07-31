@@ -6,7 +6,7 @@ import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
-import { logger } from '../utils';
+import { addressSchema, bytesSchema, logger } from '../utils';
 import getAddressData, { inserNewBio } from './wallets';
 import { verifyMessage } from '@wagmi/core';
 import { checkIsAuthor, config } from '../../utils/utils';
@@ -21,55 +21,6 @@ const ee = new EventEmitter().setMaxListeners(Infinity);
 
 let anonymousOnline = 0;
 const addressToSessions = new Map<string, number>();
-
-const privateProcedure = publicProcedure
-  .input(
-    z.object({
-      author: z.string(),
-      bidder: z.string(),
-      bio: z.string(),
-      signature: z.string(),
-    }),
-  )
-  .use(async ({ next, input }) => {
-    const isAuthor = checkIsAuthor(input.bidder, input.author);
-    if (!isAuthor) {
-      throw new TRPCError({
-        code: 'UNAUTHORIZED',
-        message: 'Not authorized to perform this action',
-      });
-    }
-    const isValid = await verifyMessage(config, {
-      address: input.author as `0x${string}`,
-      message: input.bio,
-      signature: input.signature as `0x${string}`,
-    });
-
-    if (!isValid) {
-      throw new TRPCError({
-        code: 'UNPROCESSABLE_CONTENT',
-        message: 'Signature is invalid',
-      });
-    }
-
-    return next({
-      ctx: {
-        author: input.author,
-        bidder: input.bidder,
-        bio: input.bio,
-      },
-    });
-  });
-
-const privateRouter = router({
-  insertBio: privateProcedure.mutation(async ({ ctx }) => {
-    return await inserNewBio(
-      ctx.bidder.toLocaleLowerCase(),
-      ctx.bio,
-      ctx.author.toLocaleLowerCase(),
-    );
-  }),
-});
 
 export const appRouter = router({
   onLatest: publicProcedure
@@ -139,7 +90,43 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return getAddressData(input.address);
     }),
-  private: privateRouter,
+  insertBio: publicProcedure
+    .input(
+      z.object({
+        author: addressSchema,
+        bidder: addressSchema,
+        bio: z.string(),
+        signature: bytesSchema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const isAuthor = checkIsAuthor(input.bidder, input.author);
+      if (!isAuthor) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Not authorized to perform this action',
+        });
+      }
+
+      const isValid = await verifyMessage(config, {
+        address: input.author,
+        message: input.bio,
+        signature: input.signature,
+      });
+
+      if (!isValid) {
+        throw new TRPCError({
+          code: 'UNPROCESSABLE_CONTENT',
+          message: 'Signature is invalid',
+        });
+      }
+
+      return await inserNewBio(
+        input.bidder.toLocaleLowerCase(),
+        input.bio,
+        input.author.toLocaleLowerCase(),
+      );
+    }),
 });
 
 export type AppRouter = typeof appRouter;
