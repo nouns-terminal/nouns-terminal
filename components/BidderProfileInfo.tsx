@@ -158,10 +158,11 @@ export default function BidderProfileInfo({
                           ) : (
                             <td
                               style={{
-                                color: `var(--yellow)`,
+                                color: `var(--dark-bg)`,
+                                backgroundColor: `var(--green)`,
                               }}
                             >
-                              Actv
+                              Live
                             </td>
                           )}
                           <td style={{ color: 'var(--low-text)', textAlign: 'right' }}>
@@ -206,6 +207,9 @@ export default function BidderProfileInfo({
         .activity-table {
           max-height: 11rem;
           overflow-y: auto;
+        }
+        td {
+          text-align: center;
         }
         .dot {
           width: 20px;
