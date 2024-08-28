@@ -10,6 +10,7 @@ import { addressSchema, bytesSchema, logger } from '../utils';
 import getAddressData, { inserNewBio } from './wallets';
 import { verifyMessage } from '@wagmi/core';
 import { checkIsAuthor, config } from '../../utils/utils';
+import getStatsData from './stats';
 
 const log = logger.child({ source: 'router' });
 
@@ -87,9 +88,7 @@ export const appRouter = router({
         address: z.string(),
       }),
     )
-    .query(async ({ input }) => {
-      return getAddressData(input.address);
-    }),
+    .query(async ({ input }) => getAddressData(input.address)),
   insertBio: publicProcedure
     .input(
       z.object({
@@ -127,6 +126,7 @@ export const appRouter = router({
         input.author.toLocaleLowerCase(),
       );
     }),
+  statsData: publicProcedure.query(async () => getStatsData()),
 });
 
 export type AppRouter = typeof appRouter;
