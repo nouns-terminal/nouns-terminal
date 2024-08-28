@@ -265,14 +265,16 @@ export interface IInsertAuctionQuery {
   result: IInsertAuctionResult;
 }
 
-const insertAuctionIR: any = {"usedParamSet":{"id":true,"startTime":true,"endTime":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":58,"b":61}]},{"name":"startTime","required":true,"transform":{"type":"scalar"},"locs":[{"a":64,"b":74}]},{"name":"endTime","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":85}]}],"statement":"INSERT INTO auction(\"id\", \"startTime\", \"endTime\")\nVALUES (:id!, :startTime!, :endTime!)\nON CONFLICT DO NOTHING"};
+const insertAuctionIR: any = {"usedParamSet":{"id":true,"startTime":true,"endTime":true},"params":[{"name":"id","required":true,"transform":{"type":"scalar"},"locs":[{"a":58,"b":61}]},{"name":"startTime","required":true,"transform":{"type":"scalar"},"locs":[{"a":64,"b":74}]},{"name":"endTime","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":85}]}],"statement":"INSERT INTO auction(\"id\", \"startTime\", \"endTime\")\nVALUES (:id!, :startTime!, :endTime!)\nON CONFLICT (\"id\") DO UPDATE SET\n  \"startTime\" = EXCLUDED.\"startTime\",\n  \"endTime\" = EXCLUDED.\"endTime\""};
 
 /**
  * Query generated from SQL:
  * ```
  * INSERT INTO auction("id", "startTime", "endTime")
  * VALUES (:id!, :startTime!, :endTime!)
- * ON CONFLICT DO NOTHING
+ * ON CONFLICT ("id") DO UPDATE SET
+ *   "startTime" = EXCLUDED."startTime",
+ *   "endTime" = EXCLUDED."endTime"
  * ```
  */
 export const insertAuction = new PreparedQuery<IInsertAuctionParams,IInsertAuctionResult>(insertAuctionIR);
@@ -1240,5 +1242,68 @@ const insertWalletBioIR: any = {"usedParamSet":{"bidder":true,"bio":true,"author
  * ```
  */
 export const insertWalletBio = new PreparedQuery<IInsertWalletBioParams,IInsertWalletBioResult>(insertWalletBioIR);
+
+
+/** 'GetPriceStats' parameters type */
+export interface IGetPriceStatsParams {
+  days: NumberOrString;
+}
+
+/** 'GetPriceStats' return type */
+export interface IGetPriceStatsResult {
+  id: number;
+  price: string | null;
+}
+
+/** 'GetPriceStats' query type */
+export interface IGetPriceStatsQuery {
+  params: IGetPriceStatsParams;
+  result: IGetPriceStatsResult;
+}
+
+const getPriceStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":82}]}],"statement":"SELECT id, price FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT id, price FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!
+ * ```
+ */
+export const getPriceStats = new PreparedQuery<IGetPriceStatsParams,IGetPriceStatsResult>(getPriceStatsIR);
+
+
+/** 'GetBidsStats' parameters type */
+export interface IGetBidsStatsParams {
+  days: NumberOrString;
+}
+
+/** 'GetBidsStats' return type */
+export interface IGetBidsStatsResult {
+  timestamp: number | null;
+}
+
+/** 'GetBidsStats' query type */
+export interface IGetBidsStatsQuery {
+  params: IGetBidsStatsParams;
+  result: IGetBidsStatsResult;
+}
+
+const getBidsStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":173,"b":178}]}],"statement":"SELECT bid.\"timestamp\"\nFROM bid\nWHERE bid.\"auctionId\" IN (\n    SELECT bid.\"auctionId\"\n    FROM bid\n    GROUP BY bid.\"auctionId\" \n    ORDER BY bid.\"auctionId\" DESC\n    LIMIT :days!\n)"};
+
+/**
+ * Query generated from SQL:
+ * ```
+ * SELECT bid."timestamp"
+ * FROM bid
+ * WHERE bid."auctionId" IN (
+ *     SELECT bid."auctionId"
+ *     FROM bid
+ *     GROUP BY bid."auctionId" 
+ *     ORDER BY bid."auctionId" DESC
+ *     LIMIT :days!
+ * )
+ * ```
+ */
+export const getBidsStats = new PreparedQuery<IGetBidsStatsParams,IGetBidsStatsResult>(getBidsStatsIR);
 
 
