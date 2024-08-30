@@ -1253,6 +1253,7 @@ export interface IGetPriceStatsParams {
 export interface IGetPriceStatsResult {
   id: number;
   price: string | null;
+  startTime: number;
 }
 
 /** 'GetPriceStats' query type */
@@ -1261,12 +1262,12 @@ export interface IGetPriceStatsQuery {
   result: IGetPriceStatsResult;
 }
 
-const getPriceStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":77,"b":82}]}],"statement":"SELECT id, price FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!"};
+const getPriceStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":90,"b":95}]}],"statement":"SELECT id, price, \"startTime\" FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!"};
 
 /**
  * Query generated from SQL:
  * ```
- * SELECT id, price FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!
+ * SELECT id, price, "startTime" FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!
  * ```
  */
 export const getPriceStats = new PreparedQuery<IGetPriceStatsParams,IGetPriceStatsResult>(getPriceStatsIR);
@@ -1288,14 +1289,14 @@ export interface IGetBidsStatsQuery {
   result: IGetBidsStatsResult;
 }
 
-const getBidsStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":173,"b":178}]}],"statement":"SELECT bid.\"timestamp\"\nFROM bid\nWHERE bid.\"auctionId\" IN (\n    SELECT bid.\"auctionId\"\n    FROM bid\n    GROUP BY bid.\"auctionId\" \n    ORDER BY bid.\"auctionId\" DESC\n    LIMIT :days!\n)"};
+const getBidsStatsIR: any = {"usedParamSet":{"days":true},"params":[{"name":"days","required":true,"transform":{"type":"scalar"},"locs":[{"a":205,"b":210}]}],"statement":"SELECT bid.\"timestamp\"\nFROM bid\nWHERE bid.\"timestamp\" IS NOT NULL AND bid.\"auctionId\" IN (\n    SELECT bid.\"auctionId\"\n    FROM bid\n    GROUP BY bid.\"auctionId\" \n    ORDER BY bid.\"auctionId\" DESC\n    LIMIT :days!\n)"};
 
 /**
  * Query generated from SQL:
  * ```
  * SELECT bid."timestamp"
  * FROM bid
- * WHERE bid."auctionId" IN (
+ * WHERE bid."timestamp" IS NOT NULL AND bid."auctionId" IN (
  *     SELECT bid."auctionId"
  *     FROM bid
  *     GROUP BY bid."auctionId" 

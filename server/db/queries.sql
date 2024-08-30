@@ -324,12 +324,12 @@ VALUES (:bidder, :bio, :author)
 ON CONFLICT ("bio") DO NOTHING;
 
 /* @name getPriceStats */
-SELECT id, price FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!;
+SELECT id, price, "startTime" FROM auction WHERE price IS NOT NULL ORDER BY id DESC LIMIT :days!;
 
 /* @name getBidsStats */
 SELECT bid."timestamp"
 FROM bid
-WHERE bid."auctionId" IN (
+WHERE bid."timestamp" IS NOT NULL AND bid."auctionId" IN (
     SELECT bid."auctionId"
     FROM bid
     GROUP BY bid."auctionId" 
