@@ -37,8 +37,8 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
 
   return (
     <div className="container">
-      <button data-umami-event="Plus 5%" className="option" onClick={() => handleBump(5)}>
-        +5%
+      <button data-umami-event="Plus 2%" className="option" onClick={() => handleBump(2)}>
+        +2%
       </button>
       <button data-umami-event="Plus 10%" className="option" onClick={() => handleBump(10)}>
         +10%
