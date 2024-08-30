@@ -4,6 +4,7 @@ import SiteHeader from '../../components/SiteHeader';
 import BidderBio from '../../components/BidderBio';
 import ClientOnly from '../../components/ClientOnly';
 import SiteHead from '../../components/SiteHead';
+import SiteFooter from '../../components/SiteFooter';
 
 export default function AddressBio() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AddressBio() {
         <SiteHead />
         <SiteHeader />
         <div className="bidder-status">{bidder.isLoading ? 'Loading…' : 'Bidder not found'}</div>
+        <SiteFooter />
         <style jsx>
           {`
             @keyframes pulse {
@@ -48,6 +50,7 @@ export default function AddressBio() {
       <ClientOnly>
         <BidderBio bidder={bidder.data.details} />
       </ClientOnly>
+      <SiteFooter />
     </>
   );
 }
