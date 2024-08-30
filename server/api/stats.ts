@@ -7,25 +7,25 @@ const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 const days = getDays();
 
 async function getPrices() {
-  const weekPriceStats = await getPriceStats.run({ days: 7 }, pgPool);
-  const monthPriceStats = await getPriceStats.run({ days: days.inMonth }, pgPool);
-  const yearPriceStats = await getPriceStats.run({ days: days.inYear }, pgPool);
+  const threeMonthPriceStats = await getPriceStats.run({ days: days.threeMonth }, pgPool);
+  const halfYearPriceStats = await getPriceStats.run({ days: days.halfYear }, pgPool);
+  const yearPriceStats = await getPriceStats.run({ days: days.year }, pgPool);
 
   return {
-    weekPriceStats,
-    monthPriceStats,
+    threeMonthPriceStats,
+    halfYearPriceStats,
     yearPriceStats,
   };
 }
 
 async function getBids() {
-  const weekBidsStats = await getBidsStats.run({ days: 7 }, pgPool);
-  const monthBidsStats = await getBidsStats.run({ days: days.inMonth }, pgPool);
-  const yearBidsStats = await getBidsStats.run({ days: days.inYear }, pgPool);
+  const threeMonthBidsStats = await getBidsStats.run({ days: days.threeMonth }, pgPool);
+  const halfYearBidsStats = await getBidsStats.run({ days: days.halfYear }, pgPool);
+  const yearBidsStats = await getBidsStats.run({ days: days.year }, pgPool);
 
   return {
-    weekBidsStats,
-    monthBidsStats,
+    threeMonthBidsStats,
+    halfYearBidsStats,
     yearBidsStats,
   };
 }
@@ -38,12 +38,9 @@ export default async function getStatsData() {
 }
 
 function getDays() {
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-
   return {
-    inMonth: new Date(year, month, 0).getDate(),
-    inYear: (year % 4 === 0 && year % 100 > 0) || year % 400 == 0 ? 366 : 365,
+    threeMonth: 90,
+    halfYear: 180,
+    year: 365,
   };
 }

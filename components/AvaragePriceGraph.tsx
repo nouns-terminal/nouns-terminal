@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComposedChart, Area, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Area, YAxis, Tooltip, ResponsiveContainer, XAxis } from 'recharts';
 import { formatBidValue } from '../utils/utils';
 
 export default function AvaragePriceGraph({
@@ -10,6 +10,7 @@ export default function AvaragePriceGraph({
     | {
         id: number;
         price: string | null;
+        startTime: number;
       }[]
     | undefined;
   backgroundShadowLimit: number;
@@ -25,14 +26,12 @@ export default function AvaragePriceGraph({
       const background = [price - randomNumber, price + randomNumber];
       return {
         id: auction.id,
+        date: new Date(auction.startTime * 1000).toDateString(),
         price,
         background,
       };
     })
     .sort((a, b) => a.id - b.id);
-
-  const minPrice = Math.floor(Math.min(...data.map((auction) => auction.price))) - 1;
-  const maxPrice = Math.floor(Math.max(...data.map((auction) => auction.price))) + 1;
 
   return (
     <div style={{ height: 200, width: 500 }}>
@@ -45,13 +44,14 @@ export default function AvaragePriceGraph({
             axisLine={false}
             tickSize={10}
             unit="Ξ"
-            ticks={[minPrice, maxPrice]}
+            interval={2}
           />
+          <XAxis dataKey="date" axisLine={false} display={'none'} />
           <Area dataKey="price" stroke="var(--yellow)" fill="none" />
           <Area
             dataKey="background"
             stroke="none"
-            fillOpacity={0.2}
+            fillOpacity={0.3}
             fill="var(--yellow)"
             activeDot={false}
             tooltipType="none"
@@ -64,7 +64,7 @@ export default function AvaragePriceGraph({
               padding: '5px',
             }}
             cursor={false}
-            labelStyle={{ display: 'none' }}
+            labelStyle={{ color: 'var(--mid-text)' }}
             formatter={(value) => `Ξ${value}`}
           />
         </ComposedChart>
