@@ -15,12 +15,11 @@ export default function NounAuctionPage({ auctionData }: { auctionData: AuctionD
       auctionData.wallets.find((wallet) => wallet.address === auctionData.auction.winner)?.ens ||
       null,
     price: auctionData.auction.price,
-    noun: auctionData.noun,
   };
 
   const dataStr = encodeURIComponent(JSON.stringify(data));
   const cacheBuster = Math.random().toString(36).substring(7);
-  const ogImageRelativePath = `/api/opengraph-image?${cacheBuster}&data=${dataStr}`;
+  const ogImageRelativePath = `/api/auction-opengraph-image?${cacheBuster}&data=${dataStr}`;
 
   return (
     <>

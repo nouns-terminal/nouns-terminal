@@ -1,9 +1,6 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
-import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
-import { ImageData, getNounData } from '@nouns/assets';
-import { Noun } from '../../server/api/types';
-import { formatEther } from 'viem';
+import { formatBidValue } from '../../utils/utils';
 
 export const config = {
   runtime: 'edge',
@@ -13,14 +10,11 @@ export default async function handler(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const dataStr = searchParams.get('data');
   const data = JSON.parse(decodeURIComponent(dataStr || ''));
-  const { nounId, startTime, winnerAddress, winnerENS, price, noun } = data;
+  const { nounId, startTime, winnerAddress, winnerENS, price } = data;
+  const nounSVG = `https://noun.pics/${nounId}.svg`;
   const fontData = await fetch(
     new URL('../../public/fonts/ProtoMono-Regular.otf', import.meta.url),
   ).then((res) => res.arrayBuffer());
-
-  const nounData = getNounData(noun as Noun);
-  const svgBinary = buildSVG(nounData.parts, ImageData.palette, nounData.background);
-  const svg = 'data:image/svg+xml;base64,' + btoa(svgBinary);
 
   return new ImageResponse(
     (
@@ -35,7 +29,7 @@ export default async function handler(req: NextRequest) {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: '100%' }}>
-          <img alt={`Noun ${nounId}`} src={svg} width="50%" height="100%" />
+          <img alt={`Noun ${nounId}`} src={nounSVG} width="50%" height="100%" />
           <div
             style={{
               display: 'flex',
@@ -140,12 +134,4 @@ export default async function handler(req: NextRequest) {
       ],
     },
   );
-}
-
-function formatBidValue(value: bigint) {
-  const s = formatEther(value);
-  if (s.includes('.')) {
-    return s;
-  }
-  return s + '.0';
 }
