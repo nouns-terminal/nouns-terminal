@@ -3,65 +3,48 @@ import { BarChart, Bar, YAxis, Tooltip, Cell, ResponsiveContainer, XAxis } from 
 
 export default function BidsCountGraph({
   periodData,
-  periodType,
+  weeksAmount,
 }: {
   periodData:
     | {
         timestamp: number | null;
       }[]
     | undefined;
-  periodType: string;
+  weeksAmount: number;
 }) {
   if (!periodData) {
     return;
   }
-  let data: { name: string; count: number }[] = [];
-  let maxBidsCount = 0;
-  let ticksValues: string[] = [];
-  if (periodType === 'week') {
-    data = [
-      { name: 'Monday', count: 0 },
-      { name: 'Tuesday', count: 0 },
-      { name: 'Wednesday', count: 0 },
-      { name: 'Thursday', count: 0 },
-      { name: 'Friday', count: 0 },
-      { name: 'Saturday', count: 0 },
-      { name: 'Sunday', count: 0 },
-    ];
-    periodData
-      .filter((period): period is { timestamp: number } => period.timestamp != null)
-      .forEach((period) => {
-        const date = new Date(period.timestamp * 1000);
-        data[date.getDay()].count++;
-      });
-    maxBidsCount = Math.max(...data.map((bids) => bids.count));
-    ticksValues = [data[Math.floor(data.length / 2)].name];
-  }
-  if (periodType === 'month') {
-    data = [
-      { name: 'Monday', count: 0 },
-      { name: 'Tuesday', count: 0 },
-      { name: 'Wednesday', count: 0 },
-      { name: 'Thursday', count: 0 },
-      { name: 'Friday', count: 0 },
-      { name: 'Saturday', count: 0 },
-      { name: 'Sunday', count: 0 },
-    ];
-    periodData
-      .filter((period): period is { timestamp: number } => period.timestamp != null)
-      .forEach((period) => {
-        const date = new Date(period.timestamp * 1000);
-        data[date.getDay()].count++;
-      });
-    maxBidsCount = Math.max(...data.map((bids) => bids.count));
-    ticksValues = [data[Math.floor(data.length / 2)].name];
-  }
 
+  const data: { count: number; date: Date; period?: string }[] = Array.from({
+    length: weeksAmount,
+  }).map((_, i) => ({
+    count: 0,
+    date: new Date(),
+  }));
+  periodData
+    .filter((period): period is { timestamp: number } => period.timestamp != null)
+    .forEach((period) => {
+      const week = Math.round(period.timestamp / (60 * 60 * 24 * 7));
+      const index = week % data.length;
+      data[index].count++;
+      data[index].date = new Date(period.timestamp * 1000);
+    });
+  const maxBidsCount = Math.max(...data.map((bids) => bids.count));
+  data.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  data.forEach((item, index) => {
+    const currentDate = item.date;
+    const nextDate = data[index + 1]?.date || new Date();
+    const endDate = new Date(nextDate.getTime() - 24 * 60 * 60 * 1000);
+
+    item.period = `${currentDate.toDateString()} - ${endDate.toDateString()}`;
+  });
   return (
-    <div style={{ height: 200, width: 500 }}>
+    <div style={{ height: 100, width: 500 }}>
       <span style={{ color: 'var(--mid-text)' }}>#BIDS</span>
       <ResponsiveContainer>
-        <BarChart data={data} margin={{ top: 0, right: 0, bottom: 30, left: 0 }}>
+        <BarChart data={data} margin={{ top: 5, right: 0, bottom: 0, left: 20 }}>
           <YAxis
             dataKey="count"
             orientation="right"
@@ -71,15 +54,26 @@ export default function BidsCountGraph({
             ticks={[maxBidsCount]}
           />
           <XAxis
-            dataKey="name"
+            dataKey="period"
             orientation="bottom"
             axisLine={false}
-            interval={2}
-            tickSize={10}
-            ticks={ticksValues}
+            tickSize={15}
+            interval={4}
+            tickFormatter={(tick: string) => tick.split(' ')[1]}
           />
-          <Tooltip cursor={{ color: 'var(--bright-text)', opacity: '0.4' }} />
-          <Bar dataKey="count">
+          <Tooltip
+            contentStyle={{
+              backgroundColor: 'var(--surface-bg)',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '5px',
+            }}
+            cursor={false}
+            labelStyle={{ color: 'var(--mid-text)' }}
+            itemStyle={{ color: 'var(--bright-text)' }}
+            formatter={(value) => `${value}`}
+          />
+          <Bar dataKey="count" height={10}>
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}

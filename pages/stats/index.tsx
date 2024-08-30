@@ -9,15 +9,15 @@ export default function Stats() {
 
   const items = [
     {
-      key: 'week',
-      label: 'Week',
+      key: '3m',
+      label: '3m',
       children: (
         <>
           <AvaragePriceGraph
-            periodData={states.data?.prices.weekPriceStats}
-            backgroundShadowLimit={0.3}
+            periodData={states.data?.prices.threeMonthPriceStats}
+            backgroundShadowLimit={3}
           />
-          <BidsCountGraph periodData={states.data?.bids.weekBidsStats} periodType="week" />
+          <BidsCountGraph periodData={states.data?.bids.threeMonthBidsStats} weeksAmount={13} />
         </>
       ),
       destroyInactiveTabPane: true,
@@ -30,15 +30,15 @@ export default function Stats() {
       disabled: true,
     },
     {
-      key: 'month',
-      label: 'Month',
+      key: '6m',
+      label: '6m',
       children: (
         <>
           <AvaragePriceGraph
-            periodData={states.data?.prices.monthPriceStats}
-            backgroundShadowLimit={0.5}
+            periodData={states.data?.prices.halfYearPriceStats}
+            backgroundShadowLimit={5}
           />
-          <BidsCountGraph periodData={states.data?.bids.monthBidsStats} periodType="month" />
+          <BidsCountGraph periodData={states.data?.bids.halfYearBidsStats} weeksAmount={26} />
         </>
       ),
       destroyInactiveTabPane: true,
@@ -51,15 +51,15 @@ export default function Stats() {
       disabled: true,
     },
     {
-      key: 'year',
-      label: <span>Year</span>,
+      key: '1y',
+      label: '1y',
       children: (
         <>
           <AvaragePriceGraph
             periodData={states.data?.prices.yearPriceStats}
-            backgroundShadowLimit={5}
+            backgroundShadowLimit={10}
           />
-          <BidsCountGraph periodData={states.data?.bids.yearBidsStats} periodType="year" />
+          <BidsCountGraph periodData={states.data?.bids.yearBidsStats} weeksAmount={52} />
         </>
       ),
       destroyInactiveTabPane: true,
@@ -67,7 +67,7 @@ export default function Stats() {
   ];
   return (
     <>
-      <Tabs tabBarGutter={5} tabPosition="top" items={items} defaultActiveKey="week" />
+      <Tabs tabBarGutter={5} tabPosition="top" items={items} defaultActiveKey="3m" />
       <style>{`
         .rc-tabs-nav-list {
           display: flex;
