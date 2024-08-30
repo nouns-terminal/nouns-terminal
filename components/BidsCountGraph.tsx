@@ -18,7 +18,7 @@ export default function BidsCountGraph({
 
   const data: { count: number; date: Date; period?: string }[] = Array.from({
     length: weeksAmount,
-  }).map((_, i) => ({
+  }).map(() => ({
     count: 0,
     date: new Date(),
   }));
@@ -44,7 +44,7 @@ export default function BidsCountGraph({
     <div style={{ height: 100, width: 500 }}>
       <span style={{ color: 'var(--mid-text)' }}>#BIDS</span>
       <ResponsiveContainer>
-        <BarChart data={data} margin={{ top: 5, right: 0, bottom: 0, left: 20 }}>
+        <BarChart data={data} margin={{ top: 5, right: 0, bottom: 0, left: 0 }}>
           <YAxis
             dataKey="count"
             orientation="right"
@@ -71,7 +71,6 @@ export default function BidsCountGraph({
             cursor={false}
             labelStyle={{ color: 'var(--mid-text)' }}
             itemStyle={{ color: 'var(--bright-text)' }}
-            formatter={(value) => `${value}`}
           />
           <Bar dataKey="count" height={10}>
             {data.map((entry, index) => (

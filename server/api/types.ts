@@ -78,3 +78,30 @@ export type SlideOverContent =
       id: number | undefined;
     }
   | { type: 'bidder'; address: string | null };
+
+export type PriceStat = {
+  id: number;
+  price: string | null;
+  startTime: number;
+};
+
+export type Prices = {
+  threeMonthPriceStats: PriceStat[];
+  halfYearPriceStats: PriceStat[];
+  yearPriceStats: PriceStat[];
+};
+
+export type BidStat = {
+  timestamp: number | null;
+};
+
+export type Bids = {
+  threeMonthBidsStats: BidStat[];
+  halfYearBidsStats: BidStat[];
+  yearBidsStats: BidStat[];
+};
+
+export type GraphsData = {
+  prices: Prices;
+  bids: Bids;
+};

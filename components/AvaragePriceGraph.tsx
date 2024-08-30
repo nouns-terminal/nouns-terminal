@@ -21,9 +21,8 @@ export default function AvaragePriceGraph({
 
   const data = periodData
     .map((auction) => {
-      const randomNumber = Math.random() * backgroundShadowLimit;
       const price = parseFloat(formatBidValue(BigInt(auction.price || '0')));
-      const background = [price - randomNumber, price + randomNumber];
+      const background = [price - backgroundShadowLimit, price + backgroundShadowLimit];
       return {
         id: auction.id,
         date: new Date(auction.startTime * 1000).toDateString(),
@@ -35,7 +34,7 @@ export default function AvaragePriceGraph({
 
   return (
     <div style={{ height: 200, width: 500 }}>
-      <span style={{ color: 'var(--mid-text)' }}>AVG. PRICE</span>
+      <span style={{ color: 'var(--mid-text)' }}>#PRICES</span>
       <ResponsiveContainer>
         <ComposedChart data={data} margin={{ top: 30, right: 0, bottom: 30, left: 0 }}>
           <YAxis
@@ -43,7 +42,7 @@ export default function AvaragePriceGraph({
             orientation="right"
             axisLine={false}
             tickSize={10}
-            unit="Ξ"
+            tickFormatter={(price) => ` ${price}Ξ`}
             interval={2}
           />
           <XAxis dataKey="date" axisLine={false} display={'none'} />
