@@ -25,13 +25,35 @@ export type BidderHistory = {
   winner: string | null;
 };
 
-export type Wallet = {
+export type WalletDetails = {
   address: string;
   ens: string | null;
   bids?: number;
   nouns?: number | null;
   wins?: number | null;
   bio?: string | null;
+};
+
+export type Balance = {
+  eth: string;
+  usd: string;
+};
+
+export type Wallet = {
+  details: WalletDetails;
+  balance: Balance;
+  nouns: Noun[] | undefined;
+  wins: { count: number | undefined };
+  largestBid: LargestBid;
+  bidderHistory: BidderHistory[];
+  domains: Social[];
+  dapps: Social[];
+};
+
+export type LargestBid = {
+  id: number;
+  value: string;
+  noun: Noun;
 };
 
 export type Auction = {
@@ -68,7 +90,7 @@ export type AuctionData = {
   auction: Auction;
   noun: Noun | null;
   bids: Bid[];
-  wallets: Wallet[];
+  wallets: WalletDetails[];
   nounProperties: NounProperty[];
 };
 
