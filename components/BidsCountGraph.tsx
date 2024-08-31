@@ -5,15 +5,13 @@ export default function BidsCountGraph({
   periodData,
   weeksAmount,
 }: {
-  periodData:
-    | {
-        timestamp: number | null;
-      }[]
-    | undefined;
+  periodData?: {
+    timestamp: number | null;
+  }[];
   weeksAmount: number;
 }) {
   if (!periodData) {
-    return;
+    return null;
   }
 
   const data: { count: number; date: Date; period?: string }[] = Array.from({

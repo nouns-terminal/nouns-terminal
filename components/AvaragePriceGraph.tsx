@@ -6,17 +6,15 @@ export default function AvaragePriceGraph({
   periodData,
   backgroundShadowLimit,
 }: {
-  periodData:
-    | {
-        id: number;
-        price: string | null;
-        startTime: number;
-      }[]
-    | undefined;
+  periodData?: {
+    id: number;
+    price: string | null;
+    startTime: number;
+  }[];
   backgroundShadowLimit: number;
 }) {
   if (!periodData) {
-    return;
+    return null;
   }
 
   const data = periodData

@@ -9,7 +9,7 @@ const nextConfig = {
   serverRuntimeConfig: {
     // Will only be available on the server side
     AIRSTACK_API_KEY: process.env.AIRSTACK_API_KEY,
-    ENV: process.env.ENV,
+    GENESIS_BLOCK: process.env.GENESIS_BLOCK,
   },
   publicRuntimeConfig: {
     // Will be available on both server and client
