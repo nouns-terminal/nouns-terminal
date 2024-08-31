@@ -4,7 +4,7 @@ import jazzicon from '@metamask/jazzicon';
 import { textStyle } from './Text';
 import { formatEther, formatGwei } from 'viem';
 import { useEffect, useRef, useState } from 'react';
-import type { Bid, SlideOverContent, Wallet } from '../server/api/types';
+import type { Bid, SlideOverContent, WalletDetails } from '../server/api/types';
 import { atom, useAtom } from 'jotai';
 import ClientOnly from './ClientOnly';
 import { ClientIdIcon, TooltipIcon } from './Icons';
@@ -16,7 +16,7 @@ export type PendingBid = Bid & { ens: string | null };
 
 type Props = {
   bids: readonly Bid[];
-  wallets: readonly Wallet[];
+  wallets: readonly WalletDetails[];
   pendingBid: PendingBid | null;
   ended: boolean;
   onBidderClick: (content: SlideOverContent) => void;
@@ -25,7 +25,7 @@ type Props = {
 export default function BidsTable(props: Props) {
   const [address, setAddress] = useAtom(hoveredAddress);
 
-  const lookup: { [address: string]: Wallet } = Object.fromEntries(
+  const lookup: { [address: string]: WalletDetails } = Object.fromEntries(
     props.wallets.map((wallet) => [wallet.address, wallet]),
   );
 

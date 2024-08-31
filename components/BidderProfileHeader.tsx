@@ -1,5 +1,5 @@
 import { ExternalLinkIcon } from './Icons';
-import { Noun, Social, Wallet } from '../server/api/types';
+import { Noun, Social, WalletDetails } from '../server/api/types';
 import React from 'react';
 import Stack from './Stack';
 import Text from './Text';
@@ -17,15 +17,16 @@ export default function BidderProfileHeader({
   dapps,
 }: {
   address: string;
-  details?: Wallet;
-  balance?: {
-    eth?: string;
-    usd?: string;
-  };
-
-  nouns?: Noun[];
-  domains?: Social[];
-  dapps?: Social[];
+  details: WalletDetails | undefined;
+  balance:
+    | {
+        eth: string | undefined;
+        usd: string | undefined;
+      }
+    | undefined;
+  nouns: Noun[] | undefined;
+  domains: Social[] | undefined;
+  dapps: Social[] | undefined;
 }) {
   const nounSVGs = nouns?.map((noun) => createNounSVG(noun, true));
   const domainNicknames = [

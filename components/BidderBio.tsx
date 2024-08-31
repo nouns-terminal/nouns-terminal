@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import Text, { textStyle } from './Text';
-import { Wallet } from '../server/api/types';
+import { WalletDetails } from '../server/api/types';
 import { useAccount, useSignMessage } from 'wagmi';
 import { trpc } from '../utils/trpc';
 import { formatAddress, checkIsAuthor } from '../utils/utils';
 
-export default function BidderBio({ bidder }: { bidder: Wallet }) {
+export default function BidderBio({ bidder }: { bidder: WalletDetails }) {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
