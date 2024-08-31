@@ -18,18 +18,15 @@ export default function BidderProfileInfo({
   bio,
 }: {
   wins: number;
-  bidderHistory: BidderHistory[] | undefined;
+  bidderHistory?: BidderHistory[];
   address: string;
-  largestBid:
-    | {
-        id: number;
-        value: string;
-        noun: Noun;
-      }
-    | undefined
-    | null;
-  balance: string | undefined;
-  bio: string | null | undefined;
+  largestBid?: {
+    id: number;
+    value: string;
+    noun: Noun;
+  } | null;
+  balance?: string;
+  bio?: string | null;
 }) {
   const totalBidsCount = bidderHistory?.reduce((acc, curr) => acc + Number(curr.countBids), 0) || 0;
   const nounSVG = createNounSVG(largestBid?.noun as Noun);

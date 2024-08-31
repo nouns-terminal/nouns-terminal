@@ -23,7 +23,7 @@ export const config = getDefaultConfig({
   appIcon: 'https://nouns.sh/favicon.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
 });
 
-export function checkIsAuthor(bidder: string, author: string | undefined) {
+export function checkIsAuthor(bidder: string, author?: string) {
   if (!author) {
     return false;
   }

@@ -29,7 +29,7 @@ type AuctionHouseEventLog =
 
 const log = logger.child({ indexer: 'auction' });
 
-const env = process.env.ENV?.toLocaleLowerCase();
+const genesisBlock = Number(process.env.GENESIS_BLOCK || '12985450'); // 12985450 - Nouns Deployment -1
 
 export default async function auction(
   auctionAddress: string,
@@ -69,8 +69,7 @@ export default async function auction(
   const result = await getAuctionLastQueriedBlock.run(undefined, connection);
 
   const currentBlockNumber = await provider.getBlockNumber();
-  const lastQueriedBlock =
-    result[0]?.value || env == 'prod' ? 12985450 : currentBlockNumber - 30_000; // 12985450 - Nouns Deployment -1; 30_000 ~ block per 5 days
+  const lastQueriedBlock = result[0]?.value || genesisBlock;
   let lastBlockNumber = lastQueriedBlock;
 
   log.debug('Loaded state', { lastQueriedBlock });

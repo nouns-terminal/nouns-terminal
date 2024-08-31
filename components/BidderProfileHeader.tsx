@@ -17,16 +17,15 @@ export default function BidderProfileHeader({
   dapps,
 }: {
   address: string;
-  details: Wallet | undefined;
-  balance:
-    | {
-        eth: string | undefined;
-        usd: string | undefined;
-      }
-    | undefined;
-  nouns: Noun[] | undefined;
-  domains: Social[] | undefined;
-  dapps: Social[] | undefined;
+  details?: Wallet;
+  balance?: {
+    eth?: string;
+    usd?: string;
+  };
+
+  nouns?: Noun[];
+  domains?: Social[];
+  dapps?: Social[];
 }) {
   const nounSVGs = nouns?.map((noun) => createNounSVG(noun, true));
   const domainNicknames = [

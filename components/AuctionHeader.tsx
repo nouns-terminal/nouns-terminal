@@ -72,7 +72,7 @@ export default function AuctionHeader(props: Props) {
       });
 
       if (!address) {
-        return;
+        return null;
       }
 
       props.onSubmitBid({
