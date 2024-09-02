@@ -1571,10 +1571,10 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
   integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
 
-"@types/node@*", "@types/node@^22.5.0":
-  version "22.5.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.0.tgz#10f01fe9465166b4cab72e75f60d8b99d019f958"
-  integrity sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==
+"@types/node@*", "@types/node@^22.5.2":
+  version "22.5.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.2.tgz#e42344429702e69e28c839a7e16a8262a8086793"
+  integrity sha512-acJsPTEqYqulZS/Yp/S3GgeE6GZ0qYODUR8aVr/DkhHQ8l9nd4j5x1/ZJy9/gHrRlFMqkO6i0I3E27Alu4jjPg==
   dependencies:
     undici-types "~6.19.2"
 
@@ -1583,10 +1583,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.13.tgz#f64277c341150c979e42b00e4ac289290c9df469"
   integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
 
-"@types/pg@^8.11.6":
-  version "8.11.6"
-  resolved "https://registry.yarnpkg.com/@types/pg/-/pg-8.11.6.tgz#a2d0fb0a14b53951a17df5197401569fb9c0c54b"
-  integrity sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==
+"@types/pg@^8.11.8":
+  version "8.11.8"
+  resolved "https://registry.yarnpkg.com/@types/pg/-/pg-8.11.8.tgz#bc712f1ad8ca664acb1d321b42691d1a166a88d6"
+  integrity sha512-IqpCf8/569txXN/HoP5i1LjXfKZWL76Yr2R77xgeIICUbAYHeoaEZFhYHo2uDftecLWrTJUq63JvQu8q3lnDyA==
   dependencies:
     "@types/node" "*"
     pg-protocol "*"
@@ -1619,10 +1619,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.3.4":
-  version "18.3.4"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.4.tgz#dfdd534a1d081307144c00e325c06e00312c93a3"
-  integrity sha512-J7W30FTdfCxDDjmfRM+/JqLHBIyl7xUIp9kwK637FGmY7+mkSFSe6L4jpZzhj5QMfLssSDP4/i75AKkrdC7/Jw==
+"@types/react@*", "@types/react@^18.3.5":
+  version "18.3.5"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.3.5.tgz#5f524c2ad2089c0ff372bbdabc77ca2c4dbadf8f"
+  integrity sha512-WeqMfGJLGuLCqHGYRGHxnKrXcTitc6L/nBUWfWPcTarG3t9PsquqUMuVeXZeca+mglY4Vo5GZjCi0A3Or2lnxA==
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
