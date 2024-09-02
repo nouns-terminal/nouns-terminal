@@ -44,7 +44,7 @@ export type Wallet = {
   balance: Balance;
   nouns: Noun[] | undefined;
   wins: { count: number | undefined };
-  largestBid: LargestBid;
+  largestBid?: LargestBid;
   bidderHistory: BidderHistory[];
   domains: Social[];
   dapps: Social[];
