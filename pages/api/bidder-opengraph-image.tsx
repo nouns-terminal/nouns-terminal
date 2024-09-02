@@ -84,13 +84,13 @@ export default async function handler(req: NextRequest) {
             <span
               style={{
                 fontSize: 40,
-                marginTop: '15px',
+                marginTop: '25px',
                 color: '#999999',
               }}
             >
               Activity
             </span>
-            <div style={{ display: 'flex', fontSize: 26, marginTop: '20px' }}>
+            <div style={{ display: 'flex', fontSize: 26, marginTop: '25px' }}>
               <span style={{ color: '#00C986' }}>
                 {`${wins} ${wins > 1 ? 'Nouns' : 'Noun'} won`}
               </span>
@@ -99,33 +99,38 @@ export default async function handler(req: NextRequest) {
                 style={{ color: '#999999' }}
               >{`from ${auctionsCount} ${auctionsCount > 1 ? 'aunctions' : 'auction'}`}</span>
             </div>
-            <div style={{ display: 'flex', fontSize: 26, marginTop: '20px' }}>
+            <div style={{ display: 'flex', fontSize: 26, marginTop: '15px' }}>
               <span style={{ color: '#00C986' }}>{`${bidsCount}`}</span>
               <span style={{ color: '#999999', padding: '0 5px' }}>
                 {`${bidsCount > 1 ? 'Bids' : 'Bid'} placed`}
               </span>
             </div>
-            <div style={{ display: 'flex', fontSize: 26, marginTop: '20px' }}>
-              <span
-                style={{ color: '#FFB700', padding: '0 5px' }}
-              >{`Ξ${formatBidValue(BigInt(largestBid.value))}`}</span>
-              <span style={{ color: '#999999', padding: '0 5px' }}>•</span>
-              <span style={{ padding: '0 5px' }}>{`Noun ${largestBid.id}`}</span>
-              <img
-                src={`https://noun.pics/${largestBid.id}.svg`}
-                alt={`Noun ${largestBid.id}`}
-                style={{
-                  width: '30px',
-                }}
-                title={`Noun`}
-              />
-            </div>
+            {largestBid.id && (
+              <div style={{ display: 'flex', fontSize: 26, marginTop: '15px' }}>
+                <span
+                  style={{ color: '#FFB700', padding: '0 5px' }}
+                >{`Ξ${formatBidValue(BigInt(largestBid.value))}`}</span>
+                <span style={{ color: '#999999', padding: '0 5px' }}>•</span>
+                <span style={{ padding: '0 5px' }}>{`Noun ${largestBid.id}`}</span>
+                <img
+                  src={`https://noun.pics/${largestBid.id}.svg`}
+                  alt={`Noun ${largestBid.id}`}
+                  style={{
+                    width: '30px',
+                  }}
+                  title={`Noun`}
+                />
+              </div>
+            )}
+            <span
+              style={{ color: '#FFB700', fontSize: 26, marginTop: '15px' }}
+            >{`${nounSVGs.length} ${nounSVGs.length > 1 ? 'Nouns' : 'Noun'} owned`}</span>
             <div
               style={{
-                marginTop: '20px',
+                marginTop: '15px',
                 display: 'flex',
                 flexWrap: 'wrap',
-                maxHeight: '200px',
+                maxHeight: '185px',
                 maxWidth: '440px',
                 overflow: 'hidden',
               }}
@@ -139,7 +144,7 @@ export default async function handler(req: NextRequest) {
                     alt={`Noun`}
                     style={{
                       width: '58px',
-                      margin: '5px 5px 5px 0',
+                      margin: '0px 5px 5px 0',
                     }}
                     title={`Noun`}
                   />
