@@ -30,25 +30,9 @@ export default function BidderProfileInfo({
 }) {
   const totalBidsCount = bidderHistory?.reduce((acc, curr) => acc + Number(curr.countBids), 0) || 0;
   const nounSVG = createNounSVG(largestBid?.noun as Noun);
-  const bidderStrength = estimateBidderStrength(wins, BigInt(balance || 0n));
 
   return (
     <div className="content">
-      <Stack direction="column" gap={1}>
-        <Text variant="title-1" bold color="low-text">
-          Bidder Strength
-        </Text>
-        <Text variant="title-2" bold color="low-text">
-          <Text variant="title-2" bold color="yellow">
-            {bidderStrength.rank}
-          </Text>
-          &nbsp;
-          <Text variant="title-2" bold color="low-text">
-            •&nbsp;{bidderStrength.title}
-          </Text>
-        </Text>
-      </Stack>
-      <HorizontalLine />
       <Stack direction="column" gap={-1}>
         <span style={{ whiteSpace: 'pre' }}>
           <Text variant="title-2" bold color="green">
@@ -269,26 +253,4 @@ function formatLastActivityTime(lastActivity: number) {
   }
 
   return `${pad2(years)}y`;
-}
-
-function estimateBidderStrength(wins: number, balance: bigint) {
-  const formatedBalance = Number(formatEther(balance));
-  const balanceThreshold = 5;
-  let rank, title;
-
-  if (wins >= 3 || (wins >= 1 && formatedBalance >= balanceThreshold)) {
-    rank = '★★★';
-    title = 'Strong Bidder';
-  } else if (wins >= 1 || formatedBalance >= balanceThreshold) {
-    rank = '★★';
-    title = 'Medium Bidder';
-  } else {
-    rank = '★';
-    title = 'Weak Bidder';
-  }
-
-  return {
-    rank,
-    title,
-  };
 }
