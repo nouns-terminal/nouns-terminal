@@ -133,7 +133,7 @@ export default function BidsTable(props: Props) {
                         .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
                 </a>
-                <ClientIdIcon clientId={bid.clientId} />
+                <ClientIdIcon clientId={bid.clientId || 0} />
               </td>
             </tr>
           ))}
