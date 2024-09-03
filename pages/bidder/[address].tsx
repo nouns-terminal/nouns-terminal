@@ -68,7 +68,7 @@ export default function BidderPage({
                   if (index > limit) {
                     return null;
                   }
-                  return <Auction key={`auction-${index}`} auctionId={auction.auctionId} />;
+                  return <Auction key={`bidder-auction-${index}`} auctionId={auction.auctionId} />;
                 })}
               {bidderData.bidderHistory.length > limit ? (
                 <div className="footer-offset">

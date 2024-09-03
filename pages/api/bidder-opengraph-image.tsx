@@ -139,7 +139,7 @@ export default async function handler(req: NextRequest) {
                 nounSVGs.length > 0 &&
                 nounSVGs.map((nounSVG: string, index: number) => (
                   <img
-                    key={index}
+                    key={`noun-svg-${index}`}
                     src={nounSVG}
                     alt={`Noun`}
                     style={{
