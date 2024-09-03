@@ -47,7 +47,7 @@ export default function BidderProfileInfo({
             {bidderHistory
               .sort((a, b) => b.auctionId - a.auctionId)
               .map((activity, index) => (
-                <span key={index}>
+                <span key={`activity-id-${index}`}>
                   <Link
                     href={`/noun/${activity.auctionId}`}
                     target="_blank"
@@ -115,7 +115,7 @@ export default function BidderProfileInfo({
                     {bidderHistory
                       .sort((a, b) => b.auctionId - a.auctionId)
                       .map((activity, index) => (
-                        <tr key={index}>
+                        <tr key={`activity-${index}`}>
                           <td>
                             <Link
                               href={`/noun/${activity.auctionId}`}

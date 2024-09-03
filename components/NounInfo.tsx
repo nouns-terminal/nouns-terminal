@@ -43,7 +43,7 @@ export default function NounInfo({
           <table>
             <tbody>
               {parts.map((part, index) => (
-                <tr key={index}>
+                <tr key={`noun-stats-${index}`}>
                   <td style={{ color: 'var(--mid-text)' }}>{nounProperties[index].part}</td>
                   <td>{formatNounPropertyTitle(part.filename || '')}</td>
                   <td style={{ color: 'var(--yellow)', textAlign: 'right' }}>

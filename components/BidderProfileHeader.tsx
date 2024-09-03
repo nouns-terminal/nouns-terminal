@@ -65,10 +65,9 @@ export default function BidderProfileHeader({
             {dapps && dapps.length > 0 && (
               <Text variant="headline" bold color="low-text">
                 {dapps.map((dapp, index) => (
-                  <>
+                  <span key={`dapp-${index}`}>
                     <a
                       href={`https://warpcast.com/${dapp.nickname}`}
-                      key={index}
                       target="_blank"
                       rel="noreferrer"
                       className="social-link"
@@ -76,7 +75,7 @@ export default function BidderProfileHeader({
                       {dapp.type}
                     </a>
                     {index < dapps.length - 1 ? ' • ' : ''}
-                  </>
+                  </span>
                 ))}
               </Text>
             )}
@@ -109,7 +108,7 @@ export default function BidderProfileHeader({
                       href={`/noun/${nouns[index].id}`}
                       target="_blank"
                       rel="noreferrer"
-                      key={index}
+                      key={`noun-${index}`}
                     >
                       <img
                         src={nounSVG}
