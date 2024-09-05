@@ -104,7 +104,7 @@ export default async function socials(connection: Pool) {
 async function fetchAddressSocials(address: string) {
   const query = `
       query GetWalletInfo {
-        Wallet(input: {identity: "${address}", blockchain: ethereum}) {
+        Wallet(input: {identity: "${address}"}) {
           domains(input: {limit: 50}) {
             name
             isPrimary
