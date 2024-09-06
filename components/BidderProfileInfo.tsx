@@ -94,7 +94,9 @@ export default function BidderProfileInfo({
             {largestBid ? (
               <Text variant="large-title" bold color="low-text">
                 <Text variant="large-title" bold color="yellow">
-                  {formatEther(BigInt(largestBid?.value || '0'))}
+                  {Number(formatEther(BigInt(largestBid?.value || '0'))) < 0.01
+                    ? '<0.01'
+                    : formatEther(BigInt(largestBid?.value || '0'))}
                 </Text>
                 &nbsp;•&nbsp;
                 <Text variant="large-title" bold color="bright-text">
