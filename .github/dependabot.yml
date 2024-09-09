@@ -9,8 +9,8 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-      day: 'sunday'
-      time: '20:00'
+      day: 'monday'
+      time: '08:00'
       timezone: 'America/Los_Angeles'
     groups:
       nouns:
@@ -47,6 +47,7 @@ updates:
           - 'next'
           - 'react'
           - 'react-dom'
+          - '@tanstack/react-query'
       postgres:
         patterns:
           - 'pg'
@@ -58,8 +59,16 @@ updates:
         patterns:
           - 'viem'
           - 'wagmi'
+      ui-packages:
+        patterns:
+         - 'react-modern-drawer'
+      vercel:
+        patterns:
+         - '@vercel/*'
       additional-packages:
         patterns:
+         - '@next/bundle-analyzer'
           - '@metamask/jazzicon'
           - 'winston'
           - 'zod'
+          - '@rainbow-me/rainbowkit'
