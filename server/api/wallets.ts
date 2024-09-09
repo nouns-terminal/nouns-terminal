@@ -16,6 +16,10 @@ import { Noun } from './types';
 const log = logger.child({ source: 'bidder' });
 const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
 const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const socialUrls = new Map<string | null, string>([
+  ['warpcast', 'https://warpcast.com/'],
+  [null, 'https://etherscan.io/address/'],
+]);
 
 async function fetchEtherPrice() {
   const response = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=ETH');
@@ -67,7 +71,10 @@ async function getAddressDataFromDB(walletAddress: string) {
     largestBid: largestBidDetails,
     bidderHistory,
     domains,
-    dapps,
+    dapps: dapps.map((dapp) => ({
+      ...dapp,
+      url: `${socialUrls.get(dapp.type)}/${dapp.nickname}`,
+    })),
   };
 }
 
