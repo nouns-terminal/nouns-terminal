@@ -5867,10 +5867,10 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-modern-drawer@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/react-modern-drawer/-/react-modern-drawer-1.3.1.tgz#07db41bf5a45c7177b61e49c26e3950061c227ab"
-  integrity sha512-bT4KLgrnu98dL9NUpiHbg6dpp4zRH7M+VlS1zK6zCFgn6OLxjGEBRTf2ZYfVcibLGTkoRJxfD5l7zTqWtDLp+w==
+react-modern-drawer@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-modern-drawer/-/react-modern-drawer-1.4.0.tgz#2d616b3f6f45a214186c099dff0c0233f51c2ac2"
+  integrity sha512-5OkcUstqUdd/CNW9+BvLkzm36R2G54RFXWF2mWCH13cUsz5SNo9aB9KzPRbJp2LEVfRL/u+MgikOWRe7/6wKEQ==
 
 react-native-webview@^11.26.0:
   version "11.26.1"
