@@ -1,13 +1,12 @@
 import SiteHead from '../../components/SiteHead';
 import SiteHeader from '../../components/SiteHeader';
 import SiteFooter from '../../components/SiteFooter';
-import BidderProfileHeader from '../../components/BidderProfileHeader';
-import BidderProfileInfo from '../../components/BidderProfileInfo';
 import { Wallet } from '../../server/api/types';
 import { GetServerSideProps } from 'next';
 import getAddressData from '../../server/api/wallets';
 import Auction from '../../components/Auction';
 import { useState } from 'react';
+import BidderProfile from '../../components/BidderProfile';
 
 export default function BidderPage({
   bidderData,
@@ -41,23 +40,9 @@ export default function BidderPage({
       <SiteHeader />
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <div className="bidder-info">
-          <BidderProfileHeader
-            address={address}
-            details={bidderData.details}
-            balance={bidderData.balance}
-            nouns={bidderData.nouns}
-            domains={bidderData.domains}
-            dapps={bidderData.dapps}
-          />
-          <BidderProfileInfo
-            address={address}
-            wins={Number(bidderData.wins.count || 0)}
-            bidderHistory={bidderData.bidderHistory}
-            largestBid={bidderData.largestBid}
-            bio={bidderData.details.bio}
-          />
-          <div style={{ height: 'var(--s4)' }} />
+          <BidderProfile wallet={bidderData} />
         </div>
+        <div className="vertical-line" />
         <div className="auctions hide-on-mobile">
           {bidderData.bidderHistory && bidderData.bidderHistory.length > 0 ? (
             <>
@@ -69,18 +54,13 @@ export default function BidderPage({
                   }
                   return <Auction key={`bidder-auction-${index}`} auctionId={auction.auctionId} />;
                 })}
-              {bidderData.bidderHistory.length > limit ? (
-                <div className="footer-offset">
-                  <button
-                    data-umami-event="Load More"
-                    onClick={() => setLimit((limit) => limit + 4)}
-                  >
-                    Load More
-                  </button>
-                </div>
-              ) : (
-                <div style={{ height: 'var(--s4)' }} />
-              )}
+
+              <div className="footer-offset">
+                <button data-umami-event="Load More" onClick={() => setLimit((limit) => limit + 4)}>
+                  Load More
+                </button>
+              </div>
+              <div className="extra-space" />
             </>
           ) : (
             <div className="empty-section">Empty</div>
@@ -91,16 +71,17 @@ export default function BidderPage({
       <style jsx>{`
         .bidder-info {
           flex-grow: 1;
-          max-width: 500px;
+          max-width: 400px;
         }
         .auctions {
           flex-grow: 2;
           border-left: 1px solid var(--lines);
+          width: 70%;
         }
         .footer-offset {
           height: 10rem;
           padding: 0px var(--s1);
-          display: flex;
+          display: ${bidderData.bidderHistory.length > limit ? 'flex' : 'none'};
           flex-direction: column;
           align-items: center;
         }
@@ -120,6 +101,15 @@ export default function BidderPage({
           align-items: center;
           height: 100vh;
           color: var(--low-text);
+        }
+        .extra-space {
+          height: 5rem;
+          display: ${bidderData.bidderHistory.length > limit ? 'none' : 'block'};
+        }
+        .vertical-line {
+          width: 0.1px;
+          background-color: var(--lines);
+          height: 100vh;
         }
         @media only screen and (max-width: 600px) {
           .hide-on-mobile {
