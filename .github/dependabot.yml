@@ -67,7 +67,7 @@ updates:
          - '@vercel/*'
       additional-packages:
         patterns:
-         - '@next/bundle-analyzer'
+          - '@next/bundle-analyzer'
           - '@metamask/jazzicon'
           - 'winston'
           - 'zod'
