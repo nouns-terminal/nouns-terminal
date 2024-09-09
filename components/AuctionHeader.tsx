@@ -108,7 +108,7 @@ export default function AuctionHeader(props: Props) {
       <div
         className="image"
         onClick={() => {
-          props.onNounClick({ type: 'noun', id: props.noun?.id });
+          props.onNounClick({ type: 'noun', id: props.id });
         }}
       >
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}

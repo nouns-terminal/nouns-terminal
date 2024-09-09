@@ -14,7 +14,6 @@ export default function BidderProfileInfo({
   bidderHistory,
   address,
   largestBid,
-  balance,
   bio,
 }: {
   wins: number;
@@ -209,7 +208,7 @@ export default function BidderProfileInfo({
         .bio-link:hover {
           color: var(--bright-text);
         }
-        @media only screen and (max-width: 600px) {
+        @media only screen and (max-width: 1345px) {
           .hide-on-mobile {
             display: none;
           }
