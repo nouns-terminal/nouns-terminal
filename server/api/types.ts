@@ -98,9 +98,9 @@ export type AuctionData = {
 export type SlideOverContent =
   | {
       type: 'noun';
-      id?: number;
+      id: number;
     }
-  | { type: 'bidder'; address: string | null };
+  | { type: 'bidder'; address: string };
 
 export type PriceStat = {
   id: number;

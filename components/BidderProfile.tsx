@@ -1,33 +1,44 @@
 import React from 'react';
 import { trpc } from '../utils/trpc';
-import { Noun, BidderHistory } from '../server/api/types';
+import { Noun, BidderHistory, Wallet } from '../server/api/types';
 import BidderProfileHeader from './BidderProfileHeader';
 import BidderProfileInfo from './BidderProfileInfo';
 
-export default function BidderProfile({ address }: { address: string | null }) {
-  if (!address) {
+type Props = {
+  address?: string;
+  wallet?: Wallet;
+};
+
+export default function BidderProfile(props: Props) {
+  const walletDataTRPC = trpc.walletData.useQuery(
+    { address: props.address || '' },
+    {
+      enabled: !props.wallet,
+    },
+  );
+
+  const data = props.wallet || walletDataTRPC.data;
+
+  if (!data) {
     return null;
   }
-
-  const wallet = trpc.walletData.useQuery({ address: address });
 
   return (
     <>
       <BidderProfileHeader
-        address={address}
-        details={wallet.data?.details}
-        balance={wallet.data?.balance}
-        nouns={wallet.data?.nouns as Noun[]}
-        domains={wallet.data?.domains}
-        dapps={wallet.data?.dapps}
+        address={data.details.address}
+        details={data.details}
+        balance={data.balance}
+        nouns={data.nouns as Noun[]}
+        domains={data.domains}
+        dapps={data.dapps}
       />
       <BidderProfileInfo
-        wins={Number(wallet.data?.wins.count || 0)}
-        bidderHistory={wallet.data?.bidderHistory as BidderHistory[]}
-        address={address}
-        largestBid={wallet.data?.largestBid}
-        balance={wallet.data?.balance.eth}
-        bio={wallet.data?.details.bio}
+        wins={Number(data.wins.count)}
+        bidderHistory={data.bidderHistory as BidderHistory[]}
+        address={data.details.address}
+        largestBid={data.largestBid}
+        bio={data.details.bio}
       />
       <div style={{ height: 'var(--s4)' }} />
     </>

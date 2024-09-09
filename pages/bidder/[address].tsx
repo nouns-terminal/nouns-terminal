@@ -54,7 +54,6 @@ export default function BidderPage({
             wins={Number(bidderData.wins.count || 0)}
             bidderHistory={bidderData.bidderHistory}
             largestBid={bidderData.largestBid}
-            balance={bidderData.balance.eth}
             bio={bidderData.details.bio}
           />
           <div style={{ height: 'var(--s4)' }} />
