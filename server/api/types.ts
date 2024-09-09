@@ -78,6 +78,7 @@ export type Social = {
   type: string | null;
   nickname: string | null;
   followers: number | null;
+  url?: string;
 };
 
 export type NounProperty = {

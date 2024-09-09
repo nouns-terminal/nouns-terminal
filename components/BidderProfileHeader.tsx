@@ -36,6 +36,16 @@ export default function BidderProfileHeader({
       .map((domain) => domain.nickname) || []),
   ].join(' • ');
 
+  const dappsWithNounsSh = [
+    ...(dapps || []),
+    {
+      type: 'nouns.sh',
+      nickname: address,
+      followers: 0,
+      url: `${process.env.APP_URL}/bidder/${address}`,
+    },
+  ];
+
   return (
     <div style={{ backgroundColor: 'var(--dark-bg)' }}>
       <div className="content">
@@ -62,23 +72,18 @@ export default function BidderProfileHeader({
             </Text>
           </div>
           <div className="social-info">
-            {dapps && dapps.length > 0 && (
+            {
               <Text variant="headline" bold color="low-text">
-                {dapps.map((dapp, index) => (
+                {dappsWithNounsSh.map((dapp, index) => (
                   <span key={`dapp-${index}`}>
-                    <a
-                      href={`https://warpcast.com/${dapp.nickname}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="social-link"
-                    >
+                    <a href={dapp.url} target="_blank" rel="noreferrer" className="social-link">
                       {dapp.type}
                     </a>
-                    {index < dapps.length - 1 ? ' • ' : ''}
+                    {index < dappsWithNounsSh.length - 1 ? ' • ' : ''}
                   </span>
                 ))}
               </Text>
-            )}
+            }
           </div>
           <div className="dotted-hr" />
         </Stack>
