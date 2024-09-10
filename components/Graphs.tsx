@@ -4,10 +4,11 @@ import BidsCountGraph from './BidsCountGraph';
 import { GraphsData } from '../server/api/types';
 
 export default function Graphs({ stats }: { stats?: GraphsData }) {
+  const [period, setPeriod] = useState<string>('3m');
+
   if (!stats) {
     return null;
   }
-  const [period, setPeriod] = useState<string>('3m');
 
   return (
     <div className="container">
