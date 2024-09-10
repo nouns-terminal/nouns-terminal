@@ -61,14 +61,16 @@ updates:
           - 'wagmi'
       ui-packages:
         patterns:
-         - 'react-modern-drawer'
+          - 'react-modern-drawer'
+          - '@rainbow-me/rainbowkit'
+          - 'recharts'
+
       vercel:
         patterns:
-         - '@vercel/*'
+          - '@vercel/*'
       additional-packages:
         patterns:
           - '@next/bundle-analyzer'
           - '@metamask/jazzicon'
           - 'winston'
           - 'zod'
-          - '@rainbow-me/rainbowkit'
