@@ -17,7 +17,7 @@ const log = logger.child({ source: 'bidder' });
 const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
 const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
 const socialUrls = new Map<string | null, string>([
-  ['warpcast', 'https://warpcast.com/'],
+  ['farcaster', 'https://warpcast.com/'],
   [null, 'https://etherscan.io/address/'],
 ]);
 
@@ -73,7 +73,7 @@ async function getAddressDataFromDB(walletAddress: string) {
     domains,
     dapps: dapps.map((dapp) => ({
       ...dapp,
-      url: `${socialUrls.get(dapp.type)}/${dapp.nickname}`,
+      url: `${socialUrls.get(dapp.type)}${dapp.nickname}`,
     })),
   };
 }
