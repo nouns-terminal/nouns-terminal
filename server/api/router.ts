@@ -9,7 +9,8 @@ import EventEmitter from 'events';
 import { addressSchema, bytesSchema, logger } from '../utils';
 import getAddressData, { inserNewBio } from './wallets';
 import { verifyMessage } from '@wagmi/core';
-import { checkIsAuthor, config } from '../../utils/utils';
+import { checkIsAuthor } from '../../utils/utils';
+import { config } from '../../utils/rainbowConfig';
 import getStatsData from './stats';
 
 const log = logger.child({ source: 'router' });

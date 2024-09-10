@@ -11,7 +11,7 @@ import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
 import merge from 'lodash.merge';
 import Script from 'next/script';
-import { config } from '../utils/utils';
+import { config } from '../utils/rainbowConfig';
 
 const { publicRuntimeConfig } = getConfig();
 const { APP_URL } = publicRuntimeConfig;
