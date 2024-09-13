@@ -83,7 +83,10 @@ export default function BidsTable(props: Props) {
               style={{ opacity: bid === props.pendingBid ? 0.5 : 1 }}
             >
               <td>
-                <Icon address={bid.walletAddress} />
+                <div className="icon-cell">
+                  <Icon address={bid.walletAddress} />
+                  <ClientIdIcon clientId={bid.clientId || 0} />
+                </div>
               </td>
               <td>
                 <div className="address">
@@ -133,7 +136,6 @@ export default function BidsTable(props: Props) {
                         .replaceAll(' ', '\u00A0') // Replace spaces with unbreakeble spaces
                     : '-'}
                 </a>
-                <ClientIdIcon clientId={bid.clientId || 0} />
               </td>
             </tr>
           ))}
@@ -142,7 +144,8 @@ export default function BidsTable(props: Props) {
 
       <style jsx>{`
         .container {
-          overflow: auto;
+          overflow-x: auto;
+          overflow-y: clip;
         }
         table {
           width: 100%;
@@ -165,6 +168,11 @@ export default function BidsTable(props: Props) {
         }
         tr.hovered {
           background-color: rgba(255, 255, 255, 0.1);
+        }
+        .icon-cell {
+          width: 24px;
+          height: 24px;
+          position: relative;
         }
         .icon-placeholder {
           width: 24px;

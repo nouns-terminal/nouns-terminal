@@ -79,46 +79,46 @@ export function ClientIdIcon({ clientId }: { clientId: number }) {
         `https://opensea.io/assets/ethereum/0x883860178f95d0c82413edc1d6de530cb4771d55/${clientId}`
       }
       className="client-id-link"
+      title={
+        client.name ||
+        `This bid was placed by client id: ${clientId}. Click on the icon for more information.`
+      }
     >
-      <span
-        title={
-          client.name ||
-          `This bid was placed by client id: ${clientId}. Click on the icon for more information.`
-        }
-        className="client-id-icon"
-      >
-        {client.icon ? (
-          <img src={client.icon} alt={client.name || `Client ${clientId}`} width={'12px'} />
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            width={13}
-            height={13}
-            strokeWidth={1.5}
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-            />
-          </svg>
-        )}
-      </span>
-      {/* TODO: rewrite */}
+      {client.icon ? (
+        <img src={client.icon} alt={client.name || `Client ${clientId}`} width={'12px'} />
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          width={13}
+          height={13}
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="client-id-icon"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+          />
+        </svg>
+      )}
+
       <style jsx>{`
-        .client-id-icon {
-          position: relative;
-          top: 2px;
-          margin-left: var(--s-1);
-        }
         .client-id-icon:hover {
           color: var(--yellow);
         }
         .client-id-link {
-          visibility: ${client.id === 0 ? 'hidden' : 'visible'}; // Hide the link but keep the space
+          position: absolute;
+          bottom: -4px;
+          right: -4px;
+          background: black;
+          border: solid 2px black;
+          border-radius: 4px;
+          width: 16px;
+          height: 16px;
+          display: ${client.id === 0 ? 'none' : 'block'}; // Hide the link but keep the space
         }
       `}</style>
     </a>
