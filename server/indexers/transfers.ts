@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { ContractEventPayload, ethers } from 'ethers';
 import { NounsToken__factory } from '../../typechain';
-import { logger } from '../utils';
+import { forever, logger } from '../utils';
 import { Pool } from 'pg';
 import {
   getTransferLastQueriedBlock,
@@ -33,12 +33,13 @@ export default async function transfers(
     }
   }
 
+  let liveLogs = [] as NounsTokenEventLog[];
   nouns.on(nouns.filters.Transfer(), (...args) => {
     // Ethers: the first N arguments are event args verbatim
     // The event object we care about is the last argument
     const payload = args[args.length - 1] as unknown as ContractEventPayload;
 
-    maybeProcessEvent(payload.log as unknown as NounsTokenEventLog);
+    liveLogs.push(payload.log as unknown as NounsTokenEventLog);
   });
 
   const result = await getTransferLastQueriedBlock.run(undefined, connection);
@@ -77,9 +78,20 @@ export default async function transfers(
     await setTransferLastQueriedBlock.run({ lastBlockNumber }, connection);
   }
 
-  // Wait forever, otherwise the connection is released and the event handlers
-  // won't be able to run SQL
-  await new Promise((resolve) => {});
+  await forever(
+    async () => {
+      const toProcess = liveLogs.sort((a, b) => a.blockNumber - b.blockNumber || a.index - b.index);
+      liveLogs = [];
+
+      for (const log of toProcess) {
+        await maybeProcessEvent(log);
+      }
+
+      return liveLogs.length > 0;
+    },
+    log,
+    60_000,
+  );
 }
 
 async function processEvent(connection: Pool, eventLog: NounsTokenEventLog) {
