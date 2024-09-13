@@ -50,7 +50,7 @@ export default async function auction(
   async function maybeProcessEvent(event: AuctionHouseEventLog) {
     try {
       log.debug('Processing event %s', event.eventName, { event });
-      processEvent(connection, event);
+      await processEvent(connection, event);
     } catch (error) {
       log.error(error);
     }

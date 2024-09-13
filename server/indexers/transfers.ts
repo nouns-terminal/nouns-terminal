@@ -27,7 +27,7 @@ export default async function transfers(
   async function maybeProcessEvent(event: NounsTokenEventLog) {
     try {
       log.debug('Processing event %s', event.eventName, { event });
-      processEvent(connection, event);
+      await processEvent(connection, event);
     } catch (error) {
       log.error(error);
     }
