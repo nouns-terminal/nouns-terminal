@@ -31,7 +31,7 @@ export default function AvaragePriceGraph({
     .sort((a, b) => a.id - b.id);
 
   return (
-    <div style={{ height: 200, width: 500 }}>
+    <div className="composedChartContainer">
       <span style={{ color: 'var(--mid-text)' }}>#PRICES</span>
       <ResponsiveContainer>
         <ComposedChart data={data} margin={{ top: 30, right: 0, bottom: 30, left: 0 }}>
@@ -66,6 +66,22 @@ export default function AvaragePriceGraph({
           />
         </ComposedChart>
       </ResponsiveContainer>
+      <style jsx>{`
+        .composedChartContainer {
+          height: 200px;
+          width: 1000px;
+        }
+        @media only screen and (max-width: 600px) {
+          .composedChartContainer {
+            width: 350px;
+          }
+        }
+        @media only screen and (min-width: 600px) and (max-width: 1100px) {
+          .composedChartContainer {
+            width: 550px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
