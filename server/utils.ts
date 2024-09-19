@@ -38,6 +38,21 @@ export async function sleep(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function checkIsAuthor(bidder: string, author?: string) {
+  if (!author) {
+    return false;
+  }
+
+  bidder = bidder.toLocaleLowerCase();
+  author = author.toLocaleLowerCase();
+
+  const authors = process.env.AUTHORS?.toLocaleLowerCase();
+  if (bidder === author) {
+    return true;
+  }
+  return authors?.indexOf(author) != -1 ? true : false;
+}
+
 export const logger = createLogger({
   level: process.env.LOG_LEVEL || 'info',
   transports: [

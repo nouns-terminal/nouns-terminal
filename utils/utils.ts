@@ -3,21 +3,6 @@ import { ImageData, getNounData } from '@nouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
 import { Noun } from '../server/api/types';
 
-export function checkIsAuthor(bidder: string, author?: string) {
-  if (!author) {
-    return false;
-  }
-
-  bidder = bidder.toLocaleLowerCase();
-  author = author.toLocaleLowerCase();
-
-  const authors = process.env.AUTHORS?.toLocaleLowerCase();
-  if (bidder === author) {
-    return true;
-  }
-  return authors?.indexOf(author) != -1 ? true : false;
-}
-
 export function formatBidValue(value: bigint) {
   const s = formatEther(value);
   if (s.includes('.')) {

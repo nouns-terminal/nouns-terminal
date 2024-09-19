@@ -6,10 +6,9 @@ import { AuctionData } from '../api/types';
 import { liveVitals } from './vitals';
 import { observable } from '@trpc/server/observable';
 import EventEmitter from 'events';
-import { addressSchema, bytesSchema, logger } from '../utils';
+import { addressSchema, bytesSchema, checkIsAuthor, logger } from '../utils';
 import getAddressData, { inserNewBio } from './wallets';
 import { verifyMessage } from '@wagmi/core';
-import { checkIsAuthor } from '../../utils/utils';
 import { config } from '../../utils/rainbowConfig';
 import getStatsData from './stats';
 
@@ -38,6 +37,7 @@ export const appRouter = router({
         });
       });
     }),
+
   vitals: publicProcedure.input(z.string().nullish()).subscription(() => {
     return observable<Vitals>((emit) => {
       return liveVitals.subscribe((data) => {
@@ -45,6 +45,7 @@ export const appRouter = router({
       });
     });
   }),
+
   online: publicProcedure
     .input(
       z.object({
@@ -83,6 +84,7 @@ export const appRouter = router({
         };
       });
     }),
+
   walletData: publicProcedure
     .input(
       z.object({
@@ -90,6 +92,18 @@ export const appRouter = router({
       }),
     )
     .query(async ({ input }) => getAddressData(input.address)),
+
+  isAuthor: publicProcedure
+    .input(
+      z.object({
+        bidder: addressSchema,
+        address: addressSchema.optional(),
+      }),
+    )
+    .query(({ input }) => {
+      return checkIsAuthor(input.bidder, input.address);
+    }),
+
   insertBio: publicProcedure
     .input(
       z.object({
@@ -127,6 +141,7 @@ export const appRouter = router({
         input.author.toLocaleLowerCase(),
       );
     }),
+
   statsData: publicProcedure.query(async () => getStatsData()),
 });
 

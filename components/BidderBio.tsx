@@ -3,17 +3,16 @@ import Text, { textStyle } from './Text';
 import { WalletDetails } from '../server/api/types';
 import { useAccount, useSignMessage } from 'wagmi';
 import { trpc } from '../utils/trpc';
-import { formatAddress, checkIsAuthor } from '../utils/utils';
+import { formatAddress } from '../utils/utils';
 
 export default function BidderBio({ bidder }: { bidder: WalletDetails }) {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
   const mutation = trpc.insertBio.useMutation();
+  const isAuthor = trpc.isAuthor.useQuery({ bidder: bidder.address, address });
 
   const [bio, setBio] = useState(bidder.bio || '');
-
-  const isAuthor = checkIsAuthor(bidder.address, address);
 
   const signAction = async () => {
     if (address) {
