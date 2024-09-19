@@ -8,6 +8,7 @@ import { useAccount } from 'wagmi';
 import SlideOver from './SlideOver';
 import NounInfo from './NounInfo';
 import BidderProfile from './BidderProfile';
+import Menu from './Menu';
 
 export default function Auction({
   auctionId,
@@ -44,17 +45,16 @@ export default function Auction({
   return (
     <>
       <SlideOver isOpen={!!slideOver} onClose={() => setSlideOver(null)}>
-        {slideOver &&
-          (slideOver.type === 'noun' ? (
-            <NounInfo
-              noun={data.noun}
-              nounProperties={data.nounProperties}
-              owner={data.noun?.owner || ''}
-              winner={data.auction.winner || ''}
-            />
-          ) : (
-            <BidderProfile address={slideOver.address} />
-          ))}
+        {slideOver && slideOver.type === 'noun' ? (
+          <NounInfo
+            noun={data.noun}
+            nounProperties={data.nounProperties}
+            owner={data.noun?.owner || ''}
+            winner={data.auction.winner || ''}
+          />
+        ) : slideOver && slideOver.type === 'bidder' ? (
+          <BidderProfile address={slideOver.address} />
+        ) : null}
       </SlideOver>
       <div className="auction">
         <AuctionHeader

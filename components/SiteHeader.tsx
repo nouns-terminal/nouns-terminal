@@ -4,81 +4,97 @@ import Text, { textStyle } from './Text';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Icon } from './BidsTable';
 import { useEffect, useState } from 'react';
+import SlideOver from './SlideOver';
+import { SlideOverContent } from '../server/api/types';
+import Menu from './Menu';
+import { MenuIcon } from './Icons';
 
 export default function SiteHeader() {
+  const [slideOver, setSlideOver] = useState<SlideOverContent | null>(null);
   return (
-    <div className="container">
-      <Text variant="title-1" bold color="yellow">
-        <Link href="/">nouns.sh</Link>
-      </Text>
-      <Text variant="title-3" bold>
-        <ConnectButton.Custom>
-          {({
-            account,
-            chain,
-            openAccountModal,
-            openChainModal,
-            openConnectModal,
-            authenticationStatus,
-            mounted,
-          }) => {
-            const ready = mounted && authenticationStatus !== 'loading';
-            const isConnected =
-              ready &&
-              account &&
-              chain &&
-              (!authenticationStatus || authenticationStatus === 'authenticated');
-            return (
-              <div
-                {...(!ready && {
-                  'aria-hidden': true,
-                  style: {
-                    opacity: 0,
-                    pointerEvents: 'none',
-                    userSelect: 'none',
-                  },
-                })}
-              >
-                {(() => {
-                  if (!isConnected) {
-                    return (
-                      <button
-                        data-umami-event="Connect Wallet"
-                        className="connect-wallet"
-                        onClick={openConnectModal}
-                        type="button"
-                      >
-                        Connect&nbsp;Wallet
-                      </button>
-                    );
-                  }
+    <>
+      <SlideOver isOpen={!!slideOver} onClose={() => setSlideOver(null)} direction="left">
+        {slideOver && slideOver.type === 'menu' ? <Menu /> : null}
+      </SlideOver>
+      <div className="container">
+        <Text variant="title-1" bold color="yellow">
+          <span
+            onClick={() => setSlideOver({ type: 'menu' })}
+            style={{ marginRight: '0.4rem', cursor: 'pointer' }}
+          >
+            <MenuIcon />
+          </span>
+          <Link href="/">nouns.sh</Link>
+        </Text>
+        <Text variant="title-3" bold>
+          <ConnectButton.Custom>
+            {({
+              account,
+              chain,
+              openAccountModal,
+              openChainModal,
+              openConnectModal,
+              authenticationStatus,
+              mounted,
+            }) => {
+              const ready = mounted && authenticationStatus !== 'loading';
+              const isConnected =
+                ready &&
+                account &&
+                chain &&
+                (!authenticationStatus || authenticationStatus === 'authenticated');
+              return (
+                <div
+                  {...(!ready && {
+                    'aria-hidden': true,
+                    style: {
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!isConnected) {
+                      return (
+                        <button
+                          data-umami-event="Connect Wallet"
+                          className="connect-wallet"
+                          onClick={openConnectModal}
+                          type="button"
+                        >
+                          Connect&nbsp;Wallet
+                        </button>
+                      );
+                    }
 
-                  return (
-                    <div className="account">
-                      <button
-                        onClick={chain.unsupported ? openChainModal : openAccountModal}
-                        type="button"
-                      >
-                        {account && <Icon address={account.address} />}
-                        <Text variant="title-3" bold>
-                          <div className="ens">
-                            <ENSCache
-                              key={account.address}
-                              address={account.address}
-                              ens={account.ensName}
-                            />
-                          </div>
-                        </Text>
-                        <Chevron />
-                      </button>
-                    </div>
-                  );
-                })()}
-              </div>
-            );
-          }}
-        </ConnectButton.Custom>
-      </Text>
+                    return (
+                      <div className="account">
+                        <button
+                          onClick={chain.unsupported ? openChainModal : openAccountModal}
+                          type="button"
+                        >
+                          {account && <Icon address={account.address} />}
+                          <Text variant="title-3" bold>
+                            <div className="ens">
+                              <ENSCache
+                                key={account.address}
+                                address={account.address}
+                                ens={account.ensName}
+                              />
+                            </div>
+                          </Text>
+                          <Chevron />
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
+        </Text>
+      </div>
       <style jsx>{`
         .container {
           display: flex;
@@ -126,7 +142,7 @@ export default function SiteHeader() {
           background-color: var(--light-red);
         }
       `}</style>
-    </div>
+    </>
   );
 }
 

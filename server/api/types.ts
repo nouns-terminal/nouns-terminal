@@ -100,7 +100,8 @@ export type SlideOverContent =
       type: 'noun';
       id: number;
     }
-  | { type: 'bidder'; address: string };
+  | { type: 'bidder'; address: string }
+  | { type: 'menu' };
 
 export type PriceStat = {
   id: number;
