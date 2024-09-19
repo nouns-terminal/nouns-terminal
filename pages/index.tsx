@@ -4,6 +4,7 @@ import Auction from '../components/Auction';
 import SiteFooter from '../components/SiteFooter';
 import SiteHeader from '../components/SiteHeader';
 import SiteHead from '../components/SiteHead';
+import Graphs from '../components/Graphs';
 
 const Home: NextPage = () => {
   const [limit, setLimit] = useState(4);
@@ -14,6 +15,7 @@ const Home: NextPage = () => {
       <SiteHeader />
       <SiteFooter />
       <Auction />
+      <Graphs />
       {new Array(limit - 1).fill(0).map((_, idx) => (
         <Auction key={`auction-${idx}`} auctionId={-1 - idx} />
       ))}
