@@ -42,7 +42,12 @@ async function ensureDatabaseExists(databaseUrl: string) {
   await pool.end();
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main()
+  .then(() => {
+    console.log('Migrations complete');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
