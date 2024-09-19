@@ -1,0 +1,24 @@
+name: Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@main
+      - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u $ --password-stdin
+      - run: docker build -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}":latest -t "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}":$GITHUB_SHA .
+      - run: docker image push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}":$GITHUB_SHA
+      - run: docker image push "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}":latest

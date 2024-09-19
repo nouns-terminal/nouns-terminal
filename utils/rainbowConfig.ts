@@ -8,7 +8,7 @@ export const config = getDefaultConfig({
     [mainnet.id]: http(process.env.PROVIDER_URL!),
   },
 
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? 'todotodotodotodotodotodotodotodo',
 
   // Required App Info
   appName: 'Nouns Terminal',
