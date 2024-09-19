@@ -55,6 +55,11 @@ export default function AuctionHeader(props: Props) {
   const { switchChainAsync } = useSwitchChain();
   const write = useWriteContract({});
   const setAddress = useSetAtom(hoveredAddress);
+  const [owner, setOwner] = useState<{ ens: string | null; address: string }>({
+    ens: props.winner.ens,
+    address: props.winner.address,
+  });
+  const [activeSpan, setActiveSpan] = useState('winner');
 
   const bidMutation = useMutation({
     mutationFn: async (bid: bigint) => {
@@ -113,83 +118,88 @@ export default function AuctionHeader(props: Props) {
       >
         {svgBase64 && <img alt={`Noun ${props.id}`} src={svgBase64} width="100%" height="100%" />}
       </div>
-      <Stack direction="column" gap={-1}>
-        <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
-          <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
-        </Text>
-        <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
-          <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
-            <span data-testid="noun-id">Noun {props.id}</span>
+      <Stack direction="column" gap={1}>
+        <Stack direction="column" gap={-1}>
+          <Text variant="title-3" color={props.ended ? 'low-text' : 'mid-text'}>
+            <span suppressHydrationWarning>{new Date(props.startTime * 1000).toDateString()}</span>
           </Text>
-        </a>
-      </Stack>
-      <Stack direction="column" gap={-1}>
-        <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-          {props.ended ? 'Winning Bid' : 'Current bid'}
-        </Text>
-        <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
-          {props.maxBid ? `Ξ${formatBidValue(BigInt(props.maxBid))}` : '—'}
-        </Text>
-      </Stack>
-      {props.ended ? (
-        <>
+          <a target="_blank" rel="noreferrer" href={`/noun/${props.id}`}>
+            <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'yellow'}>
+              <span data-testid="noun-id">Noun {props.id}</span>
+            </Text>
+          </a>
+        </Stack>
+        <Stack direction="column" gap={-1}>
+          <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+            {props.ended ? 'Winning Bid' : 'Current bid'}
+          </Text>
+          <Text variant="title-1" bold color={props.ended ? 'mid-text' : 'bright-text'}>
+            {props.maxBid ? `Ξ${formatBidValue(BigInt(props.maxBid))}` : '—'}
+          </Text>
+        </Stack>
+        {props.ended ? (
           <Stack direction="column" gap={-1}>
             <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-              Won By
+              {props.owner.address && props.owner.address !== props.winner.address ? (
+                <>
+                  <span
+                    onClick={() => {
+                      setOwner({ ens: props.winner.ens, address: props.winner.address });
+                      setActiveSpan('winner');
+                    }}
+                    className={`owner ${activeSpan === 'winner' ? 'selected' : ''}`}
+                  >
+                    Won By
+                  </span>{' '}
+                  |{' '}
+                  <span
+                    onClick={() => {
+                      setOwner({ ens: props.owner.ens, address: props.owner.address });
+                      setActiveSpan('owner');
+                    }}
+                    className={`owner ${activeSpan === 'owner' ? 'selected' : ''}`}
+                  >
+                    Owned By
+                  </span>
+                </>
+              ) : (
+                'Won By'
+              )}
             </Text>
             <Text variant="title-1" bold color="mid-text">
               <div
                 className="address"
-                onMouseEnter={() => setAddress(props.winner.address || '')}
+                onMouseEnter={() => setAddress(owner.address || '')}
                 onMouseLeave={() => setAddress('')}
                 onClick={() => {
-                  props.onBidderClick({ type: 'bidder', address: props.winner.address });
+                  props.onBidderClick({ type: 'bidder', address: owner.address });
                 }}
               >
-                {props.winner.ens || props.winner.address}
+                {owner.ens || owner.address}
               </div>
             </Text>
           </Stack>
-          {props.owner.address && props.owner.address !== props.winner.address && (
-            <Stack direction="column" gap={-1}>
-              <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-                Current Owner
-              </Text>
-              <Text variant="title-1" bold color="mid-text">
-                <div
-                  className="address"
-                  onMouseEnter={() => setAddress(props.owner.address || '')}
-                  onMouseLeave={() => setAddress('')}
-                  onClick={() => {
-                    props.onBidderClick({ type: 'bidder', address: props.owner.address });
-                  }}
-                >
-                  {props.owner.ens || props.owner.address}
-                </div>
-              </Text>
-            </Stack>
-          )}
-        </>
-      ) : (
-        <Stack direction="column" gap={-1}>
-          <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-            End in
-          </Text>
-          <Text variant="title-1" bold color="bright-text">
-            <Countdown to={props.endTime * 1000} />
-          </Text>
-        </Stack>
-      )}
-      {!props.ended && isConnected && (
-        <ClientOnly>
-          <div style={{ flex: 1 }} />
-          <Bidding
-            currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
-            onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
-            isLoading={bidMutation.isPending}
-          />
-        </ClientOnly>
-      )}
+        ) : (
+          <Stack direction="column" gap={-1}>
+            <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+              End in
+            </Text>
+            <Text variant="title-1" bold color="bright-text">
+              <Countdown to={props.endTime * 1000} />
+            </Text>
+          </Stack>
+        )}
+        {!props.ended && isConnected && (
+          <ClientOnly>
+            <div style={{ flex: 1 }} />
+            <Bidding
+              currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
+              onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
+              isLoading={bidMutation.isPending}
+            />
+          </ClientOnly>
+        )}
+      </Stack>
       <style jsx>{`
         .address {
           max-width: 42ch;
@@ -199,16 +209,27 @@ export default function AuctionHeader(props: Props) {
           cursor: pointer;
         }
         .image {
-          width: 2.8rem;
+          width: 150px;
           background-color: #d5d7e1;
           cursor: pointer;
         }
-        @media only screen and (max-width: 950px) {
+        .selected {
+          color: var(--yellow);
+        }
+        .owner {
+          cursor: pointer;
+        }
+        @media only screen and (max-width: 600px) {
           .address {
-            max-width: 20ch;
+            max-width: 12ch;
           }
         }
-        @media only screen and (min-width: 950px) and (max-width: 1200px) {
+        @media only screen and (min-width: 600px) and (max-width: 660px) {
+          .address {
+            max-width: 25ch;
+          }
+        }
+        @media only screen and (min-width: 660px) and (max-width: 1000px) {
           .address {
             max-width: 35ch;
           }
