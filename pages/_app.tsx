@@ -7,14 +7,10 @@ import { withTRPC } from '@trpc/next';
 import { type AppRouter } from '../server/api/router';
 import { createWSClient, wsLink } from '@trpc/client/links/wsLink';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
-import getConfig from 'next/config';
 import LiveStatus from '../components/LiveStatus';
 import merge from 'lodash.merge';
 import Script from 'next/script';
 import { config } from '../utils/rainbowConfig';
-
-const { publicRuntimeConfig } = getConfig();
-const { APP_URL } = publicRuntimeConfig;
 
 declare module 'wagmi' {
   interface Register {
@@ -57,6 +53,11 @@ function getBaseUrl() {
   if (typeof window !== 'undefined') {
     return window.location.origin;
   }
+
+  if (process.env.APP_URL) {
+    return process.env.APP_URL;
+  }
+
   // reference for vercel.com
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
@@ -76,7 +77,7 @@ export let latestWebSocket: WebSocket | null = null;
 function getEndingLink() {
   if (typeof window === 'undefined') {
     return httpBatchLink({
-      url: `${APP_URL}/api/trpc`,
+      url: `${getBaseUrl()}/api/trpc`,
     });
   }
 
