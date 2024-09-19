@@ -1,4 +1,4 @@
-import { ethers, parseEther } from 'ethers';
+import { ethers, FallbackProvider, parseEther } from 'ethers';
 import EventEmitter from 'events';
 import { logger, sleep } from '../utils';
 import { Vitals } from './types';
@@ -9,7 +9,13 @@ import { NounsDAO__factory } from '../../typechain';
 import serverEnv from '../serverEnv';
 
 const log = logger.child({ source: 'live-query' });
-const provider = new RetryProvider(5, serverEnv.PROVIDER_URL!);
+const provider = new FallbackProvider(
+  serverEnv.PROVIDER_URL.map((url, index) => ({
+    provider: new RetryProvider(5, url),
+    priority: index + 1,
+    stallTimeout: 1000,
+  })),
+);
 
 async function fetchEtherPrice() {
   const response = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=ETH');
