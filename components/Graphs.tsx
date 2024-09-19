@@ -75,6 +75,17 @@ export default function Graphs() {
         .period_button_selected {
           color: var(--bright-text);
         }
+        .period_button {
+          padding: 0 var(--s-2);
+        }
+
+        .period_button:first-child {
+          padding-left: 0;
+        }
+
+        .period_button:last-child {
+          padding-right: 0;
+        }
         .graphContainer {
           width: 100%;
           padding: var(--s0) var(--s0) var(--s2) var(--s0);
