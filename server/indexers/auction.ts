@@ -19,6 +19,7 @@ import {
   updateAuctionSettled,
   updateAuctionBidWithClientId,
 } from '../db/queries';
+import serverEnv from '../serverEnv';
 
 type AuctionHouseEventLog =
   | AuctionCreatedEvent.Log
@@ -28,8 +29,6 @@ type AuctionHouseEventLog =
   | AuctionBidWithClientIdEvent.Log;
 
 const log = logger.child({ indexer: 'auction' });
-
-const genesisBlock = Number(process.env.GENESIS_BLOCK || '12985450'); // 12985450 - Nouns Deployment -1
 
 export default async function auction(
   auctionAddress: string,
@@ -71,7 +70,7 @@ export default async function auction(
   const result = await getAuctionLastQueriedBlock.run(undefined, connection);
 
   const currentBlockNumber = await provider.getBlockNumber();
-  const lastQueriedBlock = result[0]?.value || genesisBlock;
+  const lastQueriedBlock = result[0]?.value || serverEnv.GENESIS_BLOCK;
   let lastBlockNumber = lastQueriedBlock;
 
   log.debug('Loaded state', { lastQueriedBlock });

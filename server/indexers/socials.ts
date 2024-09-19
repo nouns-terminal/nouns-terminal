@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { forever, logger } from '../utils';
 import { getLastAuctionUnindexedWalletsSocials, setAddressSocials } from '../db/queries';
 import { Pool } from 'pg';
+import serverEnv from '../serverEnv';
 
 interface QueryResponse {
   data: Data;
@@ -28,19 +29,19 @@ type Domain = {
 };
 
 const AIRSTACK_API_URL = 'https://api.airstack.xyz/graphql';
-const AIRSTACK_API_KEY = process.env.AIRSTACK_API_KEY;
+const AIRSTACK_API_KEY = serverEnv.AIRSTACK_API_KEY;
 
 const log = logger.child({ indexer: 'socials' });
 
 export default async function socials(connection: Pool) {
+  if (!AIRSTACK_API_KEY) {
+    log.warn('No AIRSTACK_API_KEY provided, will not index social accounts for bidders');
+    return;
+  }
+
   log.info('Starting');
 
   async function process() {
-    if (!AIRSTACK_API_KEY) {
-      log.error('No AIRSTACK_API_KEY provided');
-      return false;
-    }
-
     const wallets = await getLastAuctionUnindexedWalletsSocials.run({ limit: 100 }, connection);
 
     log.debug(`Rows: ${wallets.length}`, { rows: wallets });
@@ -130,8 +131,8 @@ async function fetchAddressSocials(address: string) {
     const json = (await res?.json()) as QueryResponse;
     const data = json?.data;
     return { address, ...data };
-  } catch (e) {
-    log.warn('No AIRSTACK_API_KEY provided, will not index social accounts for bidders');
+  } catch (error) {
+    log.warn('Airstack request failed', { error });
     return null;
   }
 }

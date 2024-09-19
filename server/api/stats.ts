@@ -1,9 +1,10 @@
 import { logger } from '../utils';
 import { Pool } from 'pg';
 import { getPriceStats, getBidsStats } from '../db/queries';
+import serverEnv from '../serverEnv';
 
 const log = logger.child({ source: 'stats' });
-const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pgPool = new Pool({ connectionString: serverEnv.DATABASE_URL });
 const days = getDays();
 
 async function getPrices() {

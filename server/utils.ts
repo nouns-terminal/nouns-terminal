@@ -4,6 +4,7 @@ import { hostname } from 'os';
 import qs from 'qs';
 import { getAddress } from 'viem';
 import { z } from 'zod';
+import serverEnv from './serverEnv';
 
 export async function forever(process: () => Promise<boolean>, log: Logger, delay?: number) {
   while (true) {
@@ -46,15 +47,15 @@ export function checkIsAuthor(bidder: string, author?: string) {
   bidder = bidder.toLocaleLowerCase();
   author = author.toLocaleLowerCase();
 
-  const authors = process.env.AUTHORS?.toLocaleLowerCase();
   if (bidder === author) {
     return true;
   }
-  return authors?.indexOf(author) != -1 ? true : false;
+
+  return serverEnv.AUTHORS.includes(author);
 }
 
 export const logger = createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  level: serverEnv.LOG_LEVEL,
   transports: [
     new transports.Console({
       format: format.combine(format.colorize(), format.simple()),
@@ -70,7 +71,7 @@ export const logger = createLogger({
   ),
 });
 
-const { DATADOG_API_KEY } = process.env;
+const { DATADOG_API_KEY } = serverEnv;
 
 if (DATADOG_API_KEY) {
   const params = qs.stringify({

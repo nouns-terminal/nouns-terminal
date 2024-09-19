@@ -18,13 +18,14 @@ import { getLatestAuction } from './db/queries';
 import balances from './indexers/balances';
 import transfers from './indexers/transfers';
 import socials from './indexers/socials';
+import serverEnv from './serverEnv';
 
 async function main() {
-  const port = parseInt(process.env.PORT || '3003', 10);
-  const provider = new RetryProvider(10, process.env.PROVIDER_URL);
+  const port = serverEnv.PORT;
+  const provider = new RetryProvider(10, serverEnv.PROVIDER_URL);
 
   const app = express();
-  const nextjs = next({ dev: process.env.NODE_ENV !== 'production' });
+  const nextjs = next({ dev: serverEnv.NODE_ENV !== 'production' });
   const nextHandle = nextjs.getRequestHandler();
   const nextUpgrade = nextjs.getUpgradeHandler();
 
@@ -34,7 +35,7 @@ async function main() {
   const server = http.createServer(app);
   const httpLogger = logger.child({ service: 'http' });
 
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ connectionString: serverEnv.DATABASE_URL });
   pool.on('connect', () => logger.info('Connected to the database'));
   pool.on('error', (error) => logger.error(error));
 
@@ -73,7 +74,7 @@ async function main() {
   await new Promise((resolve) => server.listen(port, () => resolve(undefined)));
 
   logger.info('Server listening at http://localhost:%s', port, {
-    env: process.env.NODE_ENV || 'development',
+    NODE_ENV: serverEnv.NODE_ENV,
   });
 
   await Promise.all([

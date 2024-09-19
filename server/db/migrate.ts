@@ -4,12 +4,17 @@ import { join } from 'path';
 import { Client, Pool } from 'pg';
 
 async function main() {
+  const { DATABASE_URL } = process.env;
+  if (!DATABASE_URL) {
+    throw new Error('DATABASE_URL is required');
+  }
+
   const migrations = await readFile(join(__dirname, 'migrations.sql'), 'utf-8');
-  await ensureDatabaseExists(process.env.DATABASE_URL!);
+  await ensureDatabaseExists(DATABASE_URL);
 
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ connectionString: DATABASE_URL });
 
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = new Client({ connectionString: DATABASE_URL });
   client.on('notice', (notice) => console.log('NOTICE:', notice.message));
   await client.connect();
 

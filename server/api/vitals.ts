@@ -6,9 +6,10 @@ import deepEqual from 'deep-equal';
 import RetryProvider from '../RetryProvider';
 import { NOUNS_DAO_ADDRESS, NOUNS_TREASURY_ADDRESS } from '../../utils/constants';
 import { NounsDAO__factory } from '../../typechain';
+import serverEnv from '../serverEnv';
 
 const log = logger.child({ source: 'live-query' });
-const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
+const provider = new RetryProvider(5, serverEnv.PROVIDER_URL!);
 
 async function fetchEtherPrice() {
   const response = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=ETH');

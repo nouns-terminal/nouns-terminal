@@ -9,12 +9,11 @@ import {
   updateNounOwner,
 } from '../db/queries';
 import { TransferEvent } from '../../typechain/NounsToken';
+import serverEnv from '../serverEnv';
 
 type NounsTokenEventLog = TransferEvent.Log;
 
 const log = logger.child({ indexer: 'transfer' });
-
-const genesisBlock = Number(process.env.GENESIS_BLOCK || '12985450'); // 12985450 - Nouns Deployment -1
 
 export default async function transfers(
   nounAddress: string,
@@ -45,7 +44,7 @@ export default async function transfers(
   const result = await getTransferLastQueriedBlock.run(undefined, connection);
 
   const currentBlockNumber = await provider.getBlockNumber();
-  const lastQueriedBlock = result[0]?.value || genesisBlock;
+  const lastQueriedBlock = result[0]?.value || serverEnv.GENESIS_BLOCK;
   let lastBlockNumber = lastQueriedBlock;
 
   log.debug('Loaded state', { lastQueriedBlock });

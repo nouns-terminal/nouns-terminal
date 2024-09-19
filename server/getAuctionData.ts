@@ -9,9 +9,10 @@ import {
   getWalletsByAuctionId,
 } from './db/queries';
 import { AuctionData, Bid } from './api/types';
+import serverEnv from './serverEnv';
 
 const liveCache = new Map();
-const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pgPool = new Pool({ connectionString: serverEnv.DATABASE_URL });
 
 export function getLiveAuctionData(id?: number | null): LiveQuery<AuctionData> {
   if (!liveCache.has(id)) {

@@ -12,10 +12,11 @@ import {
   insertWalletBio,
 } from '../db/queries';
 import { Noun } from './types';
+import serverEnv from '../serverEnv';
 
 const log = logger.child({ source: 'bidder' });
-const provider = new RetryProvider(5, process.env.PROVIDER_URL!);
-const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const provider = new RetryProvider(5, serverEnv.PROVIDER_URL!);
+const pgPool = new Pool({ connectionString: serverEnv.DATABASE_URL });
 const socialUrls = new Map<string | null, string>([
   ['farcaster', 'https://warpcast.com/'],
   [null, 'https://etherscan.io/address/'],
