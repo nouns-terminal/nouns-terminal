@@ -286,3 +286,16 @@ BEGIN
     END IF;
 END
 $$;
+
+DO $$
+DECLARE
+    migration_version INT := 13;
+    migration_comment TEXT := 'Add noun nickname column';
+BEGIN
+    IF (SELECT MAX(version) FROM migrations) < migration_version THEN
+        RAISE NOTICE '%', migration_comment;
+        ALTER TABLE "public"."noun" ADD COLUMN "nickname" text;
+        INSERT INTO migrations (version, comment) VALUES (migration_version, migration_comment);
+    END IF;
+END
+$$;
