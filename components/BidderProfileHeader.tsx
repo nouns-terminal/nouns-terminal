@@ -42,7 +42,7 @@ export default function BidderProfileHeader({
       type: 'nouns.sh',
       nickname: address,
       followers: 0,
-      url: `${process.env.APP_URL}/bidder/${address}`,
+      url: `https://nouns.sh/bidder/${address}`,
     },
   ];
 

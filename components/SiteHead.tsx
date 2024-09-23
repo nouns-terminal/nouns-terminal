@@ -12,8 +12,8 @@ export default function SiteHead({
   ogImageRelativePath = '/og_image.png',
 }: Props) {
   const router = useRouter();
-  const previewImageFull = process.env.APP_URL + ogImageRelativePath;
-  const url = process.env.APP_URL + router.asPath.replace(/\/$/, '');
+  const previewImageFull = `https://nouns.sh${ogImageRelativePath}`;
+  const url = `https://nouns.sh${router.asPath.replace(/\/$/, '')}`;
   return (
     <Head>
       <title>{title}</title>
