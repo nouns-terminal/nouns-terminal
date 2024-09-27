@@ -6,7 +6,7 @@ const envSchema = z.object({
   DATADOG_API_KEY: z.string().optional(),
   AIRSTACK_API_KEY: z.string().optional(),
   DATABASE_URL: z.string().startsWith('postgresql://'),
-  PROVIDER_URL: z.string(),
+  PROVIDER_URL: z.string().transform((v) => v.split(',')),
   PORT: z.coerce.number().default(3003),
   GENESIS_BLOCK: z.coerce.number().default(12985450),
   AUTHORS: z

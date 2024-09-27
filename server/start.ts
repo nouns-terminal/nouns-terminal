@@ -19,11 +19,17 @@ import balances from './indexers/balances';
 import transfers from './indexers/transfers';
 import socials from './indexers/socials';
 import serverEnv from './serverEnv';
+import { FallbackProvider } from 'ethers';
 
 async function main() {
   const port = serverEnv.PORT;
-  const provider = new RetryProvider(10, serverEnv.PROVIDER_URL);
-
+  const provider = new FallbackProvider(
+    serverEnv.PROVIDER_URL.map((url, index) => ({
+      provider: new RetryProvider(10, url),
+      priority: index + 1,
+      stallTimeout: 1000,
+    })),
+  );
   const app = express();
   const nextjs = next({ dev: serverEnv.NODE_ENV !== 'production' });
   const nextHandle = nextjs.getRequestHandler();

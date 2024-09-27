@@ -13,9 +13,16 @@ import {
 } from '../db/queries';
 import { Noun } from './types';
 import serverEnv from '../serverEnv';
+import { FallbackProvider } from 'ethers';
 
 const log = logger.child({ source: 'bidder' });
-const provider = new RetryProvider(5, serverEnv.PROVIDER_URL!);
+const provider = new FallbackProvider(
+  serverEnv.PROVIDER_URL.map((url, index) => ({
+    provider: new RetryProvider(5, url),
+    priority: index + 1,
+    stallTimeout: 1000,
+  })),
+);
 const pgPool = new Pool({ connectionString: serverEnv.DATABASE_URL });
 const socialUrls = new Map<string | null, string>([
   ['farcaster', 'https://warpcast.com/'],
