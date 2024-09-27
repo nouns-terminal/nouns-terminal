@@ -180,18 +180,32 @@ export default function AuctionHeader(props: Props) {
             </Text>
           </Stack>
         ) : (
-          <Stack direction="column" gap={-1}>
-            <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
-              End in
-            </Text>
-            <Text variant="title-1" bold color="bright-text">
-              <Countdown to={props.endTime * 1000} />
-            </Text>
+          <Stack direction="row" gap={1}>
+            <Stack direction="column" gap={-1}>
+              <Text variant="title-3" bold color={props.ended ? 'low-text' : 'mid-text'}>
+                End in
+              </Text>
+              <Text variant="title-1" bold color="bright-text">
+                <Countdown to={props.endTime * 1000} />
+              </Text>
+            </Stack>
+            <div className="hide-on-mobile">
+              {!props.ended && isConnected && (
+                <ClientOnly>
+                  <Bidding
+                    currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
+                    onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
+                    isLoading={bidMutation.isPending}
+                  />
+                </ClientOnly>
+              )}
+            </div>
           </Stack>
         )}
+      </Stack>
+      <div className="show-on-mobile">
         {!props.ended && isConnected && (
           <ClientOnly>
-            <div style={{ flex: 1 }} />
             <Bidding
               currentBid={props.maxBid ? BigInt(props.maxBid) : 0n}
               onSubmitBid={(bid) => bidMutation.mutateAsync(bid)}
@@ -199,7 +213,7 @@ export default function AuctionHeader(props: Props) {
             />
           </ClientOnly>
         )}
-      </Stack>
+      </div>
       <style jsx>{`
         .address {
           max-width: 42ch;
@@ -219,19 +233,40 @@ export default function AuctionHeader(props: Props) {
         .owner {
           cursor: pointer;
         }
+        .show-on-mobile {
+          display: none;
+        }
         @media only screen and (max-width: 600px) {
           .address {
             max-width: 12ch;
+          }
+          .hide-on-mobile {
+            display: none;
+          }
+          .show-on-mobile {
+            display: block;
           }
         }
         @media only screen and (min-width: 600px) and (max-width: 660px) {
           .address {
             max-width: 25ch;
           }
+          .hide-on-mobile {
+            display: none;
+          }
+          .show-on-mobile {
+            display: block;
+          }
         }
         @media only screen and (min-width: 660px) and (max-width: 1000px) {
           .address {
             max-width: 35ch;
+          }
+          .hide-on-mobile {
+            display: none;
+          }
+          .show-on-mobile {
+            display: block;
           }
         }
       `}</style>

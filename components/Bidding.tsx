@@ -64,6 +64,7 @@ export default function Bidding({ currentBid, onSubmitBid, isLoading }: Props) {
       </form>
       <style jsx>{`
         .container {
+          height: 100%;
           display: flex;
           gap: var(--s-2);
         }
