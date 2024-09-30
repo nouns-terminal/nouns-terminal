@@ -215,39 +215,43 @@ export default function AuctionHeader(props: Props) {
         )}
       </div>
       <style jsx>{`
+        .address,
+        .owner,
+        .image {
+          cursor: pointer;
+        }
+
         .address {
           max-width: 42ch;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          cursor: pointer;
         }
+
         .image {
           width: 150px;
           background-color: #d5d7e1;
-          cursor: pointer;
         }
+
         .selected {
           color: var(--yellow);
         }
-        .owner {
-          cursor: pointer;
-        }
+
         .show-on-mobile {
           display: none;
         }
-        @media only screen and (max-width: 600px) {
+
+        .hide-on-mobile {
+          display: block;
+        }
+
+        @media only screen and (max-width: 1000px) {
           .address {
-            max-width: 12ch;
-          }
-          .hide-on-mobile {
-            display: none;
-          }
-          .show-on-mobile {
-            display: block;
+            max-width: 35ch;
           }
         }
-        @media only screen and (min-width: 600px) and (max-width: 660px) {
+
+        @media only screen and (max-width: 700px) {
           .address {
             max-width: 25ch;
           }
@@ -258,15 +262,10 @@ export default function AuctionHeader(props: Props) {
             display: block;
           }
         }
-        @media only screen and (min-width: 660px) and (max-width: 1000px) {
+
+        @media only screen and (max-width: 600px) {
           .address {
-            max-width: 35ch;
-          }
-          .hide-on-mobile {
-            display: none;
-          }
-          .show-on-mobile {
-            display: block;
+            max-width: 12ch;
           }
         }
       `}</style>
