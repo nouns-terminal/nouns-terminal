@@ -1470,20 +1470,20 @@
   dependencies:
     "@tanstack/query-core" "5.56.2"
 
-"@trpc/client@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-rc.553.tgz#168de9ffbce162c7cf6d5971eb195d4b7e921dc9"
-  integrity sha512-ICgziilbuAslRgHIVJZ162KaHQRpHXA1C1LPRsNpxPa9aStPF7eThAjn4V3JmDyJsuDLQgAmqLVRImlLPMYR5Q==
+"@trpc/client@^11.0.0-rc.561":
+  version "11.0.0-rc.561"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-rc.561.tgz#c1d865814b17ec7265644407c7ed60ebe23fe3e8"
+  integrity sha512-gjvZasIDsIPk9O+KmTjurBLru0ZjBXVes8NW0R41pCBG56IBQwT9U5jo7pusNjbYCqBdlD8S5XJnFeVRkYy38A==
 
-"@trpc/next@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-11.0.0-rc.553.tgz#96f59f17e483c93c79360703a6c0499b51987093"
-  integrity sha512-1bIuG4nKYmTuVFqgsqSbOGgIz2LsUcb1wXrK1zlfikRQHhssSMmpXSLSANfZffs/6lbFLVs057XaS9LX5HmCsw==
+"@trpc/next@^11.0.0-rc.561":
+  version "11.0.0-rc.561"
+  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-11.0.0-rc.561.tgz#5a82fd21b2a2fbd6136217aea24d904d2b5487f4"
+  integrity sha512-ujaV7/OXXF4sdmPqrRSoXgOxeh3sR4YisbyTYAv3oRycfCc/grAYLISYaplY8hQvihuwNW6v/dSngrss6t2RmA==
 
-"@trpc/react-query@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.0-rc.553.tgz#b20ade8f64e5422be71d14833aa6d9afb6cfe58b"
-  integrity sha512-m88HBhpfIDJccJCXycHtkGS82RG2TVPsZUFIWswR8m6ip5eFNmqWASanu7DiiFbY6sufLT1S8ee28towrPUgoA==
+"@trpc/react-query@^11.0.0-rc.561":
+  version "11.0.0-rc.561"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.0-rc.561.tgz#764737a1b6c39fc09dcf0de4222517636868b927"
+  integrity sha512-JXZBINHI90wHh0fvWopr7Js05V34/zsYgGdfs8/WtYqR2DI8hJa3hoFVhiJJ/S1sSz06il5GtUGYnT8J/sEXTw==
 
 "@trpc/react@^9.27.4":
   version "9.27.4"
@@ -1492,10 +1492,10 @@
   dependencies:
     "@babel/runtime" "^7.9.0"
 
-"@trpc/server@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.0-rc.553.tgz#b5b66effe1e5e782867734d3689ab85caa40c13d"
-  integrity sha512-pYUhxV3QU834jP1ugJk1uhtPwwaY1ymIuupb4DiWOhNCl68syuXPlUdD8IYsYKd3BjLkmnjlsOUMoyd/aoOF/Q==
+"@trpc/server@^11.0.0-rc.561":
+  version "11.0.0-rc.561"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.0-rc.561.tgz#f69567002096bab8a42efbb2c4cf893c5118b72a"
+  integrity sha512-KH2A3+ZkGE6URbVpHfvSiaQSOh4/PsgQVzunLrsBPjgNwbldkE3r1UKR6y4Gla9wmg2EesuV7LO0bCPUxOCedw==
 
 "@typechain/ethers-v6@^0.5.1":
   version "0.5.1"
