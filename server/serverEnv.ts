@@ -12,7 +12,7 @@ const envSchema = z.object({
   AUTHORS: z
     .string()
     .default('')
-    .transform((v) => v.toLowerCase().split(',')),
+    .transform((v) => v.trim().toLowerCase().split(',')),
 });
 
 export default envSchema.parse(process.env);
