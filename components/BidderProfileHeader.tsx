@@ -39,10 +39,28 @@ export default function BidderProfileHeader({
   const dappsWithNounsSh = [
     ...(dapps || []),
     {
-      type: 'nouns.sh',
+      type: 'Etherscan',
+      nickname: address,
+      followers: 0,
+      url: `https://etherscan.io/address/${address}`,
+    },
+    {
+      type: 'Profile',
       nickname: address,
       followers: 0,
       url: `https://nouns.sh/bidder/${address}`,
+    },
+    {
+      type: 'Votes',
+      nickname: address,
+      followers: 0,
+      url: `https://www.nouns.camp/voters/${address}`,
+    },
+    {
+      type: 'OpenSea',
+      nickname: address,
+      followers: 0,
+      url: `https://opensea.io/${address}`,
     },
   ];
 
