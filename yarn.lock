@@ -1470,20 +1470,20 @@
   dependencies:
     "@tanstack/query-core" "5.56.2"
 
-"@trpc/client@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-rc.553.tgz#168de9ffbce162c7cf6d5971eb195d4b7e921dc9"
-  integrity sha512-ICgziilbuAslRgHIVJZ162KaHQRpHXA1C1LPRsNpxPa9aStPF7eThAjn4V3JmDyJsuDLQgAmqLVRImlLPMYR5Q==
+"@trpc/client@^11.0.0-rc.571":
+  version "11.0.0-rc.571"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-11.0.0-rc.571.tgz#4c437533d4c7cb463c9a32955d32f5e57bdad0d3"
+  integrity sha512-mUX47avAwgkirC91rtnde7B8QVbvd+121wgud3q22gYBI1hrGFn8isFwXdPquVneXNL5p1JjfhpZzDwzHmUJ4Q==
 
-"@trpc/next@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-11.0.0-rc.553.tgz#96f59f17e483c93c79360703a6c0499b51987093"
-  integrity sha512-1bIuG4nKYmTuVFqgsqSbOGgIz2LsUcb1wXrK1zlfikRQHhssSMmpXSLSANfZffs/6lbFLVs057XaS9LX5HmCsw==
+"@trpc/next@^11.0.0-rc.571":
+  version "11.0.0-rc.571"
+  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-11.0.0-rc.571.tgz#a12de498f7724dda419a67ca8a20f4a3cc2051dd"
+  integrity sha512-CoMh0FipQDJQUxd5y0qt24M6CV2RiccXQYd33OSoKSOQWypfSWj5IYhwAc6sz6V2hWOt/xMuXx+C+JvYmsX57w==
 
-"@trpc/react-query@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.0-rc.553.tgz#b20ade8f64e5422be71d14833aa6d9afb6cfe58b"
-  integrity sha512-m88HBhpfIDJccJCXycHtkGS82RG2TVPsZUFIWswR8m6ip5eFNmqWASanu7DiiFbY6sufLT1S8ee28towrPUgoA==
+"@trpc/react-query@^11.0.0-rc.571":
+  version "11.0.0-rc.571"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-11.0.0-rc.571.tgz#bb57b05d26b3bab4a2c76d1edf46285ca848f5ec"
+  integrity sha512-+LNIou3JQ/wQybTk1Vt90cKWk8LGGHrhsHiTWJFRiApaNgl/y7EkOfoOZ/we8jY3hPnyG5CXcqXx9SDbrmy8lg==
 
 "@trpc/react@^9.27.4":
   version "9.27.4"
@@ -1492,10 +1492,10 @@
   dependencies:
     "@babel/runtime" "^7.9.0"
 
-"@trpc/server@^11.0.0-rc.553":
-  version "11.0.0-rc.553"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.0-rc.553.tgz#b5b66effe1e5e782867734d3689ab85caa40c13d"
-  integrity sha512-pYUhxV3QU834jP1ugJk1uhtPwwaY1ymIuupb4DiWOhNCl68syuXPlUdD8IYsYKd3BjLkmnjlsOUMoyd/aoOF/Q==
+"@trpc/server@^11.0.0-rc.571":
+  version "11.0.0-rc.571"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.0.0-rc.571.tgz#c8b989a201dc313ed36692913f78cc2fe7b232cf"
+  integrity sha512-CISo9BoXSArTPt3MfxbOTPUcEdtKOl5Qgp8P+udiaA/nRmjndvVeZWQSmy1elRv0mQ/vvUI1VLsYm9Dn1/bysw==
 
 "@typechain/ethers-v6@^0.5.1":
   version "0.5.1"
@@ -1640,17 +1640,12 @@
   resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
   integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
 
-"@types/node@*", "@types/node@^22.7.5":
+"@types/node@*", "@types/node@22.7.5", "@types/node@^22.7.4":
   version "22.7.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.7.5.tgz#cfde981727a7ab3611a481510b473ae54442b92b"
   integrity sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==
   dependencies:
     undici-types "~6.19.2"
-
-"@types/node@18.15.13":
-  version "18.15.13"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.13.tgz#f64277c341150c979e42b00e4ac289290c9df469"
-  integrity sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==
 
 "@types/pg@^8.11.10":
   version "8.11.10"
@@ -3800,17 +3795,17 @@ ethers@^5.6.8:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^6.13.2:
-  version "6.13.2"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.2.tgz#4b67d4b49e69b59893931a032560999e5e4419fe"
-  integrity sha512-9VkriTTed+/27BGuY1s0hf441kqwHJ1wtN2edksEtiRvXx+soxRX3iSXTfFqq2+YwrOqbDoTHjIhQnjJRlzKmg==
+ethers@^6.13.4:
+  version "6.13.4"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.4.tgz#bd3e1c3dc1e7dc8ce10f9ffb4ee40967a651b53c"
+  integrity sha512-21YtnZVg4/zKkCQPjrDj38B1r4nQvTZLopUGMLQ1ePU2zV/joCfDC3t3iKQjWRzjjjbzR+mdAIoikeBRNkdllA==
   dependencies:
     "@adraffy/ens-normalize" "1.10.1"
     "@noble/curves" "1.2.0"
     "@noble/hashes" "1.3.2"
-    "@types/node" "18.15.13"
+    "@types/node" "22.7.5"
     aes-js "4.0.0-beta.5"
-    tslib "2.4.0"
+    tslib "2.7.0"
     ws "8.17.1"
 
 event-target-shim@^5.0.0:
@@ -6865,15 +6860,10 @@ tslib@1.14.1:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
-  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
-
-tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.1, tslib@^2.4.0:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
-  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+tslib@2.7.0, tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.1, tslib@^2.4.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.7.0.tgz#d9b40c5c40ab59e8738f297df3087bf1a2690c01"
+  integrity sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==
 
 tsx@^4.19.1:
   version "4.19.1"
