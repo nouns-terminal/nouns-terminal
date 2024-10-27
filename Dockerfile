@@ -1,5 +1,8 @@
 FROM node:20
 
+ARG AIRSTACK_API_KEY
+ARG APP_URL
+
 WORKDIR /app
 
 COPY package*.json yarn.lock ./
@@ -14,6 +17,8 @@ ENV DATABASE_URL="postgresql://"
 ENV PROVIDER_URL="https://"
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV AIRSTACK_API_KEY=$AIRSTACK_API_KEY
+ENV APP_URL=$APP_URL
 
 RUN yarn build
 
