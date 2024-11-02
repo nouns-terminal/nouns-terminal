@@ -55,3 +55,25 @@ $ yarn start
 ```
 
 Open [http://localhost:3003](http://localhost:3003) with your browser.
+
+## Software License
+
+Nouns Terminal
+Copyright (C) 2024 yukigesho.eth & w1nt3r.eth
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+## Font License
+
+This project is using the fantastic [Proto Mono](https://supply.family/shop/proto-mono/) font face. You'll need a license from them if you'd like to publish a copy of Nouns Terminal on your own website. See [EULA](https://supply.family/end-user-license-agreement-webfont/).
