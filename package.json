@@ -36,7 +36,7 @@
     "@types/lodash.merge": "^4.6.9",
     "@types/pg": "^8.11.10",
     "@types/ws": "^8.5.13",
-    "@vercel/og": "^0.6.3",
+    "@vercel/og": "^0.6.4",
     "deep-equal": "^2.2.3",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.4",
