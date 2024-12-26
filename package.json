@@ -24,12 +24,13 @@
     "@pgtyped/cli": "^2.3.0",
     "@pgtyped/query": "^2.3.0",
     "@rainbow-me/rainbowkit": "^2.2.0",
-    "@tanstack/react-query": "^5.60.5",
-    "@trpc/client": "^11.0.0-rc.593",
-    "@trpc/next": "^11.0.0-rc.593",
+    "@tanstack/react-query": "^5.62.10",
+    "@tanstack/react-query-devtools": "^5.62.10",
+    "@trpc/client": "^11.0.0-rc.666",
+    "@trpc/next": "^11.0.0-rc.666",
     "@trpc/react": "^9.27.4",
-    "@trpc/react-query": "^11.0.0-rc.593",
-    "@trpc/server": "^11.0.0-rc.593",
+    "@trpc/react-query": "^11.0.0-rc.666",
+    "@trpc/server": "^11.0.0-rc.666",
     "@typechain/ethers-v6": "^0.5.1",
     "@types/deep-equal": "^1.0.4",
     "@types/express": "^5.0.0",
@@ -44,8 +45,8 @@
     "express": "^4.21.1",
     "express-winston": "^4.2.0",
     "jotai": "^2.10.2",
-    "pg": "^8.13.1",
     "next": "^14.2.18",
+    "pg": "^8.13.1",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -66,5 +67,6 @@
     "eslint-config-next": "^14.2.3",
     "nodemon": "^3.1.7",
     "typescript": "^5.4.5"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

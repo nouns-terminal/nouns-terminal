@@ -24,7 +24,7 @@ export default function Auction({
   trpc.onLatest.useSubscription(
     { auctionId },
     {
-      onData: (data) => {
+      onData: (data: AuctionData) => {
         setData(data);
         if (data.bids.find((b) => pendingBid && b.tx === pendingBid.tx)) {
           setPendingBid(null);
