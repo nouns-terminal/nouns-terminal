@@ -1,5 +1,5 @@
 import { formatEther } from 'viem';
-import { ImageData, getNounData } from '@nouns/assets';
+import { ImageData, getNounData } from '@nomonouns/assets';
 import { buildSVG } from '@nouns/sdk/dist/image/svg-builder';
 import { Noun } from '../server/api/types';
 

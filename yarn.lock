@@ -1013,13 +1013,14 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nouns/assets@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@nouns/assets/-/assets-0.10.0.tgz#31680f84f245cbfd6b4727c9990f5df1fe6245a1"
-  integrity sha512-M4d8akHjr77qc/OE9Mhbp/wioiRQ2hYlYKZfRmVSex6OW+R8LbToUDYHIGPPp11mapzJbBob5FuZ+fCFBiY2Qg==
+"@nomonouns/assets@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@nomonouns/assets/-/assets-0.11.0.tgz#736a41343d5a4c710cec8644764db1c3d4b9913a"
+  integrity sha512-/jD4UfMR7OTScuAJBM9g3BqYZ3z9nXWLopPR5+QYfh30446P4d/4R2mzYa/7tz4/YZQlGX0kw+IcSy1ofTh+BA==
   dependencies:
     "@ethersproject/bignumber" "^5.5.0"
     "@ethersproject/solidity" "^5.5.0"
+    pako "^2.1.0"
 
 "@nouns/contracts@^0.3.0":
   version "0.3.0"
@@ -5523,6 +5524,11 @@ pako@^0.2.5:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
   integrity sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==
+
+pako@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/pako/-/pako-2.1.0.tgz#266cc37f98c7d883545d11335c00fbd4062c9a86"
+  integrity sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==
 
 parent-module@^1.0.0:
   version "1.0.1"

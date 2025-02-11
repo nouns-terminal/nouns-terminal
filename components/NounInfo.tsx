@@ -1,8 +1,8 @@
 import React from 'react';
 import 'react-modern-drawer/dist/index.css';
 import { Noun, NounProperty } from '../server/api/types';
-import { getNounData } from '@nouns/assets';
-import imageData from '@nouns/assets/dist/image-data.json';
+import { getNounData } from '@nomonouns/assets';
+import imageData from '@nomonouns/assets/dist/image-data.json';
 import { createNounSVG } from '../utils/utils';
 import Link from 'next/link';
 
