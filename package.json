@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@metamask/jazzicon": "^2.0.0",
-    "@next/bundle-analyzer": "^14.2.18",
+    "@next/bundle-analyzer": "^15.2.0",
     "@nomonouns/assets": "^0.11.0",
     "@nouns/sdk": "^0.4.0",
     "@pgtyped/cli": "^2.3.0",
@@ -57,7 +57,7 @@
     "viem": "2.x",
     "wagmi": "^2.14.7",
     "winston": "^3.17.0",
-    "zod": "^3.23.8"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
