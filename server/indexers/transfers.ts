@@ -48,7 +48,7 @@ export default async function transfers(
   let lastBlockNumber = lastQueriedBlock;
 
   log.debug('Loaded state', { lastQueriedBlock });
-  const limit = 1_000_000;
+  const limit = 500;
   const pages = Math.ceil((currentBlockNumber - lastQueriedBlock) / limit);
 
   for (let page = 0; page <= pages; page += 1) {
