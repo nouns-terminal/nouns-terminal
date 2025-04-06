@@ -4,9 +4,9 @@ import { getLastAuctionUnindexedWalletsSocials, setAddressSocials } from '../db/
 import { Pool } from 'pg';
 import serverEnv from '../serverEnv';
 
-interface QueryResponse {
+type QueryResponse = {
   data: Data;
-}
+};
 
 type Data = {
   Wallet: Wallet;
