@@ -21,7 +21,7 @@
     "@next/bundle-analyzer": "^15.2.4",
     "@nomonouns/assets": "^0.12.0",
     "@nouns/sdk": "^0.4.0",
-    "@pgtyped/cli": "^2.3.0",
+    "@pgtyped/cli": "^2.4.3",
     "@pgtyped/query": "^2.3.0",
     "@rainbow-me/rainbowkit": "^2.2.0",
     "@tanstack/react-query": "^5.62.10",
